@@ -6,7 +6,7 @@ on:
 
 jobs:
   Deploy:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
@@ -29,7 +29,7 @@ jobs:
 
       - name: Build
         run: |
-          flutter build web --release
+          flutter build web --release --base-href "/moss/"
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4.2.5

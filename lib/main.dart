@@ -10,8 +10,16 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(body: ChatView()),
+    return MaterialApp(
+      theme: ThemeData(
+        useMaterial3: true,
+        primarySwatch: Colors.lightBlue,
+      ),
+      home: Scaffold(
+          appBar: AppBar(
+            title: Image.asset('assets/images/logo.png', scale: 6.5),
+          ),
+          body: ChatView()),
     );
   }
 }

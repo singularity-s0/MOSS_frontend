@@ -17,6 +17,7 @@ dev_dependencies:
   flutter_chat_ui: ^1.6.6
   flutter_markdown: ^0.6.13+1
   flutter_native_splash: ^2.2.17
+  provider: ^6.0.5
 
 flutter:
   uses-material-design: true

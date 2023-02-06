@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:openchat_frontend/views/chat_view.dart';
+import 'package:openchat_frontend/views/chat_page.dart';
+import 'package:openchat_frontend/views/login_page.dart';
+import 'package:openchat_frontend/utils/account_provider.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MainApp());
@@ -8,18 +11,39 @@ void main() {
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
+  static final Map<String, Widget Function(BuildContext)> routes = {
+    '/placeholder': (context, {arguments}) =>
+        ColoredBox(color: Theme.of(context).scaffoldBackgroundColor),
+    '/login': (context, {arguments}) => const LoginScreen(),
+    '/chat': (context, {arguments}) => const ChatPage(),
+  };
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        useMaterial3: true,
-        primarySwatch: Colors.lightBlue,
+    return MultiProvider(
+      providers: [
+        // FIXME: Should create provider instead of using singleton, this allows for multiple accounts without refactor
+        ChangeNotifierProvider<AccountProvider>.value(
+            value: AccountProvider.getInstance())
+      ],
+      child: MaterialApp(
+        theme: ThemeData.from(
+            colorScheme: ColorScheme.fromSeed(
+                seedColor: Color.fromRGBO(56, 100, 184, 1)),
+            useMaterial3: true),
+        home: Builder(
+          builder: (context) {
+            // Dynamically show chat page or login page based on logged in or not
+            final token = context.watch<AccountProvider>().token;
+            if (token == null) {
+              return const LoginScreen();
+            } else {
+              return const ChatPage();
+            }
+          },
+        ),
+        routes: routes,
       ),
-      home: Scaffold(
-          appBar: AppBar(
-            title: Image.asset('assets/images/logo.png', scale: 6.5),
-          ),
-          body: ChatView()),
     );
   }
 }

@@ -7,6 +7,17 @@ import 'package:openchat_frontend/views/components/animated_text.dart';
 const user = types.User(id: 'user');
 const reply = types.User(id: 'moss');
 
+class ChatPage extends StatelessWidget {
+  const ChatPage({super.key});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+      appBar: AppBar(
+        title: Image.asset('assets/images/logo.png', scale: 6.5),
+      ),
+      body: const ChatView());
+}
+
 class ChatView extends StatefulWidget {
   const ChatView({super.key});
 
@@ -23,6 +34,9 @@ class _ChatViewState extends State<ChatView> {
           messages: _messages,
           user: user,
           showUserAvatars: true,
+          theme: DefaultChatTheme(
+            primaryColor: Theme.of(context).primaryColor,
+          ),
           avatarBuilder: (userId) {
             if (userId == reply.id) {
               return Image.asset(

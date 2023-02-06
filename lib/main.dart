@@ -29,7 +29,7 @@ class MainApp extends StatelessWidget {
       child: MaterialApp(
         theme: ThemeData.from(
             colorScheme: ColorScheme.fromSeed(
-                seedColor: Color.fromRGBO(56, 100, 184, 1)),
+                seedColor: const Color.fromRGBO(56, 100, 184, 1)),
             useMaterial3: true),
         home: Builder(
           builder: (context) {

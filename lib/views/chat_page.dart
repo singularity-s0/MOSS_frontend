@@ -36,6 +36,7 @@ class _ChatViewState extends State<ChatView> {
           showUserAvatars: true,
           theme: DefaultChatTheme(
             primaryColor: Theme.of(context).primaryColor,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           ),
           avatarBuilder: (userId) {
             if (userId == reply.id) {

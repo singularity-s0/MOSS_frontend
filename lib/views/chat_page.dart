@@ -3,23 +3,88 @@ import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter/material.dart';
 import 'package:openchat_frontend/views/components/animated_text.dart';
+import 'package:openchat_frontend/views/history_page.dart';
 
 const user = types.User(id: 'user');
 const reply = types.User(id: 'moss');
 
-class ChatPage extends StatelessWidget {
+const kTabletMasterContainerWidth = 370.0;
+
+bool isDesktop(BuildContext context) {
+  return MediaQuery.of(context).size.width >= 768.0;
+}
+
+class ChatPage extends StatefulWidget {
+  // The state of this page records the "Topic" that the user is currently in
+  // Children can use context.findAncestorStateOfType<ChatPageState>() to read and change this
   const ChatPage({super.key});
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-      appBar: AppBar(
-        title: Image.asset('assets/images/logo.png', scale: 6.5),
+  State<ChatPage> createState() => ChatPageState();
+}
+
+class ChatPageState extends State<ChatPage> {
+  ValueNotifier<String> currentTopic = ValueNotifier<String>('whatever');
+
+  // Mobile UI
+  Widget buildMobile(BuildContext context) => ValueListenableBuilder(
+      valueListenable: currentTopic,
+      builder: (context, value, child) => ChatView(topicId: value));
+
+  // Desktop UI
+  Widget buildDesktop(BuildContext context) {
+    return ColoredBox(
+      color: Theme.of(context).colorScheme.background,
+      child: Row(
+        children: [
+          // Left View
+          SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: kTabletMasterContainerWidth,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.0)),
+                clipBehavior: Clip.antiAlias,
+                child: ValueListenableBuilder(
+                    valueListenable: currentTopic,
+                    builder: (context, value, child) =>
+                        HistoryPage(selectedTopic: value)),
+              ),
+            ),
+          ),
+          // Right View
+          SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width:
+                MediaQuery.of(context).size.width - kTabletMasterContainerWidth,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 16, right: 16, bottom: 16),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.0)),
+                clipBehavior: Clip.antiAlias,
+                child: ValueListenableBuilder(
+                    valueListenable: currentTopic,
+                    builder: (context, value, child) =>
+                        ChatView(topicId: value)),
+              ),
+            ),
+          ),
+        ],
       ),
-      body: const ChatView());
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      isDesktop(context) ? buildDesktop(context) : buildMobile(context);
 }
 
 class ChatView extends StatefulWidget {
-  const ChatView({super.key});
+  final String topicId;
+  const ChatView({super.key, required this.topicId});
 
   @override
   State<ChatView> createState() => _ChatViewState();
@@ -30,13 +95,16 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: Image.asset('assets/images/logo.png', scale: 6.5),
+        ),
         body: Chat(
           messages: _messages,
           user: user,
           showUserAvatars: true,
           theme: DefaultChatTheme(
             primaryColor: Theme.of(context).primaryColor,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            backgroundColor: Theme.of(context).colorScheme.background,
           ),
           avatarBuilder: (userId) {
             if (userId == reply.id) {

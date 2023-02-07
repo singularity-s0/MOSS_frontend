@@ -29,7 +29,8 @@ class MainApp extends StatelessWidget {
       child: MaterialApp(
         theme: ThemeData.from(
             colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color.fromRGBO(56, 100, 184, 1)),
+                seedColor: const Color.fromRGBO(56, 100, 184, 1),
+                brightness: Brightness.light),
             useMaterial3: true),
         home: Builder(
           builder: (context) {

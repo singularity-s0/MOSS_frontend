@@ -39,7 +39,7 @@ class ChatPage extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Card(
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.0)),
+                    borderRadius: BorderRadius.circular(20.0)),
                 clipBehavior: Clip.antiAlias,
                 child: ValueListenableBuilder(
                     valueListenable: currentTopic,
@@ -57,7 +57,7 @@ class ChatPage extends StatelessWidget {
               padding: const EdgeInsets.only(top: 16, right: 16, bottom: 16),
               child: Card(
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.0)),
+                    borderRadius: BorderRadius.circular(20.0)),
                 clipBehavior: Clip.antiAlias,
                 child: ValueListenableBuilder(
                     valueListenable: currentTopic,

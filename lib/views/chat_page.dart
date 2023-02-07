@@ -85,7 +85,12 @@ class ChatView extends StatefulWidget {
 }
 
 class _ChatViewState extends State<ChatView> {
-  List<types.Message> _messages = [];
+  final List<types.Message> _messages = [
+    const types.SystemMessage(
+      text: "AIGC warning message here",
+      id: "ai-alert",
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) => Scaffold(

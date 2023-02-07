@@ -140,7 +140,7 @@ class _ChatViewState extends State<ChatView> {
                   0,
                   types.TextMessage(
                       author: reply,
-                      text: "This should be a response to '${message.text}'",
+                      text: "This should be a response to \n${message.text}",
                       metadata: {
                         'animatedIndex': 0
                       }, // DO NOT mark this as constant

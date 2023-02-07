@@ -147,8 +147,8 @@ class _ChatViewState extends State<ChatView> {
             if (msg.author == reply) {
               return AnimatedTextMessage(
                 message: msg,
-                speed: 100,
-                finishingWidget: Row(
+                animate: false,
+                bottomWidget: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
@@ -181,12 +181,9 @@ class _ChatViewState extends State<ChatView> {
                 ),
               );
             } else {
-              return TextMessage(
-                emojiEnlargementBehavior: EmojiEnlargementBehavior.never,
-                hideBackgroundOnEmojiMessages: false,
-                showName: false,
+              return AnimatedTextMessage(
                 message: msg,
-                usePreviewData: false,
+                animate: false,
               );
             }
           },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:openchat_frontend/utils/dialog.dart';
+import 'package:openchat_frontend/views/chat_page.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -27,8 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
         .hasMatch(email);
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SafeArea(
@@ -53,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(fontSize: 35),
                   ),
                 ),
-                const SizedBox(height: 50),
+                const SizedBox(height: 30),
                 Form(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   child: Padding(
@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   : "Please enter a valid email";
                             },
                             controller: emailController),
-                        const SizedBox(height: 40),
+                        const SizedBox(height: 20),
                         TextFormField(
                             obscureText: true,
                             enableSuggestions: false,
@@ -101,6 +101,32 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (isDesktop(context)) {
+      return ColoredBox(
+        color: Theme.of(context).colorScheme.background,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Center(
+            child: SizedBox(
+              width: kTabletSingleContainerWidth,
+              height: 600,
+              child: Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)),
+                clipBehavior: Clip.antiAlias,
+                child: buildContent(context),
+              ),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return buildContent(context);
+    }
   }
 }
 

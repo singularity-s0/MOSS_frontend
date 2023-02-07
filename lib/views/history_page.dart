@@ -33,12 +33,10 @@ class _HistoryPageState extends State<HistoryPage> {
                   selected: widget.selectedTopic == 'id $i',
                   onTap: () {
                     var parent =
-                        context.findAncestorStateOfType<ChatPageState>();
+                        context.findAncestorWidgetOfExactType<ChatPage>();
                     assert(parent != null,
                         "A History Page must be a child of a Chat Page");
-                    parent!.setState(() {
-                      parent.currentTopic.value = 'id $i';
-                    });
+                    parent!.currentTopic.value = 'id $i';
                   });
             }
           },

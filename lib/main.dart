@@ -15,7 +15,7 @@ class MainApp extends StatelessWidget {
     '/placeholder': (context, {arguments}) =>
         ColoredBox(color: Theme.of(context).scaffoldBackgroundColor),
     '/login': (context, {arguments}) => const LoginScreen(),
-    '/chat': (context, {arguments}) => const ChatPage(),
+    // '/chat': (context, {arguments}) => ChatPage(),
   };
 
   @override
@@ -39,7 +39,7 @@ class MainApp extends StatelessWidget {
             if (token == null) {
               return const LoginScreen();
             } else {
-              return const ChatPage();
+              return ChatPage();
             }
           },
         ),

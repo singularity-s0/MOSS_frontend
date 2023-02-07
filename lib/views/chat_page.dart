@@ -14,17 +14,11 @@ bool isDesktop(BuildContext context) {
   return MediaQuery.of(context).size.width >= 768.0;
 }
 
-class ChatPage extends StatefulWidget {
+class ChatPage extends StatelessWidget {
   // The state of this page records the "Topic" that the user is currently in
   // Children can use context.findAncestorStateOfType<ChatPageState>() to read and change this
-  const ChatPage({super.key});
-
-  @override
-  State<ChatPage> createState() => ChatPageState();
-}
-
-class ChatPageState extends State<ChatPage> {
-  ValueNotifier<String> currentTopic = ValueNotifier<String>('whatever');
+  final ValueNotifier<String> currentTopic = ValueNotifier<String>('whatever');
+  ChatPage({super.key});
 
   // Mobile UI
   Widget buildMobile(BuildContext context) => ValueListenableBuilder(

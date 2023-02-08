@@ -174,7 +174,6 @@ class _LoginScreenState extends State<LoginScreen> {
     return FutureBuilder(
       future: _region,
       builder: (context, snapshot) {
-        return AnimatedSwitcher
         if (snapshot.hasError) {
           return buildLandingPage(context, error: snapshot.error);
         } else if (snapshot.hasData) {

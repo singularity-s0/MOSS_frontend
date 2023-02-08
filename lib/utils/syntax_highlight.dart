@@ -1,8 +1,6 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_highlighter/flutter_highlighter.dart';
-// import 'package:flutter_highlighter/themes/github.dart';
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart' as md;
 
@@ -31,7 +29,9 @@ class CodeElementBuilder extends MarkdownElementBuilder {
                         fontSize: 12, color: codeTheme['titlebg']!.color!)),
               ),
               TextButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    FlutterClipboard.copy(element.textContent.trim());
+                  },
                   icon: Icon(Icons.copy,
                       size: 12, color: codeTheme['titlebg']!.color!),
                   label: Text('Copy',

@@ -137,7 +137,10 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
 
   @override
   void dispose() {
-    _controller.dispose();
+    if (widget.animate) {
+      _controller.stop();
+      _controller.dispose();
+    }
     super.dispose();
   }
 }

@@ -147,21 +147,6 @@ class _ChatViewState extends State<ChatView> {
                 right: 16,
                 bottom: MediaQuery.of(context).viewInsets.bottom + 16),
           ),
-          avatarBuilder: (userId) {
-            if (userId == reply.id) {
-              return Image.asset(
-                'assets/images/avatar.png',
-                fit: BoxFit.cover,
-                scale: 5.5,
-                isAntiAlias: true,
-                frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                  return Padding(
-                      padding: const EdgeInsets.only(right: 8), child: child);
-                },
-              );
-            }
-            return const SizedBox();
-          },
           onSendPressed: (types.PartialText message) async {
             setState(() {
               _messages.insert(
@@ -191,48 +176,50 @@ class _ChatViewState extends State<ChatView> {
           },
           listBottomWidget: Padding(
             padding: const EdgeInsets.only(left: 16, right: 8, bottom: 8),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 500),
-                child: _messages.first.author.id == user.id
-                    ? const TypingIndicator()
-                    : (_messages.first.author.id == reply.id
-                        ? Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              TextButton.icon(
-                                  icon: const Icon(Icons.refresh, size: 16),
-                                  label: Text(
-                                      AppLocalizations.of(context)!.regenerate),
-                                  onPressed: () {}),
-                              IconButton(
-                                icon: Icon(Icons.thumb_up,
-                                    size: 16,
-                                    color: Theme.of(context)
-                                        .buttonTheme
-                                        .colorScheme
-                                        ?.onSurface
-                                        .withAlpha(130)),
-                                padding: EdgeInsets.zero,
-                                onPressed: () {},
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.thumb_down,
-                                    size: 16,
-                                    color: Theme.of(context)
-                                        .buttonTheme
-                                        .colorScheme
-                                        ?.onSurface
-                                        .withAlpha(130)),
-                                padding: EdgeInsets.zero,
-                                onPressed: () {},
-                              ),
-                            ],
-                          )
-                        : const SizedBox(height: 40)),
-              ),
-            ),
+            child: (_messages.first.author.id != user.id &&
+                    _messages.first.author.id != reply.id)
+                ? const SizedBox(height: 40)
+                : AnimatedCrossFade(
+                    crossFadeState: _messages.first.author.id == user.id
+                        ? CrossFadeState.showFirst
+                        : CrossFadeState.showSecond,
+                    duration: const Duration(milliseconds: 200),
+                    firstChild: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: const [TypingIndicator()]),
+                    secondChild: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        TextButton.icon(
+                            icon: const Icon(Icons.refresh, size: 16),
+                            label:
+                                Text(AppLocalizations.of(context)!.regenerate),
+                            onPressed: () {}),
+                        IconButton(
+                          icon: Icon(Icons.thumb_up,
+                              size: 16,
+                              color: Theme.of(context)
+                                  .buttonTheme
+                                  .colorScheme
+                                  ?.onSurface
+                                  .withAlpha(130)),
+                          padding: EdgeInsets.zero,
+                          onPressed: () {},
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.thumb_down,
+                              size: 16,
+                              color: Theme.of(context)
+                                  .buttonTheme
+                                  .colorScheme
+                                  ?.onSurface
+                                  .withAlpha(130)),
+                          padding: EdgeInsets.zero,
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                  ),
           ),
           textMessageBuilder: (msg,
               {required messageWidth, required showName}) {

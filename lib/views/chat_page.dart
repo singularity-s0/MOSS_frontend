@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -10,6 +12,7 @@ const user = types.User(id: 'user');
 const reply = types.User(id: 'moss');
 
 const kTabletMasterContainerWidth = 370.0;
+const kTabletSecondaryContainerMaxWidth = 750.0;
 const kTabletSingleContainerWidth = 410.0;
 
 bool isDesktop(BuildContext context) {
@@ -32,6 +35,7 @@ class ChatPage extends StatelessWidget {
     return ColoredBox(
       color: Theme.of(context).colorScheme.background,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Left View
           SizedBox(
@@ -53,8 +57,10 @@ class ChatPage extends StatelessWidget {
           // Right View
           SizedBox(
             height: MediaQuery.of(context).size.height,
-            width:
-                MediaQuery.of(context).size.width - kTabletMasterContainerWidth,
+            width: min(
+                kTabletSecondaryContainerMaxWidth,
+                MediaQuery.of(context).size.width -
+                    kTabletMasterContainerWidth),
             child: Padding(
               padding: const EdgeInsets.only(top: 16, right: 16, bottom: 16),
               child: Card(

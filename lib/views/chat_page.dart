@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:openchat_frontend/views/components/animated_text.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:openchat_frontend/views/components/chat_ui/chat_theme.dart';
+import 'package:openchat_frontend/views/components/chat_ui/flutter_chat_ui.dart';
 import 'package:openchat_frontend/views/history_page.dart';
 
 import 'components/chat_ui/widgets/chat.dart';
@@ -115,6 +116,8 @@ class _ChatViewState extends State<ChatView> {
           messages: _messages,
           user: user,
           showUserAvatars: false,
+          inputOptions: const InputOptions(
+              sendButtonVisibilityMode: SendButtonVisibilityMode.always),
           theme: DefaultChatTheme(
             primaryColor: Theme.of(context).primaryColor,
             backgroundColor: Theme.of(context).colorScheme.background,

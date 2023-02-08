@@ -12,7 +12,6 @@ const user = types.User(id: 'user');
 const reply = types.User(id: 'moss');
 
 const kTabletMasterContainerWidth = 370.0;
-const kTabletSecondaryContainerMaxWidth = 750.0;
 const kTabletSingleContainerWidth = 410.0;
 
 bool isDesktop(BuildContext context) {
@@ -58,7 +57,7 @@ class ChatPage extends StatelessWidget {
           SizedBox(
             height: MediaQuery.of(context).size.height,
             width: min(
-                kTabletSecondaryContainerMaxWidth,
+                MediaQuery.of(context).size.height,
                 MediaQuery.of(context).size.width -
                     kTabletMasterContainerWidth),
             child: Padding(

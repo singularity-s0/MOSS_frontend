@@ -95,5 +95,5 @@ const githubTheme = {
   'addition': TextStyle(backgroundColor: Color(0xffddffdd)),
   'emphasis': TextStyle(fontStyle: FontStyle.italic),
   'strong': TextStyle(fontWeight: FontWeight.bold),
-  'titlebg': TextStyle(color: Colors.white, backgroundColor: Color(0xff646464)),
+  'titlebg': TextStyle(color: Colors.white, backgroundColor: Color(0xff404040)),
 };

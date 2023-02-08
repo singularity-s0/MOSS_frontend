@@ -6,6 +6,7 @@ import 'package:openchat_frontend/views/components/animated_text.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:openchat_frontend/views/components/chat_ui/chat_theme.dart';
 import 'package:openchat_frontend/views/components/chat_ui/flutter_chat_ui.dart';
+import 'package:openchat_frontend/views/components/typing_indicator.dart';
 import 'package:openchat_frontend/views/history_page.dart';
 
 import 'components/chat_ui/widgets/chat.dart';
@@ -188,50 +189,57 @@ class _ChatViewState extends State<ChatView> {
                       type: types.MessageType.text));
             });
           },
+          listBottomWidget: Padding(
+            padding: const EdgeInsets.only(left: 16, right: 8, bottom: 8),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 500),
+                child: _messages.first.author.id == user.id
+                    ? const TypingIndicator()
+                    : (_messages.first.author.id == reply.id
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextButton.icon(
+                                  icon: const Icon(Icons.refresh, size: 16),
+                                  label: Text(
+                                      AppLocalizations.of(context)!.regenerate),
+                                  onPressed: () {}),
+                              IconButton(
+                                icon: Icon(Icons.thumb_up,
+                                    size: 16,
+                                    color: Theme.of(context)
+                                        .buttonTheme
+                                        .colorScheme
+                                        ?.onSurface
+                                        .withAlpha(130)),
+                                padding: EdgeInsets.zero,
+                                onPressed: () {},
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.thumb_down,
+                                    size: 16,
+                                    color: Theme.of(context)
+                                        .buttonTheme
+                                        .colorScheme
+                                        ?.onSurface
+                                        .withAlpha(130)),
+                                padding: EdgeInsets.zero,
+                                onPressed: () {},
+                              ),
+                            ],
+                          )
+                        : const SizedBox(height: 40)),
+              ),
+            ),
+          ),
           textMessageBuilder: (msg,
               {required messageWidth, required showName}) {
-            if (msg.author == reply && msg == _messages.first) {
-              return AnimatedTextMessage(
-                message: msg,
-                animate: false,
-                bottomWidget: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextButton.icon(
-                        icon: const Icon(Icons.refresh, size: 16),
-                        label: Text(AppLocalizations.of(context)!.regenerate),
-                        onPressed: () {}),
-                    IconButton(
-                      icon: Icon(Icons.thumb_up,
-                          size: 16,
-                          color: Theme.of(context)
-                              .buttonTheme
-                              .colorScheme
-                              ?.onSurface
-                              .withAlpha(130)),
-                      padding: EdgeInsets.zero,
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.thumb_down,
-                          size: 16,
-                          color: Theme.of(context)
-                              .buttonTheme
-                              .colorScheme
-                              ?.onSurface
-                              .withAlpha(130)),
-                      padding: EdgeInsets.zero,
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-              );
-            } else {
-              return AnimatedTextMessage(
-                message: msg,
-                animate: false,
-              );
-            }
+            return AnimatedTextMessage(
+              message: msg,
+              animate: false,
+            );
           },
         ),
       );

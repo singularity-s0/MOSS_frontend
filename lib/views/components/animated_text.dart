@@ -116,31 +116,21 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
       final boldTextStyle = user.id == widget.message.author.id
           ? theme.sentMessageBodyBoldTextStyle
           : theme.receivedMessageBodyBoldTextStyle;
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: MarkdownBody(
-              data: widget.message.text,
-              selectable: true,
-              styleSheet: MarkdownStyleSheet(
-                p: bodyTextStyle,
-                a: bodyLinkTextStyle,
-                strong: boldTextStyle,
-                blockquote: bodyTextStyle,
-              ),
-              builders: {
-                'code': CodeElementBuilder(),
-              },
-            ),
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: MarkdownBody(
+          data: widget.message.text,
+          selectable: true,
+          styleSheet: MarkdownStyleSheet(
+            p: bodyTextStyle,
+            a: bodyLinkTextStyle,
+            strong: boldTextStyle,
+            blockquote: bodyTextStyle,
           ),
-          if (widget.bottomWidget != null)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [widget.bottomWidget!],
-            ),
-        ],
+          builders: {
+            'code': CodeElementBuilder(),
+          },
+        ),
       );
     }
   }

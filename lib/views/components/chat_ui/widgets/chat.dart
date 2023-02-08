@@ -580,14 +580,6 @@ class ChatState extends State<Chat> {
     }
   }
 
-  void _onCloseGalleryPressed() {
-    setState(() {
-      _isImageViewVisible = false;
-    });
-    _galleryPageController?.dispose();
-    _galleryPageController = null;
-  }
-
   void _onImagePressed(types.ImageMessage message) {
     final initialPage = _gallery.indexWhere(
       (element) => element.id == message.id && element.uri == message.uri,

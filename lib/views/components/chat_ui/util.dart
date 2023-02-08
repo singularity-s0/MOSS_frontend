@@ -213,15 +213,15 @@ List<Object> calculateChatMessages(
       'showStatus': message.showStatus ?? true,
     });
 
-    if (!nextMessageInGroup && message.type != types.MessageType.system) {
-      chatMessages.insert(
-        0,
-        MessageSpacer(
-          height: 12,
-          id: message.id,
-        ),
-      );
-    }
+    // if (!nextMessageInGroup && message.type != types.MessageType.system) {
+    //   chatMessages.insert(
+    //     0,
+    //     MessageSpacer(
+    //       height: 12,
+    //       id: message.id,
+    //     ),
+    //   );
+    // }
 
     if (nextMessageDifferentDay || nextMessageDateThreshold) {
       chatMessages.insert(

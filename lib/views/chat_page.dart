@@ -101,7 +101,7 @@ class _ChatViewState extends State<ChatView> {
         body: Chat(
           messages: _messages,
           user: user,
-          showUserAvatars: true,
+          showUserAvatars: false,
           theme: DefaultChatTheme(
             primaryColor: Theme.of(context).primaryColor,
             backgroundColor: Theme.of(context).colorScheme.background,

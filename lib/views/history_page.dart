@@ -3,8 +3,9 @@ import 'package:openchat_frontend/views/chat_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HistoryPage extends StatefulWidget {
-  final String selectedTopic;
-  const HistoryPage({super.key, required this.selectedTopic});
+  final String? selectedTopic;
+  final Function(String)? onTopicSelected;
+  const HistoryPage({super.key, this.selectedTopic, this.onTopicSelected});
 
   @override
   State<HistoryPage> createState() => _HistoryPageState();
@@ -35,6 +36,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     assert(parent != null,
                         "A History Page must be a child of a Chat Page");
                     parent!.currentTopic.value = 'id $i';
+                    widget.onTopicSelected?.call('id $i');
                   });
             }
           },

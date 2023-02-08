@@ -28,9 +28,12 @@ class ChatPage extends StatelessWidget {
   ChatPage({super.key});
 
   // Mobile UI
-  Widget buildMobile(BuildContext context) => ValueListenableBuilder(
-      valueListenable: currentTopic,
-      builder: (context, value, child) => ChatView(topicId: value));
+  Widget buildMobile(BuildContext context) => HistoryPage(
+        onTopicSelected: (topicId) {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: ((context) => ChatView(topicId: topicId))));
+        },
+      );
 
   // Desktop UI
   Widget buildDesktop(BuildContext context) {

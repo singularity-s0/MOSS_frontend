@@ -4,6 +4,8 @@ import 'package:openchat_frontend/utils/dialog.dart';
 import 'package:openchat_frontend/views/chat_page.dart';
 import 'package:provider/provider.dart';
 
+enum Region { cn, intl }
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -12,13 +14,16 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late TextEditingController emailController;
+  late TextEditingController accountController;
   late TextEditingController passwordController;
+
+  late Future<Region> _region;
 
   @override
   void initState() {
-    emailController = TextEditingController();
+    accountController = TextEditingController();
     passwordController = TextEditingController();
+    _region = Future.delayed(const Duration(seconds: 1), () => Region.cn);
     super.initState();
   }
 
@@ -28,7 +33,89 @@ class _LoginScreenState extends State<LoginScreen> {
         .hasMatch(email);
   }
 
-  Widget buildContent(BuildContext context) {
+  bool isValidCNPhoneNumber(String phone) {
+    return RegExp(
+            '^((13[0-9])|(15[^4])|(166)|(17[0-8])|(18[0-9])|(19[8-9])|(147,145))\\d{8}\$')
+        .hasMatch(phone);
+  }
+
+  Widget emailField(BuildContext context) => TextFormField(
+      keyboardType: TextInputType.emailAddress,
+      textCapitalization: TextCapitalization.none,
+      autocorrect: false,
+      enableSuggestions: false,
+      enableIMEPersonalizedLearning: false,
+      decoration: const InputDecoration(
+        labelText: "Email",
+      ),
+      validator: (value) {
+        return isValidEmail(value!) ? null : "Please enter a valid email";
+      },
+      controller: accountController);
+
+  Widget phoneField(BuildContext context) => TextFormField(
+      keyboardType: TextInputType.phone,
+      textCapitalization: TextCapitalization.none,
+      autocorrect: false,
+      enableSuggestions: false,
+      enableIMEPersonalizedLearning: false,
+      decoration: const InputDecoration(
+        labelText: "Phone",
+      ),
+      validator: (value) {
+        return isValidCNPhoneNumber(value!)
+            ? null
+            : "Please enter a valid Chinese phone number";
+      },
+      controller: accountController);
+
+  Widget autoAccountField(BuildContext context, Region region) {
+    switch (region) {
+      case Region.intl:
+        return emailField(context);
+      case Region.cn:
+        return phoneField(context);
+    }
+  }
+
+  Widget buildLandingPage(BuildContext context, {Object? error}) {
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 50.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 70),
+                Image.asset('assets/images/logo.png', scale: 6.5),
+                const SizedBox(height: 25),
+                Text(
+                  error == null ? "Fetching server configuration" : "Error",
+                  style: TextStyle(
+                      fontSize: 35,
+                      color: error == null
+                          ? null
+                          : Theme.of(context).colorScheme.error),
+                ),
+                Opacity(
+                  opacity: 0.7,
+                  child: Text(
+                    error == null ? "Please wait..." : error.toString(),
+                    style: const TextStyle(fontSize: 35),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildLoginPanel(BuildContext context, Region region) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SafeArea(
@@ -60,21 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Column(
                       children: [
-                        TextFormField(
-                            keyboardType: TextInputType.emailAddress,
-                            textCapitalization: TextCapitalization.none,
-                            autocorrect: false,
-                            enableSuggestions: false,
-                            enableIMEPersonalizedLearning: false,
-                            decoration: const InputDecoration(
-                              labelText: "Email",
-                            ),
-                            validator: (value) {
-                              return isValidEmail(value!)
-                                  ? null
-                                  : "Please enter a valid email";
-                            },
-                            controller: emailController),
+                        autoAccountField(context, region),
                         const SizedBox(height: 20),
                         TextFormField(
                             obscureText: true,
@@ -100,6 +173,21 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildContent(BuildContext context) {
+    return FutureBuilder(
+      future: _region,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return buildLandingPage(context, error: snapshot.error);
+        } else if (snapshot.hasData) {
+          return buildLoginPanel(context, snapshot.data as Region);
+        } else {
+          return buildLandingPage(context);
+        }
+      },
     );
   }
 

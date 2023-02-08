@@ -12,10 +12,17 @@ class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
   static final Map<String, Widget Function(BuildContext)> routes = {
-    '/placeholder': (context, {arguments}) =>
+    '/empty': (context, {arguments}) =>
         ColoredBox(color: Theme.of(context).scaffoldBackgroundColor),
-    '/login': (context, {arguments}) => const LoginScreen(),
-    // '/chat': (context, {arguments}) => ChatPage(),
+    '/': (context, {arguments}) {
+      // Dynamically show chat page or login page based on logged in or not
+      final token = context.watch<AccountProvider>().token;
+      if (token == null) {
+        return const LoginScreen();
+      } else {
+        return ChatPage();
+      }
+    },
   };
 
   @override
@@ -32,17 +39,7 @@ class MainApp extends StatelessWidget {
                 seedColor: const Color.fromRGBO(56, 100, 184, 1),
                 brightness: Brightness.light),
             useMaterial3: true),
-        home: Builder(
-          builder: (context) {
-            // Dynamically show chat page or login page based on logged in or not
-            final token = context.watch<AccountProvider>().token;
-            if (token == null) {
-              return const LoginScreen();
-            } else {
-              return ChatPage();
-            }
-          },
-        ),
+        initialRoute: '/',
         routes: routes,
       ),
     );

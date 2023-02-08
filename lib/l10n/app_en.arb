@@ -17,5 +17,6 @@
     "email": "Email",
     "password": "Password",
     "topics": "Topics",
-    "new_topic": "New topic"
+    "new_topic": "New topic",
+    "regenerate": "Regenerate"
 }

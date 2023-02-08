@@ -145,10 +145,6 @@ class _ChatViewState extends State<ChatView> {
                 left: 16,
                 right: 16,
                 bottom: MediaQuery.of(context).viewInsets.bottom + 16),
-            // inputContainerDecoration: BoxDecoration(
-            //   borderRadius: BorderRadius.circular(12),
-            //   color: Theme.of(context).colorScheme.secondary,
-            // ),
           ),
           avatarBuilder: (userId) {
             if (userId == reply.id) {
@@ -194,36 +190,36 @@ class _ChatViewState extends State<ChatView> {
           },
           textMessageBuilder: (msg,
               {required messageWidth, required showName}) {
-            if (msg.author == reply) {
+            if (msg.author == reply && msg == _messages.first) {
               return AnimatedTextMessage(
                 message: msg,
                 animate: false,
                 bottomWidget: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    TextButton.icon(
+                        icon: const Icon(Icons.refresh, size: 16),
+                        label: Text(AppLocalizations.of(context)!.regenerate),
+                        onPressed: () {}),
                     IconButton(
-                      icon: Icon(
-                        Icons.thumb_up,
-                        size: 16,
-                        color: Theme.of(context)
-                            .buttonTheme
-                            .colorScheme
-                            ?.onSurface
-                            .withAlpha(130),
-                      ),
+                      icon: Icon(Icons.thumb_up,
+                          size: 16,
+                          color: Theme.of(context)
+                              .buttonTheme
+                              .colorScheme
+                              ?.onSurface
+                              .withAlpha(130)),
                       padding: EdgeInsets.zero,
                       onPressed: () {},
                     ),
                     IconButton(
-                      icon: Icon(
-                        Icons.thumb_down,
-                        size: 16,
-                        color: Theme.of(context)
-                            .buttonTheme
-                            .colorScheme
-                            ?.onSurface
-                            .withAlpha(130),
-                      ),
+                      icon: Icon(Icons.thumb_down,
+                          size: 16,
+                          color: Theme.of(context)
+                              .buttonTheme
+                              .colorScheme
+                              ?.onSurface
+                              .withAlpha(130)),
                       padding: EdgeInsets.zero,
                       onPressed: () {},
                     ),

@@ -38,7 +38,7 @@ class ChatPage extends StatelessWidget {
   // Desktop UI
   Widget buildDesktop(BuildContext context) {
     return ColoredBox(
-      color: Theme.of(context).colorScheme.background,
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -52,10 +52,16 @@ class ChatPage extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0)),
                 clipBehavior: Clip.antiAlias,
-                child: ValueListenableBuilder(
-                    valueListenable: currentTopic,
-                    builder: (context, value, child) =>
-                        HistoryPage(selectedTopic: value)),
+                child: Theme(
+                    data: Theme.of(context).copyWith(
+                        scaffoldBackgroundColor: Colors.transparent,
+                        appBarTheme: Theme.of(context)
+                            .appBarTheme
+                            .copyWith(color: Colors.transparent)),
+                    child: ValueListenableBuilder(
+                        valueListenable: currentTopic,
+                        builder: (context, value, child) =>
+                            HistoryPage(selectedTopic: value))),
               ),
             ),
           ),
@@ -67,8 +73,6 @@ class ChatPage extends StatelessWidget {
             child: SizedBox.expand(
               child: Card(
                 margin: const EdgeInsets.only(top: 16, right: 16, bottom: 16),
-                color: Theme.of(context).colorScheme.background,
-                surfaceTintColor: Colors.transparent,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0)),
                 clipBehavior: Clip.antiAlias,
@@ -78,10 +82,16 @@ class ChatPage extends StatelessWidget {
                         MediaQuery.of(context).size.height,
                         MediaQuery.of(context).size.width -
                             kTabletMasterContainerWidth),
-                    child: ValueListenableBuilder(
-                        valueListenable: currentTopic,
-                        builder: (context, value, child) =>
-                            ChatView(topicId: value)),
+                    child: Theme(
+                        data: Theme.of(context).copyWith(
+                            scaffoldBackgroundColor: Colors.transparent,
+                            appBarTheme: Theme.of(context)
+                                .appBarTheme
+                                .copyWith(color: Colors.transparent)),
+                        child: ValueListenableBuilder(
+                            valueListenable: currentTopic,
+                            builder: (context, value, child) =>
+                                ChatView(topicId: value))),
                   ),
                 ),
               ),
@@ -140,10 +150,11 @@ class _ChatViewState extends State<ChatView> {
               sendButtonVisibilityMode: SendButtonVisibilityMode.always),
           theme: DefaultChatTheme(
             primaryColor: Theme.of(context).primaryColor,
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            inputBackgroundColor: Theme.of(context).colorScheme.secondary,
-            inputTextCursorColor: Theme.of(context).colorScheme.onSecondary,
-            inputTextColor: Theme.of(context).colorScheme.onSecondary,
+            backgroundColor: Colors.transparent,
+            inputBackgroundColor: Theme.of(context).colorScheme.primary,
+            inputTextCursorColor: Theme.of(context).colorScheme.onPrimary,
+            inputTextColor: Theme.of(context).colorScheme.onPrimary,
+            secondaryColor: Theme.of(context).colorScheme.secondary,
             inputBorderRadius: const BorderRadius.all(Radius.circular(8)),
             inputMargin: EdgeInsets.only(
                 left: 16,

@@ -38,10 +38,13 @@ class MainApp extends StatelessWidget {
         onGenerateTitle: (context) => AppLocalizations.of(context)!.app_name,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        theme: ThemeData.from(
-            colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color.fromRGBO(56, 100, 184, 1),
-                brightness: Brightness.light),
+        theme: ThemeData(
+            brightness: Brightness.light,
+            colorSchemeSeed: const Color.fromRGBO(56, 100, 184, 1),
+            useMaterial3: true),
+        darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            colorSchemeSeed: const Color.fromRGBO(56, 100, 184, 1),
             useMaterial3: true),
         initialRoute: '/',
         routes: routes,

@@ -81,103 +81,90 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget buildLandingPage(BuildContext context, {Object? error}) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 50.0),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 70),
-                Image.asset('assets/images/logo.png', scale: 6.5),
-                const SizedBox(height: 25),
-                Text(
-                  error == null
-                      ? AppLocalizations.of(context)!
-                          .fetching_server_configurations
-                      : AppLocalizations.of(context)!.error,
-                  style: TextStyle(
-                      fontSize: 35,
-                      color: error == null
-                          ? null
-                          : Theme.of(context).colorScheme.error),
-                ),
-                Opacity(
-                  opacity: 0.7,
-                  child: Text(
-                    error == null
-                        ? AppLocalizations.of(context)!.please_wait
-                        : error.toString(),
-                    style: const TextStyle(fontSize: 35),
-                  ),
-                ),
-              ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 50.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 70),
+            Image.asset('assets/images/logo.png', scale: 6.5),
+            const SizedBox(height: 25),
+            Text(
+              error == null
+                  ? AppLocalizations.of(context)!.fetching_server_configurations
+                  : AppLocalizations.of(context)!.error,
+              style: TextStyle(
+                  fontSize: 35,
+                  color: error == null
+                      ? null
+                      : Theme.of(context).colorScheme.error),
             ),
-          ),
+            Opacity(
+              opacity: 0.7,
+              child: Text(
+                error == null
+                    ? AppLocalizations.of(context)!.please_wait
+                    : error.toString(),
+                style: const TextStyle(fontSize: 35),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
   Widget buildLoginPanel(BuildContext context, Region region) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 50.0),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 70),
-                Image.asset('assets/images/logo.png', scale: 6.5),
-                const SizedBox(height: 25),
-                Text(
-                  AppLocalizations.of(context)!.welcome_comma,
-                  style: const TextStyle(fontSize: 35),
-                ),
-                Opacity(
-                  opacity: 0.7,
-                  child: Text(
-                    AppLocalizations.of(context)!.sign_in_to_continue,
-                    style: const TextStyle(fontSize: 35),
-                  ),
-                ),
-                const SizedBox(height: 30),
-                Form(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Column(
-                      children: [
-                        autoAccountField(context, region),
-                        const SizedBox(height: 20),
-                        TextFormField(
-                            obscureText: true,
-                            enableSuggestions: false,
-                            autocorrect: false,
-                            decoration: InputDecoration(
-                              labelText: AppLocalizations.of(context)!.password,
-                            ),
-                            controller: passwordController),
-                        const SizedBox(height: 60),
-                        LoginButton(onTap: () async {
-                          await showLoadingDialogUntilFutureCompletes(context,
-                              Future.delayed(const Duration(seconds: 1)));
-                          AccountProvider.getInstance().token =
-                              JWToken('access', 'refresh');
-                        })
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 50.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 70),
+            Image.asset('assets/images/logo.png', scale: 6.5),
+            const SizedBox(height: 25),
+            Text(
+              AppLocalizations.of(context)!.welcome_comma,
+              style: const TextStyle(fontSize: 35),
             ),
-          ),
+            Opacity(
+              opacity: 0.7,
+              child: Text(
+                AppLocalizations.of(context)!.sign_in_to_continue,
+                style: const TextStyle(fontSize: 35),
+              ),
+            ),
+            const SizedBox(height: 30),
+            Form(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Column(
+                  children: [
+                    autoAccountField(context, region),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                        obscureText: true,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.password,
+                        ),
+                        controller: passwordController),
+                    const SizedBox(height: 60),
+                    LoginButton(onTap: () async {
+                      await showLoadingDialogUntilFutureCompletes(
+                          context, Future.delayed(const Duration(seconds: 1)));
+                      AccountProvider.getInstance().token =
+                          JWToken('access', 'refresh');
+                    })
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -187,6 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return FutureBuilder(
       future: _region,
       builder: (context, snapshot) {
+        return AnimatedSwitcher
         if (snapshot.hasError) {
           return buildLandingPage(context, error: snapshot.error);
         } else if (snapshot.hasData) {
@@ -202,7 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     if (isDesktop(context)) {
       return ColoredBox(
-        color: Theme.of(context).colorScheme.background,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Center(

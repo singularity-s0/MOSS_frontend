@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:openchat_frontend/utils/account_provider.dart';
-import 'package:openchat_frontend/utils/dialog.dart';
 import 'package:openchat_frontend/views/chat_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:provider/provider.dart';
 
 class HistoryPage extends StatefulWidget {
   final String selectedTopic;
@@ -30,7 +27,7 @@ class _HistoryPageState extends State<HistoryPage> {
             } else {
               return ListTile(
                   title: Text("Topic $i"),
-                  subtitle: Text('Subtitle'),
+                  subtitle: const Text('Subtitle'),
                   selected: widget.selectedTopic == 'id $i',
                   onTap: () {
                     var parent =

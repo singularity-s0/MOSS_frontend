@@ -2,11 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:openchat_frontend/views/components/chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:flutter_chat_ui/src/widgets/state/inherited_chat_theme.dart';
 import 'package:openchat_frontend/utils/syntax_highlight.dart';
 import 'package:openchat_frontend/views/chat_page.dart';
+import 'package:openchat_frontend/views/components/chat_ui/widgets/state/inherited_chat_theme.dart';
 
 class AnimatedTextMessage extends StatefulWidget {
   final types.TextMessage message;

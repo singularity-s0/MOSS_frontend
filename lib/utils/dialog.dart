@@ -13,7 +13,8 @@ Future<void> showLoadingDialogUntilFutureCompletes<T>(
         );
       });
   await future;
-  if (dcontext == null)
+  if (dcontext == null) {
     return; // FIXME: this is a hack, does not guarnatee that the dialog is shown
+  }
   Navigator.of(dcontext!).pop();
 }

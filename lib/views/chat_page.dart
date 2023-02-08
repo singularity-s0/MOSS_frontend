@@ -1,12 +1,13 @@
 import 'dart:math';
 
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter/material.dart';
 import 'package:openchat_frontend/views/components/animated_text.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:openchat_frontend/views/components/chat_ui/chat_theme.dart';
 import 'package:openchat_frontend/views/history_page.dart';
+
+import 'components/chat_ui/widgets/chat.dart';
 
 const user = types.User(id: 'user');
 const reply = types.User(id: 'moss');

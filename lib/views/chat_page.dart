@@ -131,6 +131,7 @@ class _ChatViewState extends State<ChatView> {
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: Image.asset('assets/images/logo.png', scale: 6.5),
+          surfaceTintColor: Colors.transparent,
         ),
         body: Chat(
           messages: _messages,

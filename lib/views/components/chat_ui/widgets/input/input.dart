@@ -50,8 +50,8 @@ class _InputState extends State<Input> {
       if (event.physicalKey == PhysicalKeyboardKey.enter &&
           !HardwareKeyboard.instance.physicalKeysPressed.any(
             (el) => <PhysicalKeyboardKey>{
-              PhysicalKeyboardKey.shiftLeft,
-              PhysicalKeyboardKey.shiftRight,
+              PhysicalKeyboardKey.controlLeft,
+              PhysicalKeyboardKey.controlRight,
             }.contains(el),
           )) {
         if (event is KeyDownEvent) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:openchat_frontend/views/chat_page.dart';
 import 'package:openchat_frontend/views/login_page.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -34,6 +35,9 @@ class MainApp extends StatelessWidget {
             value: AccountProvider.getInstance())
       ],
       child: MaterialApp(
+        onGenerateTitle: (context) => AppLocalizations.of(context)!.app_name,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData.from(
             colorScheme: ColorScheme.fromSeed(
                 seedColor: const Color.fromRGBO(56, 100, 184, 1),

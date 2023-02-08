@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:openchat_frontend/utils/dialog.dart';
 import 'package:openchat_frontend/views/chat_page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 class HistoryPage extends StatefulWidget {
@@ -21,11 +22,11 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Topics')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.topics)),
       body: ListView.builder(
           itemBuilder: (context, i) {
             if (i == 0) {
-              return NewTopicButton();
+              return const NewTopicButton();
             } else {
               return ListTile(
                   title: Text("Topic $i"),
@@ -53,7 +54,7 @@ class NewTopicButton extends StatelessWidget {
     return ListTile(
       onTap: () => null,
       leading: const Icon(Icons.add),
-      title: const Text("New Topic"),
+      title: Text(AppLocalizations.of(context)!.new_topic),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:openchat_frontend/utils/dialog.dart';
 import 'package:openchat_frontend/views/chat_page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 enum Region { cn, intl }
@@ -45,11 +46,13 @@ class _LoginScreenState extends State<LoginScreen> {
       autocorrect: false,
       enableSuggestions: false,
       enableIMEPersonalizedLearning: false,
-      decoration: const InputDecoration(
-        labelText: "Email",
+      decoration: InputDecoration(
+        labelText: AppLocalizations.of(context)!.email,
       ),
       validator: (value) {
-        return isValidEmail(value!) ? null : "Please enter a valid email";
+        return isValidEmail(value!)
+            ? null
+            : AppLocalizations.of(context)!.please_enter_valid_email;
       },
       controller: accountController);
 
@@ -59,13 +62,13 @@ class _LoginScreenState extends State<LoginScreen> {
       autocorrect: false,
       enableSuggestions: false,
       enableIMEPersonalizedLearning: false,
-      decoration: const InputDecoration(
-        labelText: "Phone",
+      decoration: InputDecoration(
+        labelText: AppLocalizations.of(context)!.phone_number,
       ),
       validator: (value) {
         return isValidCNPhoneNumber(value!)
             ? null
-            : "Please enter a valid Chinese phone number";
+            : AppLocalizations.of(context)!.please_enter_valid_phone;
       },
       controller: accountController);
 
@@ -93,7 +96,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 Image.asset('assets/images/logo.png', scale: 6.5),
                 const SizedBox(height: 25),
                 Text(
-                  error == null ? "Fetching server configuration" : "Error",
+                  error == null
+                      ? AppLocalizations.of(context)!
+                          .fetching_server_configurations
+                      : AppLocalizations.of(context)!.error,
                   style: TextStyle(
                       fontSize: 35,
                       color: error == null
@@ -103,7 +109,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 Opacity(
                   opacity: 0.7,
                   child: Text(
-                    error == null ? "Please wait..." : error.toString(),
+                    error == null
+                        ? AppLocalizations.of(context)!.please_wait
+                        : error.toString(),
                     style: const TextStyle(fontSize: 35),
                   ),
                 ),
@@ -129,15 +137,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 70),
                 Image.asset('assets/images/logo.png', scale: 6.5),
                 const SizedBox(height: 25),
-                const Text(
-                  "Welcome,",
-                  style: TextStyle(fontSize: 35),
+                Text(
+                  AppLocalizations.of(context)!.welcome_comma,
+                  style: const TextStyle(fontSize: 35),
                 ),
-                const Opacity(
+                Opacity(
                   opacity: 0.7,
                   child: Text(
-                    "Sign in to continue",
-                    style: TextStyle(fontSize: 35),
+                    AppLocalizations.of(context)!.sign_in_to_continue,
+                    style: const TextStyle(fontSize: 35),
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -153,8 +161,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             obscureText: true,
                             enableSuggestions: false,
                             autocorrect: false,
-                            decoration: const InputDecoration(
-                              labelText: "Password",
+                            decoration: InputDecoration(
+                              labelText: AppLocalizations.of(context)!.password,
                             ),
                             controller: passwordController),
                         const SizedBox(height: 60),

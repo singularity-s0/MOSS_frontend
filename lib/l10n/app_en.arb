@@ -1,0 +1,21 @@
+{
+    "app_name": "Moss",
+    "aigc_warning_message": "AI Generated Content",
+    "welcome_comma": "Welcome,",
+    "sign_in_to_continue": "Sign in to continue",
+    "sign_in": "Sign in",
+    "sign_up": "Sign up",
+    "sign_out": "Sign out",
+    "fetching_server_configurations": "Fetching server configurations...",
+    "please_wait": "Please wait...",
+    "error": "Error",
+    "try_again": "Try again",
+    "invalid_credentials": "Invalid credentials",
+    "please_enter_valid_email": "Please enter a valid email address",
+    "please_enter_valid_phone": "Please enter a valid Chinese phone number",
+    "phone_number": "Phone number",
+    "email": "Email",
+    "password": "Password",
+    "topics": "Topics",
+    "new_topic": "New topic"
+}

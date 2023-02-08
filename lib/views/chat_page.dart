@@ -3,6 +3,7 @@ import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter/material.dart';
 import 'package:openchat_frontend/views/components/animated_text.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:openchat_frontend/views/history_page.dart';
 
 const user = types.User(id: 'user');
@@ -86,12 +87,18 @@ class ChatView extends StatefulWidget {
 }
 
 class _ChatViewState extends State<ChatView> {
-  final List<types.Message> _messages = [
-    const types.SystemMessage(
-      text: "AIGC warning message here",
-      id: "ai-alert",
-    ),
-  ];
+  late List<types.Message> _messages;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _messages = [
+      types.SystemMessage(
+        text: AppLocalizations.of(context)!.aigc_warning_message,
+        id: "ai-alert",
+      ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(

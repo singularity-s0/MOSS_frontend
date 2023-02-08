@@ -120,7 +120,10 @@ class _ChatViewState extends State<ChatView> {
               sendButtonVisibilityMode: SendButtonVisibilityMode.always),
           theme: DefaultChatTheme(
             primaryColor: Theme.of(context).primaryColor,
-            backgroundColor: Theme.of(context).colorScheme.background,
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            inputBackgroundColor: Theme.of(context).colorScheme.secondary,
+            inputTextCursorColor: Theme.of(context).colorScheme.onSecondary,
+            inputTextColor: Theme.of(context).colorScheme.onSecondary,
           ),
           avatarBuilder: (userId) {
             if (userId == reply.id) {

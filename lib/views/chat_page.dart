@@ -58,20 +58,30 @@ class ChatPage extends StatelessWidget {
           // Right View
           SizedBox(
             height: MediaQuery.of(context).size.height,
-            width: min(
-                MediaQuery.of(context).size.height,
-                MediaQuery.of(context).size.width -
-                    kTabletMasterContainerWidth),
+            width:
+                MediaQuery.of(context).size.width - kTabletMasterContainerWidth,
             child: Padding(
               padding: const EdgeInsets.only(top: 16, right: 16, bottom: 16),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0)),
-                clipBehavior: Clip.antiAlias,
-                child: ValueListenableBuilder(
-                    valueListenable: currentTopic,
-                    builder: (context, value, child) =>
-                        ChatView(topicId: value)),
+              child: SizedBox.expand(
+                child: Card(
+                  color: Theme.of(context).colorScheme.background,
+                  surfaceTintColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0)),
+                  clipBehavior: Clip.antiAlias,
+                  child: Center(
+                    child: SizedBox(
+                      width: min(
+                          MediaQuery.of(context).size.height,
+                          MediaQuery.of(context).size.width -
+                              kTabletMasterContainerWidth),
+                      child: ValueListenableBuilder(
+                          valueListenable: currentTopic,
+                          builder: (context, value, child) =>
+                              ChatView(topicId: value)),
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -112,106 +122,115 @@ class _ChatViewState extends State<ChatView> {
         appBar: AppBar(
           title: Image.asset('assets/images/logo.png', scale: 6.5),
         ),
-        body: Chat(
-          messages: _messages,
-          user: user,
-          showUserAvatars: false,
-          inputOptions: const InputOptions(
-              sendButtonVisibilityMode: SendButtonVisibilityMode.always),
-          theme: DefaultChatTheme(
-            primaryColor: Theme.of(context).primaryColor,
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            inputBackgroundColor: Theme.of(context).colorScheme.secondary,
-            inputTextCursorColor: Theme.of(context).colorScheme.onSecondary,
-            inputTextColor: Theme.of(context).colorScheme.onSecondary,
+        body: Padding(
+          padding: EdgeInsets.only(bottom: 12.0),
+          child: Chat(
+            messages: _messages,
+            user: user,
+            showUserAvatars: false,
+            inputOptions: const InputOptions(
+                sendButtonVisibilityMode: SendButtonVisibilityMode.always),
+            theme: DefaultChatTheme(
+              primaryColor: Theme.of(context).primaryColor,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              inputBackgroundColor: Theme.of(context).colorScheme.secondary,
+              inputTextCursorColor: Theme.of(context).colorScheme.onSecondary,
+              inputTextColor: Theme.of(context).colorScheme.onSecondary,
+              inputBorderRadius: BorderRadius.all(Radius.circular(8)),
+              // inputContainerDecoration: BoxDecoration(
+              //   borderRadius: BorderRadius.circular(12),
+              //   color: Theme.of(context).colorScheme.secondary,
+              // ),
+            ),
+            avatarBuilder: (userId) {
+              if (userId == reply.id) {
+                return Image.asset(
+                  'assets/images/avatar.png',
+                  fit: BoxFit.cover,
+                  scale: 5.5,
+                  isAntiAlias: true,
+                  frameBuilder:
+                      (context, child, frame, wasSynchronouslyLoaded) {
+                    return Padding(
+                        padding: const EdgeInsets.only(right: 8), child: child);
+                  },
+                );
+              }
+              return const SizedBox();
+            },
+            onSendPressed: (types.PartialText message) async {
+              setState(() {
+                _messages.insert(
+                    0,
+                    types.TextMessage(
+                        author: user,
+                        text: message.text,
+                        metadata: {
+                          'animatedIndex': 0
+                        }, // DO NOT mark this as constant
+                        id: DateTime.now().toString(),
+                        type: types.MessageType.text));
+              });
+              await Future.delayed(const Duration(milliseconds: 500));
+              setState(() {
+                _messages.insert(
+                    0,
+                    types.TextMessage(
+                        author: reply,
+                        text: "This should be a response to \n${message.text}",
+                        metadata: {
+                          'animatedIndex': 0
+                        }, // DO NOT mark this as constant
+                        id: DateTime.now().toString(),
+                        type: types.MessageType.text));
+              });
+            },
+            textMessageBuilder: (msg,
+                {required messageWidth, required showName}) {
+              if (msg.author == reply) {
+                return AnimatedTextMessage(
+                  message: msg,
+                  animate: false,
+                  bottomWidget: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.thumb_up,
+                          size: 16,
+                          color: Theme.of(context)
+                              .buttonTheme
+                              .colorScheme
+                              ?.onSurface
+                              .withAlpha(130),
+                        ),
+                        padding: EdgeInsets.zero,
+                        onPressed: () {},
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.thumb_down,
+                          size: 16,
+                          color: Theme.of(context)
+                              .buttonTheme
+                              .colorScheme
+                              ?.onSurface
+                              .withAlpha(130),
+                        ),
+                        padding: EdgeInsets.zero,
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                return AnimatedTextMessage(
+                  message: msg,
+                  animate: false,
+                );
+              }
+            },
           ),
-          avatarBuilder: (userId) {
-            if (userId == reply.id) {
-              return Image.asset(
-                'assets/images/avatar.png',
-                fit: BoxFit.cover,
-                scale: 5.5,
-                isAntiAlias: true,
-                frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                  return Padding(
-                      padding: const EdgeInsets.only(right: 8), child: child);
-                },
-              );
-            }
-            return const SizedBox();
-          },
-          onSendPressed: (types.PartialText message) async {
-            setState(() {
-              _messages.insert(
-                  0,
-                  types.TextMessage(
-                      author: user,
-                      text: message.text,
-                      metadata: {
-                        'animatedIndex': 0
-                      }, // DO NOT mark this as constant
-                      id: DateTime.now().toString(),
-                      type: types.MessageType.text));
-            });
-            await Future.delayed(const Duration(milliseconds: 500));
-            setState(() {
-              _messages.insert(
-                  0,
-                  types.TextMessage(
-                      author: reply,
-                      text: "This should be a response to \n${message.text}",
-                      metadata: {
-                        'animatedIndex': 0
-                      }, // DO NOT mark this as constant
-                      id: DateTime.now().toString(),
-                      type: types.MessageType.text));
-            });
-          },
-          textMessageBuilder: (msg,
-              {required messageWidth, required showName}) {
-            if (msg.author == reply) {
-              return AnimatedTextMessage(
-                message: msg,
-                animate: false,
-                bottomWidget: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.thumb_up,
-                        size: 16,
-                        color: Theme.of(context)
-                            .buttonTheme
-                            .colorScheme
-                            ?.onSurface
-                            .withAlpha(130),
-                      ),
-                      padding: EdgeInsets.zero,
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.thumb_down,
-                        size: 16,
-                        color: Theme.of(context)
-                            .buttonTheme
-                            .colorScheme
-                            ?.onSurface
-                            .withAlpha(130),
-                      ),
-                      padding: EdgeInsets.zero,
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-              );
-            } else {
-              return AnimatedTextMessage(
-                message: msg,
-                animate: false,
-              );
-            }
-          },
         ),
       );
 }

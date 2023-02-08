@@ -119,6 +119,7 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
       return Padding(
         padding: const EdgeInsets.all(16.0),
         child: MarkdownBody(
+          softLineBreak: true,
           data: widget.message.text,
           selectable: true,
           styleSheet: MarkdownStyleSheet(

@@ -17,7 +17,7 @@ Map<String, dynamic> _$JWTokenToJson(JWToken instance) => <String, dynamic>{
     };
 
 ErrorMessage _$ErrorMessageFromJson(Map<String, dynamic> json) => ErrorMessage(
-      data: json['data'] as String,
+      data: json['data'] as String?,
       message: json['message'] as String,
     );
 

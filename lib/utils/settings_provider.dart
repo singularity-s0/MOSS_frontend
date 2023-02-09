@@ -19,7 +19,7 @@ class SettingsProvider with ChangeNotifier {
   JWToken? get token {
     if (preferences.containsKey(KEY_TOKEN)) {
       try {
-        return JWToken.fromJson(jsonDecode(preferences!.getString(KEY_TOKEN)!));
+        return JWToken.fromJson(jsonDecode(preferences.getString(KEY_TOKEN)!));
       } catch (_) {}
     }
     return null;

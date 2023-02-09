@@ -38,13 +38,29 @@ class Repository {
     await dio.get("$baseUrl/verify/email", queryParameters: {"email": email});
   }
 
-  Future<JWToken?> register(
+  Future<void> requestPhoneVerifyCode(String phone) async {
+    await dio.get("$baseUrl/verify/phone", queryParameters: {"phone": phone});
+  }
+
+  Future<JWToken?> registerWithEmailPassword(
       String email, String password, String verifyCode) async {
     final Response<Map<String, dynamic>> response =
         await dio.post("$baseUrl/register", data: {
       "password": password,
       "email": email,
-      "verification": int.parse(verifyCode),
+      "verification": verifyCode,
+    });
+    return provider.token =
+        SettingsProvider.getInstance().token = JWToken.fromJson(response.data!);
+  }
+
+  Future<JWToken?> registerWithPhonePassword(
+      String phone, String password, String verifyCode) async {
+    final Response<Map<String, dynamic>> response =
+        await dio.post("$baseUrl/register", data: {
+      "password": password,
+      "phone": phone,
+      "verification": verifyCode,
     });
     return provider.token =
         SettingsProvider.getInstance().token = JWToken.fromJson(response.data!);

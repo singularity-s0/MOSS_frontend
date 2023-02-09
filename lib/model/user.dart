@@ -19,7 +19,7 @@ class JWToken {
 
 @JsonSerializable()
 class ErrorMessage {
-  String data;
+  String? data;
   String message;
 
   factory ErrorMessage.fromJson(Map<String, dynamic> json) =>

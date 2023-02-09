@@ -176,91 +176,97 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget buildLoginPanel(BuildContext context, Region region) {
     final formKey = GlobalKey<FormState>();
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 50.0),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 70),
-            Image.asset('assets/images/logo.png', scale: 6.5),
-            const SizedBox(height: 25),
-            Text(
-              AppLocalizations.of(context)!.welcome_comma,
-              style: const TextStyle(fontSize: 35),
-            ),
-            Opacity(
-              opacity: 0.7,
-              child: Text(
-                AppLocalizations.of(context)!.sign_in_to_continue,
-                style: const TextStyle(fontSize: 35),
-              ),
-            ),
-            const SizedBox(height: 30),
-            Form(
-              key: formKey,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Column(
-                  children: [
-                    autoAccountField(context, region),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                        obscureText: true,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context)!.password,
-                        ),
-                        controller: passwordController),
-                    const SizedBox(height: 60),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextButton(
-                              onPressed: () => setState(() {
-                                    _loginMode = LoginMode.register;
-                                  }),
-                              child:
-                                  Text(AppLocalizations.of(context)!.sign_up)),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 50.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 70),
+                Image.asset('assets/images/logo.png', scale: 6.5),
+                const SizedBox(height: 25),
+                Text(
+                  AppLocalizations.of(context)!.welcome_comma,
+                  style: const TextStyle(fontSize: 35),
+                ),
+                Opacity(
+                  opacity: 0.7,
+                  child: Text(
+                    AppLocalizations.of(context)!.sign_in_to_continue,
+                    style: const TextStyle(fontSize: 35),
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Form(
+                  key: formKey,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Column(
+                      children: [
+                        autoAccountField(context, region),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                            obscureText: true,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            decoration: InputDecoration(
+                              labelText: AppLocalizations.of(context)!.password,
+                            ),
+                            controller: passwordController),
+                        const SizedBox(height: 60),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               TextButton(
                                   onPressed: () => setState(() {
-                                        _loginMode = LoginMode.reset;
+                                        _loginMode = LoginMode.register;
                                       }),
-                                  child: Text(AppLocalizations.of(context)!
-                                      .resetpassword)),
-                              const SizedBox(width: 16),
-                              ElevatedButton(
                                   child: Text(
-                                      AppLocalizations.of(context)!.sign_in),
-                                  onPressed: () async {
-                                    if (!formKey.currentState!.validate())
-                                      return;
-                                    try {
-                                      await showLoadingDialogUntilFutureCompletes<
-                                              JWToken?>(
-                                          context,
-                                          autoLoginFunc(region)(
-                                              accountController.text,
-                                              passwordController.text));
-                                    } catch (e) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                              content: Text(parseError(e),
-                                                  maxLines: 3)));
-                                    }
-                                  }),
-                            ],
-                          ),
-                        ]),
-                  ],
+                                      AppLocalizations.of(context)!.sign_up)),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  TextButton(
+                                      onPressed: () => setState(() {
+                                            _loginMode = LoginMode.reset;
+                                          }),
+                                      child: Text(AppLocalizations.of(context)!
+                                          .resetpassword)),
+                                  const SizedBox(width: 16),
+                                  ElevatedButton(
+                                      child: Text(AppLocalizations.of(context)!
+                                          .sign_in),
+                                      onPressed: () async {
+                                        if (!formKey.currentState!.validate())
+                                          return;
+                                        try {
+                                          await showLoadingDialogUntilFutureCompletes<
+                                                  JWToken?>(
+                                              context,
+                                              autoLoginFunc(region)(
+                                                  accountController.text,
+                                                  passwordController.text));
+                                        } catch (e) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                                  content: Text(parseError(e),
+                                                      maxLines: 3)));
+                                        }
+                                      }),
+                                ],
+                              ),
+                            ]),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -172,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget buildLoginPanel(BuildContext context, Region region) {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50.0),
       child: SingleChildScrollView(
@@ -195,7 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 30),
             Form(
-              key: _formKey,
+              key: formKey,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Column(
@@ -223,7 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ElevatedButton(
                           child: Text(AppLocalizations.of(context)!.sign_in),
                           onPressed: () async {
-                            if (!_formKey.currentState!.validate()) return;
+                            if (!formKey.currentState!.validate()) return;
                             try {
                               await showLoadingDialogUntilFutureCompletes<
                                       JWToken?>(
@@ -231,19 +231,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   autoLoginFunc(region)(accountController.text,
                                       passwordController.text));
                             } catch (e) {
-                              if (e is DioError && e.response != null) {
-                                ErrorMessage? em = ErrorMessage.fromJson(
-                                    e.response!.data as Map<String, dynamic>);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content:
-                                            Text(em.message, maxLines: 3)));
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content:
-                                            Text(e.toString(), maxLines: 3)));
-                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content:
+                                          Text(parseError(e), maxLines: 3)));
                             }
                           }),
                     ]),
@@ -258,7 +249,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget buildSignupPanel(BuildContext context, Region region) {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50.0),
       child: SingleChildScrollView(
@@ -281,7 +272,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 30),
             Form(
-              key: _formKey,
+              key: formKey,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Column(
@@ -330,7 +321,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ElevatedButton(
                             child: Text(AppLocalizations.of(context)!.sign_up),
                             onPressed: () async {
-                              if (!_formKey.currentState!.validate()) return;
+                              if (!formKey.currentState!.validate()) return;
                               try {
                                 await showLoadingDialogUntilFutureCompletes<
                                         JWToken?>(
@@ -340,19 +331,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                         passwordController.text,
                                         verifycodeController.text));
                               } catch (e) {
-                                if (e is DioError && e.response != null) {
-                                  ErrorMessage? em = ErrorMessage.fromJson(
-                                      e.response!.data as Map<String, dynamic>);
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content:
-                                              Text(em.message, maxLines: 3)));
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content:
-                                              Text(e.toString(), maxLines: 3)));
-                                }
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content:
+                                            Text(parseError(e), maxLines: 3)));
                               }
                             })
                       ],

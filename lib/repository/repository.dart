@@ -1,3 +1,4 @@
+import 'package:openchat_frontend/model/chat.dart';
 import 'package:openchat_frontend/model/user.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:dio/dio.dart';
@@ -93,6 +94,23 @@ class Repository {
   Map<String, String> get _tokenHeader {
     assert(provider.token != null);
     return {"Authorization": "Bearer ${provider.token!.access}"};
+  }
+
+  Future<List<ChatThread>?> getChatThreads() async {
+    final Response response = await dio.get("$baseUrl/chats",
+        options: Options(headers: _tokenHeader));
+    return (response.data! as List).map((e) => ChatThread.fromJson(e)).toList();
+  }
+
+  Future<ChatThread?> newChatThread() async {
+    final Response response = await dio.post("$baseUrl/chats",
+        options: Options(headers: _tokenHeader));
+    return ChatThread.fromJson(response.data!);
+  }
+
+  Future<void> deleteChatThread(int id) async {
+    await dio.delete("$baseUrl/chats/$id",
+        options: Options(headers: _tokenHeader));
   }
 }
 

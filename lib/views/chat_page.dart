@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter/material.dart';
+import 'package:openchat_frontend/model/chat.dart';
 import 'package:openchat_frontend/views/components/animated_text.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:openchat_frontend/views/components/chat_ui/chat_theme.dart';
@@ -24,14 +25,15 @@ bool isDesktop(BuildContext context) {
 class ChatPage extends StatelessWidget {
   // The state of this page records the "Topic" that the user is currently in
   // Children can use context.findAncestorStateOfType<ChatPageState>() to read and change this
-  final ValueNotifier<String> currentTopic = ValueNotifier<String>('whatever');
+  final ValueNotifier<ChatThread?> currentTopic =
+      ValueNotifier<ChatThread?>(null);
   ChatPage({super.key});
 
   // Mobile UI
   Widget buildMobile(BuildContext context) => HistoryPage(
         onTopicSelected: (topicId) {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: ((context) => ChatView(topicId: topicId))));
+              builder: ((context) => ChatView(topic: topicId))));
         },
       );
 
@@ -80,8 +82,9 @@ class ChatPage extends StatelessWidget {
                             kTabletMasterContainerWidth),
                     child: ValueListenableBuilder(
                         valueListenable: currentTopic,
-                        builder: (context, value, child) =>
-                            ChatView(topicId: value)),
+                        builder: (context, value, child) => value == null
+                            ? const SizedBox()
+                            : ChatView(topic: value)),
                   ),
                 ),
               ),
@@ -98,8 +101,8 @@ class ChatPage extends StatelessWidget {
 }
 
 class ChatView extends StatefulWidget {
-  final String topicId;
-  const ChatView({super.key, required this.topicId});
+  final ChatThread topic;
+  const ChatView({super.key, required this.topic});
 
   @override
   State<ChatView> createState() => _ChatViewState();

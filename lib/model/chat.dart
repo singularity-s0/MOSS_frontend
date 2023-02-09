@@ -11,7 +11,7 @@ class ChatThread {
   String updated_at;
   int id;
   int user_id;
-  List<ChatRecord> records;
+  List<ChatRecord>? records;
 
   factory ChatThread.fromJson(Map<String, dynamic> json) =>
       _$ChatThreadFromJson(json);

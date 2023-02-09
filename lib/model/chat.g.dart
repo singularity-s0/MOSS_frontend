@@ -12,8 +12,8 @@ ChatThread _$ChatThreadFromJson(Map<String, dynamic> json) => ChatThread(
       updated_at: json['updated_at'] as String,
       id: json['id'] as int,
       user_id: json['user_id'] as int,
-      records: (json['records'] as List<dynamic>)
-          .map((e) => ChatRecord.fromJson(e as Map<String, dynamic>))
+      records: (json['records'] as List<dynamic>?)
+          ?.map((e) => ChatRecord.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

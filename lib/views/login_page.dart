@@ -133,272 +133,249 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget buildLandingPage(BuildContext context, {Object? error}) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 50.0),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 70),
-                Image.asset('assets/images/logo.png', scale: 6.5),
-                const SizedBox(height: 25),
-                Text(
-                  error == null
-                      ? AppLocalizations.of(context)!
-                          .fetching_server_configurations
-                      : AppLocalizations.of(context)!.error,
-                  style: TextStyle(
-                      fontSize: 35,
-                      color: error == null
-                          ? null
-                          : Theme.of(context).colorScheme.error),
-                ),
-                Opacity(
-                  opacity: 0.7,
-                  child: Text(
-                    error == null
-                        ? AppLocalizations.of(context)!.please_wait
-                        : error.toString(),
-                    style: const TextStyle(fontSize: 35),
-                  ),
-                ),
-              ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 50.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 70),
+            Image.asset('assets/images/logo.png', scale: 6.5),
+            const SizedBox(height: 25),
+            Text(
+              error == null
+                  ? AppLocalizations.of(context)!.fetching_server_configurations
+                  : AppLocalizations.of(context)!.error,
+              style: TextStyle(
+                  fontSize: 35,
+                  color: error == null
+                      ? null
+                      : Theme.of(context).colorScheme.error),
             ),
-          ),
+            Opacity(
+              opacity: 0.7,
+              child: Text(
+                error == null
+                    ? AppLocalizations.of(context)!.please_wait
+                    : error.toString(),
+                style: const TextStyle(fontSize: 35),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
+  final lpformKey = GlobalKey<FormState>();
   Widget buildLoginPanel(BuildContext context, Region region) {
-    final formKey = GlobalKey<FormState>();
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 50.0),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 70),
-                Image.asset('assets/images/logo.png', scale: 6.5),
-                const SizedBox(height: 25),
-                Text(
-                  AppLocalizations.of(context)!.welcome_comma,
-                  style: const TextStyle(fontSize: 35),
-                ),
-                Opacity(
-                  opacity: 0.7,
-                  child: Text(
-                    AppLocalizations.of(context)!.sign_in_to_continue,
-                    style: const TextStyle(fontSize: 35),
-                  ),
-                ),
-                const SizedBox(height: 30),
-                Form(
-                  key: formKey,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Column(
-                      children: [
-                        autoAccountField(context, region),
-                        const SizedBox(height: 20),
-                        TextFormField(
-                            obscureText: true,
-                            enableSuggestions: false,
-                            autocorrect: false,
-                            decoration: InputDecoration(
-                              labelText: AppLocalizations.of(context)!.password,
-                            ),
-                            controller: passwordController),
-                        const SizedBox(height: 60),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 50.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 70),
+            Image.asset('assets/images/logo.png', scale: 6.5),
+            const SizedBox(height: 25),
+            Text(
+              AppLocalizations.of(context)!.welcome_comma,
+              style: const TextStyle(fontSize: 35),
+            ),
+            Opacity(
+              opacity: 0.7,
+              child: Text(
+                AppLocalizations.of(context)!.sign_in_to_continue,
+                style: const TextStyle(fontSize: 35),
+              ),
+            ),
+            const SizedBox(height: 30),
+            Form(
+              key: lpformKey,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Column(
+                  children: [
+                    autoAccountField(context, region),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                        obscureText: true,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.password,
+                        ),
+                        controller: passwordController),
+                    const SizedBox(height: 60),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton(
+                              onPressed: () => setState(() {
+                                    _loginMode = LoginMode.register;
+                                  }),
+                              child:
+                                  Text(AppLocalizations.of(context)!.sign_up)),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               TextButton(
                                   onPressed: () => setState(() {
-                                        _loginMode = LoginMode.register;
+                                        _loginMode = LoginMode.reset;
                                       }),
+                                  child: Text(AppLocalizations.of(context)!
+                                      .resetpassword)),
+                              const SizedBox(width: 16),
+                              ElevatedButton(
                                   child: Text(
-                                      AppLocalizations.of(context)!.sign_up)),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  TextButton(
-                                      onPressed: () => setState(() {
-                                            _loginMode = LoginMode.reset;
-                                          }),
-                                      child: Text(AppLocalizations.of(context)!
-                                          .resetpassword)),
-                                  const SizedBox(width: 16),
-                                  ElevatedButton(
-                                      child: Text(AppLocalizations.of(context)!
-                                          .sign_in),
-                                      onPressed: () async {
-                                        if (!formKey.currentState!.validate())
-                                          return;
-                                        try {
-                                          await showLoadingDialogUntilFutureCompletes<
-                                                  JWToken?>(
-                                              context,
-                                              autoLoginFunc(region)(
-                                                  accountController.text,
-                                                  passwordController.text));
-                                        } catch (e) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                                  content: Text(parseError(e),
-                                                      maxLines: 3)));
-                                        }
-                                      }),
-                                ],
-                              ),
-                            ]),
-                      ],
-                    ),
-                  ),
+                                      AppLocalizations.of(context)!.sign_in),
+                                  onPressed: () async {
+                                    if (!lpformKey.currentState!.validate())
+                                      return;
+                                    try {
+                                      await showLoadingDialogUntilFutureCompletes<
+                                              JWToken?>(
+                                          context,
+                                          autoLoginFunc(region)(
+                                              accountController.text,
+                                              passwordController.text));
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text(parseError(e),
+                                                  maxLines: 3)));
+                                    }
+                                  }),
+                            ],
+                          ),
+                        ]),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 
+  final suformKey = GlobalKey<FormState>();
   Widget buildSignupPanel(BuildContext context, Region region) {
-    final formKey = GlobalKey<FormState>();
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 50.0),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 70),
-                Image.asset('assets/images/logo.png', scale: 6.5),
-                const SizedBox(height: 25),
-                Text(
-                  AppLocalizations.of(context)!.welcome_comma,
-                  style: const TextStyle(fontSize: 35),
-                ),
-                Opacity(
-                  opacity: 0.7,
-                  child: Text(
-                    _loginMode == LoginMode.register
-                        ? AppLocalizations.of(context)!.sign_up
-                        : AppLocalizations.of(context)!.resetpassword,
-                    style: const TextStyle(fontSize: 35),
-                  ),
-                ),
-                const SizedBox(height: 30),
-                Form(
-                  key: formKey,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Column(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 50.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 70),
+            Image.asset('assets/images/logo.png', scale: 6.5),
+            const SizedBox(height: 25),
+            Text(
+              AppLocalizations.of(context)!.welcome_comma,
+              style: const TextStyle(fontSize: 35),
+            ),
+            Opacity(
+              opacity: 0.7,
+              child: Text(
+                _loginMode == LoginMode.register
+                    ? AppLocalizations.of(context)!.sign_up
+                    : AppLocalizations.of(context)!.resetpassword,
+                style: const TextStyle(fontSize: 35),
+              ),
+            ),
+            const SizedBox(height: 30),
+            Form(
+              key: suformKey,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Column(
+                  children: [
+                    autoAccountField(context, region),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                        obscureText: true,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.password,
+                        ),
+                        controller: passwordController),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                        textCapitalization: TextCapitalization.none,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        decoration: InputDecoration(
+                            labelText:
+                                AppLocalizations.of(context)!.verificationcode,
+                            suffixIcon: VerifyCodeRequestButton(
+                              onTap: () {
+                                return autoRequestVerifyFunc(region)(
+                                    accountController.text, _loginMode.name);
+                              },
+                            )),
+                        controller: verifycodeController,
+                        validator: (value) => isValidVerification(value ?? '')
+                            ? null
+                            : AppLocalizations.of(context)!
+                                .please_enter_verify_code),
+                    const SizedBox(height: 60),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        autoAccountField(context, region),
-                        const SizedBox(height: 20),
-                        TextFormField(
-                            obscureText: true,
-                            enableSuggestions: false,
-                            autocorrect: false,
-                            decoration: InputDecoration(
-                              labelText: AppLocalizations.of(context)!.password,
-                            ),
-                            controller: passwordController),
-                        const SizedBox(height: 20),
-                        TextFormField(
-                            textCapitalization: TextCapitalization.none,
-                            enableSuggestions: false,
-                            autocorrect: false,
-                            decoration: InputDecoration(
-                                labelText: AppLocalizations.of(context)!
-                                    .verificationcode,
-                                suffixIcon: VerifyCodeRequestButton(
-                                  onTap: () {
-                                    return autoRequestVerifyFunc(region)(
-                                        accountController.text,
-                                        _loginMode.name);
-                                  },
-                                )),
-                            controller: verifycodeController,
-                            validator: (value) =>
-                                isValidVerification(value ?? '')
-                                    ? null
-                                    : AppLocalizations.of(context)!
-                                        .please_enter_verify_code),
-                        const SizedBox(height: 60),
+                        TextButton(
+                            onPressed: () => setState(() {
+                                  _loginMode = LoginMode.login;
+                                }),
+                            child: Text(AppLocalizations.of(context)!.sign_in)),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             TextButton(
                                 onPressed: () => setState(() {
-                                      _loginMode = LoginMode.login;
+                                      _loginMode == LoginMode.register
+                                          ? _loginMode = LoginMode.reset
+                                          : _loginMode = LoginMode.register;
                                     }),
-                                child: Text(
-                                    AppLocalizations.of(context)!.sign_in)),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                TextButton(
-                                    onPressed: () => setState(() {
-                                          _loginMode == LoginMode.register
-                                              ? _loginMode = LoginMode.reset
-                                              : _loginMode = LoginMode.register;
-                                        }),
-                                    child: Text(_loginMode == LoginMode.register
-                                        ? AppLocalizations.of(context)!
-                                            .resetpassword
-                                        : AppLocalizations.of(context)!
-                                            .sign_up)),
-                                const SizedBox(width: 16),
-                                ElevatedButton(
-                                    child: Text(_loginMode == LoginMode.register
-                                        ? AppLocalizations.of(context)!.sign_up
-                                        : AppLocalizations.of(context)!
-                                            .resetpassword),
-                                    onPressed: () async {
-                                      if (!formKey.currentState!.validate())
-                                        return;
-                                      try {
-                                        await showLoadingDialogUntilFutureCompletes<
-                                                JWToken?>(
-                                            context,
-                                            autoSignupFunc(region)(
-                                                accountController.text,
-                                                passwordController.text,
-                                                verifycodeController.text,
-                                                resetPassword: _loginMode ==
-                                                    LoginMode.reset));
-                                      } catch (e) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                                content: Text(parseError(e),
-                                                    maxLines: 3)));
-                                      }
-                                    }),
-                              ],
-                            ),
+                                child: Text(_loginMode == LoginMode.register
+                                    ? AppLocalizations.of(context)!
+                                        .resetpassword
+                                    : AppLocalizations.of(context)!.sign_up)),
+                            const SizedBox(width: 16),
+                            ElevatedButton(
+                                child: Text(_loginMode == LoginMode.register
+                                    ? AppLocalizations.of(context)!.sign_up
+                                    : AppLocalizations.of(context)!
+                                        .resetpassword),
+                                onPressed: () async {
+                                  if (!suformKey.currentState!.validate())
+                                    return;
+                                  try {
+                                    await showLoadingDialogUntilFutureCompletes<
+                                            JWToken?>(
+                                        context,
+                                        autoSignupFunc(region)(
+                                            accountController.text,
+                                            passwordController.text,
+                                            verifycodeController.text,
+                                            resetPassword:
+                                                _loginMode == LoginMode.reset));
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            content: Text(parseError(e),
+                                                maxLines: 3)));
+                                  }
+                                }),
                           ],
                         ),
                       ],
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );

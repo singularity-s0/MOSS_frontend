@@ -24,6 +24,10 @@ bool isValidCNPhoneNumber(String phone) {
       .hasMatch(phone);
 }
 
+bool isValidVerification(String verify) {
+  return RegExp(r'^[0-9]{1,6}$').hasMatch(verify);
+}
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -190,7 +194,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 30),
             Form(
-              autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Column(
@@ -217,6 +220,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     LoginButton(
                         text: AppLocalizations.of(context)!.sign_in,
                         onTap: () async {
+                          if (!Form.of(context).validate()) return;
                           try {
                             await showLoadingDialogUntilFutureCompletes<
                                     JWToken?>(
@@ -268,7 +272,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 30),
             Form(
-              autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Column(
@@ -297,7 +300,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                     accountController.text);
                               },
                             )),
-                        controller: verifycodeController),
+                        controller: verifycodeController,
+                        validator: (value) => isValidVerification(value ?? '')
+                            ? null
+                            : AppLocalizations.of(context)!
+                                .please_enter_verify_code),
                     const SizedBox(height: 60),
                     TextButton(
                         onPressed: () {
@@ -310,6 +317,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     LoginButton(
                         text: AppLocalizations.of(context)!.sign_up,
                         onTap: () async {
+                          if (!Form.of(context).validate()) return;
                           try {
                             await showLoadingDialogUntilFutureCompletes<
                                     JWToken?>(

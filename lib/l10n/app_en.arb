@@ -17,6 +17,7 @@
     "invalid_credentials": "Invalid credentials",
     "please_enter_valid_email": "Please enter a valid email address",
     "please_enter_valid_phone": "Please enter a valid Chinese phone number",
+    "please_enter_verify_code": "Please enter a valid verification code",
     "phone_number": "Phone number",
     "email": "Email",
     "password": "Password",

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:openchat_frontend/repository/repository.dart';
 import 'package:openchat_frontend/utils/settings_provider.dart';
 import 'package:openchat_frontend/views/chat_page.dart';
 import 'package:openchat_frontend/views/login_page.dart';
@@ -9,6 +10,7 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SettingsProvider.getInstance().init();
+  Repository.init(AccountProvider.getInstance());
   runApp(const MainApp());
 }
 

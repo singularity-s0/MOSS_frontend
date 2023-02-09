@@ -87,7 +87,22 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.topics)),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.topics),
+        actions: [
+          PopupMenuButton(
+            icon: const Icon(Icons.more_vert),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                child: Text(AppLocalizations.of(context)!.sign_out),
+                onTap: () {
+                  Repository.getInstance().logout();
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
       body: AnimatedList(
           key: _listKey,
           itemBuilder: (context, i, animation) {

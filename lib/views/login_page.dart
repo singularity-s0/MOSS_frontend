@@ -1,5 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:openchat_frontend/model/user.dart';
+import 'package:openchat_frontend/repository/repository.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:openchat_frontend/utils/dialog.dart';
 import 'package:openchat_frontend/views/chat_page.dart';
@@ -78,6 +80,15 @@ class _LoginScreenState extends State<LoginScreen> {
         return emailField(context);
       case Region.cn:
         return phoneField(context);
+    }
+  }
+
+  Future<JWToken?> Function(String, String) autoLoginFunc(Region region) {
+    switch (region) {
+      case Region.intl:
+        return Repository.getInstance().loginWithEmailPassword;
+      case Region.cn:
+        return Repository.getInstance().loginWithPhonePassword;
     }
   }
 
@@ -167,10 +178,23 @@ class _LoginScreenState extends State<LoginScreen> {
                             controller: passwordController),
                         const SizedBox(height: 60),
                         LoginButton(onTap: () async {
-                          await showLoadingDialogUntilFutureCompletes(context,
-                              Future.delayed(const Duration(seconds: 1)));
-                          AccountProvider.getInstance().token =
-                              JWToken('access', 'refresh');
+                          try {
+                            await showLoadingDialogUntilFutureCompletes<
+                                    JWToken?>(
+                                context,
+                                autoLoginFunc(region)(accountController.text,
+                                    passwordController.text));
+                          } catch (e) {
+                            if (e is DioError && e.response != null) {
+                              ErrorMessage? em = ErrorMessage.fromJson(
+                                  e.response!.data as Map<String, dynamic>);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(em.message, maxLines: 3)));
+                            }
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text(e.toString(), maxLines: 3)));
+                          }
                         })
                       ],
                     ),

@@ -9,7 +9,7 @@ class Repository {
 
   factory Repository.getInstance() => _instance;
 
-  static const String baseUrl = "https://moss.jingyijun.xyz:12443/api";
+  static const String baseUrl = "https://moss.fastnlp.top/api";
 
   final Dio dio = Dio();
 
@@ -129,25 +129,15 @@ class Repository {
   }
 
   Future<ChatRecord?> chatSendMessage(int chatId, String message) async {
-    await Future.delayed(const Duration(seconds: 1));
-    return ChatRecord(
-        chat_id: 123,
-        id: 456,
-        like_data: 0,
-        created_at: "",
-        request: "abc",
-        response: "def");
+    final Response response = await dio.post("$baseUrl/chats/$chatId/records",
+        data: {"request": message}, options: Options(headers: _tokenHeader));
+    return ChatRecord.fromJson(response.data!);
   }
 
   Future<ChatRecord?> chatRegenerateLast(int chatId) async {
-    await Future.delayed(const Duration(seconds: 1));
-    return ChatRecord(
-        chat_id: 123,
-        id: 456,
-        like_data: 0,
-        created_at: "",
-        request: "abc",
-        response: "regen");
+    final Response response = await dio.put("$baseUrl/chats/$chatId/regenerate",
+        options: Options(headers: _tokenHeader));
+    return ChatRecord.fromJson(response.data!);
   }
 
   Future<void> modifyRecord(int recordId, int like) async {

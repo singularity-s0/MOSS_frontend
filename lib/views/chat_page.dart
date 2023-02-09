@@ -7,12 +7,9 @@ import 'package:openchat_frontend/repository/repository.dart';
 import 'package:openchat_frontend/utils/dialog.dart';
 import 'package:openchat_frontend/views/components/animated_text.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:openchat_frontend/views/components/chat_ui/chat_theme.dart';
 import 'package:openchat_frontend/views/components/chat_ui/flutter_chat_ui.dart';
 import 'package:openchat_frontend/views/components/typing_indicator.dart';
 import 'package:openchat_frontend/views/history_page.dart';
-
-import 'components/chat_ui/widgets/chat.dart';
 
 const user = types.User(id: 'user');
 const reply = types.User(id: 'moss');

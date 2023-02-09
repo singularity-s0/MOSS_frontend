@@ -25,7 +25,7 @@ bool isValidCNPhoneNumber(String phone) {
 }
 
 bool isValidVerification(String verify) {
-  return RegExp(r'^[0-9]{1,6}$').hasMatch(verify);
+  return RegExp(r'^[0-9]{6}$').hasMatch(verify);
 }
 
 class LoginScreen extends StatefulWidget {
@@ -172,6 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget buildLoginPanel(BuildContext context, Region region) {
+    final _formKey = GlobalKey<FormState>();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50.0),
       child: SingleChildScrollView(
@@ -194,6 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 30),
             Form(
+              key: _formKey,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Column(
@@ -209,36 +211,42 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         controller: passwordController),
                     const SizedBox(height: 60),
-                    TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _signupMode = !_signupMode;
-                          });
-                        },
-                        child: Text(AppLocalizations.of(context)!.sign_up)),
-                    const SizedBox(height: 20),
-                    LoginButton(
-                        text: AppLocalizations.of(context)!.sign_in,
-                        onTap: () async {
-                          if (!Form.of(context).validate()) return;
-                          try {
-                            await showLoadingDialogUntilFutureCompletes<
-                                    JWToken?>(
-                                context,
-                                autoLoginFunc(region)(accountController.text,
-                                    passwordController.text));
-                          } catch (e) {
-                            if (e is DioError && e.response != null) {
-                              ErrorMessage? em = ErrorMessage.fromJson(
-                                  e.response!.data as Map<String, dynamic>);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content: Text(em.message, maxLines: 3)));
+                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                      TextButton(
+                          onPressed: () {
+                            setState(() {
+                              _signupMode = !_signupMode;
+                            });
+                          },
+                          child: Text(AppLocalizations.of(context)!.sign_up)),
+                      const SizedBox(width: 16),
+                      ElevatedButton(
+                          child: Text(AppLocalizations.of(context)!.sign_in),
+                          onPressed: () async {
+                            if (!_formKey.currentState!.validate()) return;
+                            try {
+                              await showLoadingDialogUntilFutureCompletes<
+                                      JWToken?>(
+                                  context,
+                                  autoLoginFunc(region)(accountController.text,
+                                      passwordController.text));
+                            } catch (e) {
+                              if (e is DioError && e.response != null) {
+                                ErrorMessage? em = ErrorMessage.fromJson(
+                                    e.response!.data as Map<String, dynamic>);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content:
+                                            Text(em.message, maxLines: 3)));
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content:
+                                            Text(e.toString(), maxLines: 3)));
+                              }
                             }
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text(e.toString(), maxLines: 3)));
-                          }
-                        })
+                          }),
+                    ]),
                   ],
                 ),
               ),
@@ -250,6 +258,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget buildSignupPanel(BuildContext context, Region region) {
+    final _formKey = GlobalKey<FormState>();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50.0),
       child: SingleChildScrollView(
@@ -272,6 +281,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 30),
             Form(
+              key: _formKey,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Column(
@@ -306,38 +316,47 @@ class _LoginScreenState extends State<LoginScreen> {
                             : AppLocalizations.of(context)!
                                 .please_enter_verify_code),
                     const SizedBox(height: 60),
-                    TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _signupMode = !_signupMode;
-                          });
-                        },
-                        child: Text(AppLocalizations.of(context)!.sign_in)),
-                    const SizedBox(height: 20),
-                    LoginButton(
-                        text: AppLocalizations.of(context)!.sign_up,
-                        onTap: () async {
-                          if (!Form.of(context).validate()) return;
-                          try {
-                            await showLoadingDialogUntilFutureCompletes<
-                                    JWToken?>(
-                                context,
-                                autoSignupFunc(region)(
-                                    accountController.text,
-                                    passwordController.text,
-                                    verifycodeController.text));
-                          } catch (e) {
-                            if (e is DioError && e.response != null) {
-                              ErrorMessage? em = ErrorMessage.fromJson(
-                                  e.response!.data as Map<String, dynamic>);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content: Text(em.message, maxLines: 3)));
-                            }
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text(e.toString(), maxLines: 3)));
-                          }
-                        })
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                            onPressed: () {
+                              setState(() {
+                                _signupMode = !_signupMode;
+                              });
+                            },
+                            child: Text(AppLocalizations.of(context)!.sign_in)),
+                        const SizedBox(width: 16),
+                        ElevatedButton(
+                            child: Text(AppLocalizations.of(context)!.sign_up),
+                            onPressed: () async {
+                              if (!_formKey.currentState!.validate()) return;
+                              try {
+                                await showLoadingDialogUntilFutureCompletes<
+                                        JWToken?>(
+                                    context,
+                                    autoSignupFunc(region)(
+                                        accountController.text,
+                                        passwordController.text,
+                                        verifycodeController.text));
+                              } catch (e) {
+                                if (e is DioError && e.response != null) {
+                                  ErrorMessage? em = ErrorMessage.fromJson(
+                                      e.response!.data as Map<String, dynamic>);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content:
+                                              Text(em.message, maxLines: 3)));
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content:
+                                              Text(e.toString(), maxLines: 3)));
+                                }
+                              }
+                            })
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -379,7 +398,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Center(
             child: SizedBox(
               width: kTabletSingleContainerWidth,
-              height: 700,
+              height: 800,
               child: Card(
                 surfaceTintColor: Colors.transparent,
                 shape: RoundedRectangleBorder(
@@ -394,48 +413,6 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       return Scaffold(body: buildContent(context));
     }
-  }
-}
-
-class LoginButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onTap;
-  const LoginButton({super.key, required this.onTap, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Opacity(
-        opacity: 0.7,
-        child: Container(
-          width: 230,
-          height: 75,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: const Color.fromARGB(255, 224, 227, 231),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                text,
-                style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                    fontSize: 19),
-              ),
-              const SizedBox(width: 15),
-              const Icon(
-                Icons.arrow_forward_rounded,
-                color: Colors.black,
-                size: 26,
-              )
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }
 

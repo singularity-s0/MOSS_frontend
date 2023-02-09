@@ -421,24 +421,27 @@ class VerifyCodeRequestButtonState extends State<VerifyCodeRequestButton> {
                 });
                 try {
                   await widget.onTap();
+                  setState(() {
+                    countdown = 60;
+                  });
+                  Timer.periodic(const Duration(seconds: 1), (timer) {
+                    setState(() {
+                      countdown--;
+                    });
+                    if (countdown == 0) {
+                      timer.cancel();
+                      setState(() {
+                        _isRequesting = false;
+                      });
+                    }
+                  });
                 } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(e.toString(), maxLines: 3)));
-                }
-                setState(() {
-                  countdown = 60;
-                });
-                Timer.periodic(const Duration(seconds: 1), (timer) {
+                      SnackBar(content: Text(parseError(e), maxLines: 3)));
                   setState(() {
-                    countdown--;
+                    _isRequesting = false;
                   });
-                  if (countdown == 0) {
-                    timer.cancel();
-                    setState(() {
-                      _isRequesting = false;
-                    });
-                  }
-                });
+                }
               },
         child: Text(countdown > 0
             ? AppLocalizations.of(context)!.requested(countdown)

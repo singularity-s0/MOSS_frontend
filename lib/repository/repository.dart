@@ -112,6 +112,12 @@ class Repository {
     await dio.delete("$baseUrl/chats/$id",
         options: Options(headers: _tokenHeader));
   }
+
+  Future<List<ChatRecord>?> getChatRecords(int id) async {
+    final Response response = await dio.get("$baseUrl/chats/$id/records",
+        options: Options(headers: _tokenHeader));
+    return (response.data! as List).map((e) => ChatRecord.fromJson(e)).toList();
+  }
 }
 
 class JWTInterceptor extends QueuedInterceptor {

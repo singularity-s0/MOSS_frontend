@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter/material.dart';
 import 'package:openchat_frontend/model/chat.dart';
+import 'package:openchat_frontend/repository/repository.dart';
+import 'package:openchat_frontend/utils/dialog.dart';
 import 'package:openchat_frontend/views/components/animated_text.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:openchat_frontend/views/components/chat_ui/chat_theme.dart';
@@ -120,6 +122,7 @@ class _ChatViewState extends State<ChatView> {
         id: "ai-alert",
       ),
     ];
+    _getRecords();
   }
 
   @override
@@ -127,6 +130,36 @@ class _ChatViewState extends State<ChatView> {
     super.didChangeDependencies();
     if (!lateInitDone) {
       lateInit();
+    }
+  }
+
+  Future<void> _getRecords() async {
+    try {
+      final List<ChatRecord>? records = widget.topic.records ??
+          await Repository.getInstance().getChatRecords(widget.topic.id);
+      setState(() {
+        for (final record in records ?? <ChatRecord>[]) {
+          _messages.add(types.TextMessage(
+            id: record.id.toString(),
+            text: record.request,
+            author: user,
+            metadata: {'animatedIndex': 0}, // DO NOT mark this as constant
+          ));
+          _messages.add(types.TextMessage(
+            id: '${record.id}r',
+            text: record.response,
+            author: reply,
+            metadata: {'animatedIndex': 0}, // DO NOT mark this as constant
+          ));
+        }
+      });
+    } catch (e) {
+      setState(() {
+        _messages.add(types.SystemMessage(
+          text: parseError(e),
+          id: "ai-error${_messages.length}",
+        ));
+      });
     }
   }
 

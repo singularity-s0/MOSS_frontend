@@ -75,7 +75,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   void init() async {
     await refresh();
-    await addNewTopic(context);
+    selectTopic(data.first);
   }
 
   @override
@@ -101,16 +101,30 @@ class _HistoryPageState extends State<HistoryPage> {
               return const Center(child: CircularProgressIndicator());
             } else {
               ChatThread thread = data[i - 1];
-              return ListTile(
-                  title: Text("Topic $i"),
-                  subtitle: Text(DateTime.tryParse(thread.updated_at)
-                          ?.toLocal()
-                          .toString() ??
-                      ""),
-                  selected: widget.selectedTopic?.id == thread.id,
-                  onTap: () {
-                    selectTopic(thread);
-                  });
+              return Dismissible(
+                key: Key(thread.id.toString()),
+                onDismissed: (direction) async {
+                  try {
+                    await Repository.getInstance().deleteChatThread(thread.id);
+                    _listKey.currentState!.removeItem(
+                        i, (context, animation) => const SizedBox());
+                    data.remove(thread);
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(parseError(e), maxLines: 3)));
+                  }
+                },
+                child: ListTile(
+                    title: Text("Topic ${thread.id}"),
+                    subtitle: Text(DateTime.tryParse(thread.updated_at)
+                            ?.toLocal()
+                            .toString() ??
+                        ""),
+                    selected: widget.selectedTopic?.id == thread.id,
+                    onTap: () {
+                      selectTopic(thread);
+                    }),
+              );
             }
           },
           initialItemCount: 2),

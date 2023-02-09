@@ -27,11 +27,15 @@ dependencies:
   flutter_link_previewer: ^3.2.0
   url_launcher: ^6.1.9
   flutter_parsed_text: ^2.2.1
+  dio: ^4.0.6
+  json_serializable: ^6.6.1
+  json_annotation: ^4.8.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  build_runner: ^2.3.3
 
 flutter:
   uses-material-design: true

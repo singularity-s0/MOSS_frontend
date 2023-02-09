@@ -1,11 +1,5 @@
 import 'package:flutter/foundation.dart';
-
-class JWToken {
-  final String access;
-  final String refresh;
-
-  JWToken(this.access, this.refresh);
-}
+import 'package:openchat_frontend/model/user.dart';
 
 class AccountProvider with ChangeNotifier {
   // Single instance class

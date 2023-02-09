@@ -64,29 +64,31 @@ class ChatPage extends StatelessWidget {
             ),
           ),
           // Right View
-          SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width:
-                MediaQuery.of(context).size.width - kTabletMasterContainerWidth,
-            child: SizedBox.expand(
-              child: Card(
-                margin: const EdgeInsets.only(top: 16, right: 16, bottom: 16),
-                color: Theme.of(context).colorScheme.background,
-                surfaceTintColor: Colors.transparent,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0)),
-                clipBehavior: Clip.antiAlias,
-                child: Center(
-                  child: SizedBox(
-                    width: min(
-                        MediaQuery.of(context).size.height,
-                        MediaQuery.of(context).size.width -
-                            kTabletMasterContainerWidth),
-                    child: ValueListenableBuilder(
-                        valueListenable: currentTopic,
-                        builder: (context, value, child) => value == null
-                            ? const SizedBox()
-                            : ChatView(topic: value)),
+          ScaffoldMessenger(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width -
+                  kTabletMasterContainerWidth,
+              child: SizedBox.expand(
+                child: Card(
+                  margin: const EdgeInsets.only(top: 16, right: 16, bottom: 16),
+                  color: Theme.of(context).colorScheme.background,
+                  surfaceTintColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0)),
+                  clipBehavior: Clip.antiAlias,
+                  child: Center(
+                    child: SizedBox(
+                      width: min(
+                          MediaQuery.of(context).size.height,
+                          MediaQuery.of(context).size.width -
+                              kTabletMasterContainerWidth),
+                      child: ValueListenableBuilder(
+                          valueListenable: currentTopic,
+                          builder: (context, value, child) => value == null
+                              ? const SizedBox()
+                              : ChatView(topic: value)),
+                    ),
                   ),
                 ),
               ),

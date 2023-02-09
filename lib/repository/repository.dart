@@ -35,12 +35,14 @@ class Repository {
             provider.token = SettingsProvider.getInstance().token = token));
   }
 
-  Future<void> requestEmailVerifyCode(String email) async {
-    await dio.get("$baseUrl/verify/email", queryParameters: {"email": email});
+  Future<void> requestEmailVerifyCode(String email, String scope) async {
+    await dio.get("$baseUrl/verify/email",
+        queryParameters: {"email": email, "scope": scope});
   }
 
-  Future<void> requestPhoneVerifyCode(String phone) async {
-    await dio.get("$baseUrl/verify/phone", queryParameters: {"phone": phone});
+  Future<void> requestPhoneVerifyCode(String phone, String scope) async {
+    await dio.get("$baseUrl/verify/phone",
+        queryParameters: {"phone": phone, "scope": scope});
   }
 
   Future<JWToken?> registerWithEmailPassword(

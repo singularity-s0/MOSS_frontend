@@ -54,9 +54,12 @@ class _HistoryPageState extends State<HistoryPage> {
       error = null;
     } catch (e) {
       error = e;
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+      updateAnimatedList();
     }
-    isLoading = false;
-    updateAnimatedList();
   }
 
   Future<void> addNewTopic(BuildContext context) async {
@@ -75,7 +78,11 @@ class _HistoryPageState extends State<HistoryPage> {
 
   void init() async {
     await refresh();
-    selectTopic(data.first);
+    if (data.isNotEmpty) {
+      selectTopic(data.first);
+    } else {
+      addNewTopic(context);
+    }
   }
 
   @override

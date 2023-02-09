@@ -35,7 +35,7 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-enum LoginMode { login, register, resetPassword }
+enum LoginMode { login, register, reset }
 
 class _LoginScreenState extends State<LoginScreen> {
   late TextEditingController accountController;
@@ -123,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> Function(String) autoRequestVerifyFunc(Region region) {
+  Future<void> Function(String, String) autoRequestVerifyFunc(Region region) {
     switch (region) {
       case Region.Global:
         return Repository.getInstance().requestEmailVerifyCode;
@@ -228,7 +228,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             children: [
                               TextButton(
                                   onPressed: () => setState(() {
-                                        _loginMode = LoginMode.resetPassword;
+                                        _loginMode = LoginMode.reset;
                                       }),
                                   child: Text(AppLocalizations.of(context)!
                                       .resetpassword)),
@@ -318,7 +318,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             suffixIcon: VerifyCodeRequestButton(
                               onTap: () {
                                 return autoRequestVerifyFunc(region)(
-                                    accountController.text);
+                                    accountController.text, _loginMode.name);
                               },
                             )),
                         controller: verifycodeController,
@@ -341,7 +341,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             TextButton(
                                 onPressed: () => setState(() {
                                       _loginMode == LoginMode.register
-                                          ? _loginMode = LoginMode.resetPassword
+                                          ? _loginMode = LoginMode.reset
                                           : _loginMode = LoginMode.register;
                                     }),
                                 child: Text(_loginMode == LoginMode.register
@@ -364,8 +364,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                             accountController.text,
                                             passwordController.text,
                                             verifycodeController.text,
-                                            resetPassword: _loginMode ==
-                                                LoginMode.resetPassword));
+                                            resetPassword:
+                                                _loginMode == LoginMode.reset));
                                   } catch (e) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(

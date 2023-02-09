@@ -44,25 +44,33 @@ class Repository {
   }
 
   Future<JWToken?> registerWithEmailPassword(
-      String email, String password, String verifyCode) async {
-    final Response<Map<String, dynamic>> response =
-        await dio.post("$baseUrl/register", data: {
-      "password": password,
-      "email": email,
-      "verification": verifyCode,
-    });
+      String email, String password, String verifyCode,
+      {bool resetPassword = false}) async {
+    final Response<Map<String, dynamic>> response = await dio.fetch(
+        RequestOptions(
+            method: resetPassword ? "PUT" : "POST",
+            path: "$baseUrl/register",
+            data: {
+          "password": password,
+          "email": email,
+          "verification": verifyCode,
+        }));
     return provider.token =
         SettingsProvider.getInstance().token = JWToken.fromJson(response.data!);
   }
 
   Future<JWToken?> registerWithPhonePassword(
-      String phone, String password, String verifyCode) async {
-    final Response<Map<String, dynamic>> response =
-        await dio.post("$baseUrl/register", data: {
-      "password": password,
-      "phone": phone,
-      "verification": verifyCode,
-    });
+      String phone, String password, String verifyCode,
+      {bool resetPassword = false}) async {
+    final Response<Map<String, dynamic>> response = await dio.fetch(
+        RequestOptions(
+            method: resetPassword ? "PUT" : "POST",
+            path: "$baseUrl/register",
+            data: {
+          "password": password,
+          "phone": phone,
+          "verification": verifyCode,
+        }));
     return provider.token =
         SettingsProvider.getInstance().token = JWToken.fromJson(response.data!);
   }

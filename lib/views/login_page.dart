@@ -35,13 +35,16 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
+enum LoginMode { login, register, resetPassword }
+
 class _LoginScreenState extends State<LoginScreen> {
   late TextEditingController accountController;
   late TextEditingController verifycodeController;
   late TextEditingController passwordController;
 
   late Future<Region> _region;
-  bool _signupMode = false;
+
+  LoginMode _loginMode = LoginMode.login;
 
   @override
   void initState() {
@@ -110,8 +113,8 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<JWToken?> Function(String, String, String) autoSignupFunc(
-      Region region) {
+  Future<JWToken?> Function(String, String, String,
+      {required bool resetPassword}) autoSignupFunc(Region region) {
     switch (region) {
       case Region.Global:
         return Repository.getInstance().registerWithEmailPassword;
@@ -211,33 +214,48 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         controller: passwordController),
                     const SizedBox(height: 60),
-                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                      TextButton(
-                          onPressed: () {
-                            setState(() {
-                              _signupMode = !_signupMode;
-                            });
-                          },
-                          child: Text(AppLocalizations.of(context)!.sign_up)),
-                      const SizedBox(width: 16),
-                      ElevatedButton(
-                          child: Text(AppLocalizations.of(context)!.sign_in),
-                          onPressed: () async {
-                            if (!formKey.currentState!.validate()) return;
-                            try {
-                              await showLoadingDialogUntilFutureCompletes<
-                                      JWToken?>(
-                                  context,
-                                  autoLoginFunc(region)(accountController.text,
-                                      passwordController.text));
-                            } catch (e) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content:
-                                          Text(parseError(e), maxLines: 3)));
-                            }
-                          }),
-                    ]),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton(
+                              onPressed: () => setState(() {
+                                    _loginMode = LoginMode.register;
+                                  }),
+                              child:
+                                  Text(AppLocalizations.of(context)!.sign_up)),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextButton(
+                                  onPressed: () => setState(() {
+                                        _loginMode = LoginMode.resetPassword;
+                                      }),
+                                  child: Text(AppLocalizations.of(context)!
+                                      .resetpassword)),
+                              const SizedBox(width: 16),
+                              ElevatedButton(
+                                  child: Text(
+                                      AppLocalizations.of(context)!.sign_in),
+                                  onPressed: () async {
+                                    if (!formKey.currentState!.validate())
+                                      return;
+                                    try {
+                                      await showLoadingDialogUntilFutureCompletes<
+                                              JWToken?>(
+                                          context,
+                                          autoLoginFunc(region)(
+                                              accountController.text,
+                                              passwordController.text));
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text(parseError(e),
+                                                  maxLines: 3)));
+                                    }
+                                  }),
+                            ],
+                          ),
+                        ]),
                   ],
                 ),
               ),
@@ -260,13 +278,15 @@ class _LoginScreenState extends State<LoginScreen> {
             Image.asset('assets/images/logo.png', scale: 6.5),
             const SizedBox(height: 25),
             Text(
-              AppLocalizations.of(context)!.sign_up,
+              AppLocalizations.of(context)!.welcome_comma,
               style: const TextStyle(fontSize: 35),
             ),
             Opacity(
               opacity: 0.7,
               child: Text(
-                AppLocalizations.of(context)!.region(region.name),
+                _loginMode == LoginMode.register
+                    ? AppLocalizations.of(context)!.sign_up
+                    : AppLocalizations.of(context)!.resetpassword,
                 style: const TextStyle(fontSize: 35),
               ),
             ),
@@ -308,37 +328,55 @@ class _LoginScreenState extends State<LoginScreen> {
                                 .please_enter_verify_code),
                     const SizedBox(height: 60),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TextButton(
-                            onPressed: () {
-                              setState(() {
-                                _signupMode = !_signupMode;
-                              });
-                            },
+                            onPressed: () => setState(() {
+                                  _loginMode = LoginMode.login;
+                                }),
                             child: Text(AppLocalizations.of(context)!.sign_in)),
-                        const SizedBox(width: 16),
-                        ElevatedButton(
-                            child: Text(AppLocalizations.of(context)!.sign_up),
-                            onPressed: () async {
-                              if (!formKey.currentState!.validate()) return;
-                              try {
-                                await showLoadingDialogUntilFutureCompletes<
-                                        JWToken?>(
-                                    context,
-                                    autoSignupFunc(region)(
-                                        accountController.text,
-                                        passwordController.text,
-                                        verifycodeController.text));
-                              } catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content:
-                                            Text(parseError(e), maxLines: 3)));
-                              }
-                            })
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextButton(
+                                onPressed: () => setState(() {
+                                      _loginMode == LoginMode.register
+                                          ? _loginMode = LoginMode.resetPassword
+                                          : _loginMode = LoginMode.register;
+                                    }),
+                                child: Text(_loginMode == LoginMode.register
+                                    ? AppLocalizations.of(context)!
+                                        .resetpassword
+                                    : AppLocalizations.of(context)!.sign_up)),
+                            const SizedBox(width: 16),
+                            ElevatedButton(
+                                child: Text(_loginMode == LoginMode.register
+                                    ? AppLocalizations.of(context)!.sign_up
+                                    : AppLocalizations.of(context)!
+                                        .resetpassword),
+                                onPressed: () async {
+                                  if (!formKey.currentState!.validate()) return;
+                                  try {
+                                    await showLoadingDialogUntilFutureCompletes<
+                                            JWToken?>(
+                                        context,
+                                        autoSignupFunc(region)(
+                                            accountController.text,
+                                            passwordController.text,
+                                            verifycodeController.text,
+                                            resetPassword: _loginMode ==
+                                                LoginMode.resetPassword));
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            content: Text(parseError(e),
+                                                maxLines: 3)));
+                                  }
+                                }),
+                          ],
+                        ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -359,9 +397,9 @@ class _LoginScreenState extends State<LoginScreen> {
           return AnimatedCrossFade(
             firstChild: buildLoginPanel(context, snapshot.data as Region),
             secondChild: buildSignupPanel(context, snapshot.data as Region),
-            crossFadeState: _signupMode
-                ? CrossFadeState.showSecond
-                : CrossFadeState.showFirst,
+            crossFadeState: _loginMode == LoginMode.login
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
             duration: const Duration(milliseconds: 200),
           );
         } else {

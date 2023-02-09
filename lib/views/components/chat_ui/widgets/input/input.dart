@@ -34,7 +34,7 @@ class Input extends StatefulWidget {
 
   /// Will be called on [SendButton] tap. Has [types.PartialText] which can
   /// be transformed to [types.TextMessage] and added to the messages list.
-  final void Function(types.PartialText) onSendPressed;
+  final void Function(types.PartialText, VoidCallback) onSendPressed;
 
   /// Customisation options for the [Input].
   final InputOptions options;
@@ -118,7 +118,7 @@ class _InputState extends State<Input> {
     final trimmedText = _textController.text.trim();
     if (trimmedText != '') {
       final partialText = types.PartialText(text: trimmedText);
-      widget.onSendPressed(partialText);
+      widget.onSendPressed(partialText, _textController.clear);
 
       if (widget.options.inputClearMode == InputClearMode.always) {
         _textController.clear();

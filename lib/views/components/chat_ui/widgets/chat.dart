@@ -248,7 +248,7 @@ class Chat extends StatefulWidget {
       onPreviewDataFetched;
 
   /// See [Input.onSendPressed].
-  final void Function(types.PartialText) onSendPressed;
+  final void Function(types.PartialText, VoidCallback) onSendPressed;
 
   /// See [ChatList.scrollController].
   /// If provided, you cannot use the scroll to message functionality.

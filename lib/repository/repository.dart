@@ -127,6 +127,33 @@ class Repository {
         options: Options(headers: _tokenHeader));
     return (response.data! as List).map((e) => ChatRecord.fromJson(e)).toList();
   }
+
+  Future<ChatRecord?> chatSendMessage(int chatId, String message) async {
+    await Future.delayed(const Duration(seconds: 1));
+    return ChatRecord(
+        chat_id: 123,
+        id: 456,
+        like_data: 0,
+        created_at: "",
+        request: "abc",
+        response: "def");
+  }
+
+  Future<ChatRecord?> chatRegenerateLast(int chatId) async {
+    await Future.delayed(const Duration(seconds: 1));
+    return ChatRecord(
+        chat_id: 123,
+        id: 456,
+        like_data: 0,
+        created_at: "",
+        request: "abc",
+        response: "regen");
+  }
+
+  Future<void> modifyRecord(int recordId, int like) async {
+    await dio.put("$baseUrl/records/$recordId",
+        options: Options(headers: _tokenHeader), data: {"like": like});
+  }
 }
 
 class JWTInterceptor extends QueuedInterceptor {

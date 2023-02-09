@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:openchat_frontend/model/user.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:openchat_frontend/utils/dialog.dart';
 import 'package:openchat_frontend/views/chat_page.dart';

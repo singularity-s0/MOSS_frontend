@@ -30,6 +30,7 @@ dependencies:
   dio: ^4.0.6
   json_serializable: ^6.6.1
   json_annotation: ^4.8.0
+  shared_preferences: ^2.0.17
 
 dev_dependencies:
   flutter_test:

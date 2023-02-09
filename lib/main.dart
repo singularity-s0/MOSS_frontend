@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:openchat_frontend/utils/settings_provider.dart';
 import 'package:openchat_frontend/views/chat_page.dart';
 import 'package:openchat_frontend/views/login_page.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  await SettingsProvider.getInstance().init();
   runApp(const MainApp());
 }
 
@@ -32,7 +34,9 @@ class MainApp extends StatelessWidget {
       providers: [
         // FIXME: Should create provider instead of using singleton, this allows for multiple accounts without refactor
         ChangeNotifierProvider<AccountProvider>.value(
-            value: AccountProvider.getInstance())
+            value: AccountProvider.getInstance()),
+        ChangeNotifierProvider<SettingsProvider>.value(
+            value: SettingsProvider.getInstance())
       ],
       child: MaterialApp(
         onGenerateTitle: (context) => AppLocalizations.of(context)!.app_name,

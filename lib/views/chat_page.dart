@@ -150,34 +150,47 @@ class _ChatViewState extends State<ChatView> {
     try {
       records = (widget.topic.records ??
           await Repository.getInstance().getChatRecords(widget.topic.id))!;
-      for (final record in records.reversed) {
-        _messages.add(types.TextMessage(
-          id: "${widget.topic.id}-${record.id}r",
-          text: record.response,
-          author: reply,
-          // ignore: prefer_const_literals_to_create_immutables
-          metadata: {'animatedIndex': 0},
-        ));
-        _messages.add(types.TextMessage(
-          id: "${widget.topic.id}-${record.id}",
-          text: record.request,
-          author: user,
-          // ignore: prefer_const_literals_to_create_immutables
-          metadata: {'animatedIndex': 0},
-        ));
+      if (records.isNotEmpty) {
+        setState(() {
+          _messages.insert(
+              0,
+              types.SystemMessage(
+                text: AppLocalizations.of(context)!.aigc_warning_message,
+                id: "${widget.topic.id}ai-alert",
+              ));
+        });
+        await Future.delayed(
+            const Duration(milliseconds: 50)); // A hack to let animations run
+      }
+      for (final record in records) {
+        _messages.insert(
+            0,
+            types.TextMessage(
+              id: "${widget.topic.id}-${record.id}",
+              text: record.request,
+              author: user,
+              // ignore: prefer_const_literals_to_create_immutables
+              metadata: {'animatedIndex': 0},
+            ));
+        _messages.insert(
+            0,
+            types.TextMessage(
+              id: "${widget.topic.id}-${record.id}r",
+              text: record.response,
+              author: reply,
+              // ignore: prefer_const_literals_to_create_immutables
+              metadata: {'animatedIndex': 0},
+            ));
       }
     } catch (e) {
-      _messages.add(types.SystemMessage(
-        text: parseError(e),
-        id: "${widget.topic.id}ai-error${_messages.length}",
-      ));
+      _messages.insert(
+          0,
+          types.SystemMessage(
+            text: parseError(e),
+            id: "${widget.topic.id}ai-error${_messages.length}",
+          ));
     } finally {
-      setState(() {
-        // _messages.add(types.SystemMessage(
-        //   text: AppLocalizations.of(context)!.aigc_warning_message,
-        //   id: "${widget.topic.id}ai-alert",
-        // ));
-      });
+      setState(() {});
     }
   }
 
@@ -234,12 +247,18 @@ class _ChatViewState extends State<ChatView> {
               final response = (await Repository.getInstance()
                   .chatSendMessage(widget.topic.id, message.text))!;
               if (records.isEmpty) {
-                // Handle first record: change title
+                // Handle first record: change title and add warning message
                 final provider =
                     Provider.of<AccountProvider>(context, listen: false);
                 provider.user!.chats!
                     .firstWhere((element) => element.id == widget.topic.id)
                     .name = response.request;
+              }
+              if (_messages.isEmpty) {
+                _messages.add(types.SystemMessage(
+                  text: AppLocalizations.of(context)!.aigc_warning_message,
+                  id: "${widget.topic.id}ai-alert",
+                ));
               }
               records.add(response);
               setState(() {

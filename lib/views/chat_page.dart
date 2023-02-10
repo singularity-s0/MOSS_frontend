@@ -117,11 +117,10 @@ class _ChatViewState extends State<ChatView> {
   void lateInit() {
     lateInitDone = true;
     _messages.clear();
-    _messages.add(const types.SystemMessage(
+    _messages.add(types.SystemMessage(
       text: "",
-      id: "divider",
+      id: "${widget.topic.id}divider",
     ));
-
     _getRecords();
   }
 
@@ -145,34 +144,30 @@ class _ChatViewState extends State<ChatView> {
     try {
       records = (widget.topic.records ??
           await Repository.getInstance().getChatRecords(widget.topic.id))!;
-      setState(() {
-        for (final record in records.reversed) {
-          _messages.add(types.TextMessage(
-            id: '${record.id}r',
-            text: record.response,
-            author: reply,
-            metadata: {'animatedIndex': 0}, // DO NOT mark this as constant
-          ));
-          _messages.add(types.TextMessage(
-            id: record.id.toString(),
-            text: record.request,
-            author: user,
-            metadata: {'animatedIndex': 0}, // DO NOT mark this as constant
-          ));
-        }
-      });
-    } catch (e) {
-      setState(() {
-        _messages.add(types.SystemMessage(
-          text: parseError(e),
-          id: "ai-error${_messages.length}",
+      for (final record in records.reversed) {
+        _messages.add(types.TextMessage(
+          id: "${widget.topic.id}-${record.id}r",
+          text: record.response,
+          author: reply,
+          metadata: {'animatedIndex': 0}, // DO NOT mark this as constant
         ));
-      });
+        _messages.add(types.TextMessage(
+          id: "${widget.topic.id}-${record.id}",
+          text: record.request,
+          author: user,
+          metadata: {'animatedIndex': 0}, // DO NOT mark this as constant
+        ));
+      }
+    } catch (e) {
+      _messages.add(types.SystemMessage(
+        text: parseError(e),
+        id: "${widget.topic.id}ai-error${_messages.length}",
+      ));
     } finally {
       setState(() {
         _messages.add(types.SystemMessage(
           text: AppLocalizations.of(context)!.aigc_warning_message,
-          id: "ai-alert",
+          id: "${widget.topic.id}ai-alert",
         ));
       });
     }

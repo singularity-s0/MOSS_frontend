@@ -117,11 +117,12 @@ class _ChatViewState extends State<ChatView> {
   void lateInit() {
     lateInitDone = true;
     _messages.clear();
-    _getRecords();
-    _messages.add(types.SystemMessage(
-      text: parseDateTime(DateTime.now()),
-      id: "datetime",
+    _messages.add(const types.SystemMessage(
+      text: "",
+      id: "divider",
     ));
+
+    _getRecords();
   }
 
   @override

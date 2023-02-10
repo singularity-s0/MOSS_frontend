@@ -152,12 +152,18 @@ class _ChatViewState extends State<ChatView> {
           _messages.insert(
               0,
               types.SystemMessage(
-                text: AppLocalizations.of(context)!.aigc_warning_message,
-                id: "${widget.topic.id}ai-alert",
+                text: "",
+                id: "${widget.topic.id}hack",
               ));
         });
         await Future.delayed(
-            const Duration(milliseconds: 50)); // A hack to let animations run
+            const Duration(milliseconds: 100)); // A hack to let animations run
+        _messages.insert(
+            0,
+            types.SystemMessage(
+              text: AppLocalizations.of(context)!.aigc_warning_message,
+              id: "${widget.topic.id}ai-alert",
+            ));
       }
       widget.topic.records = records;
       for (final record in records) {
@@ -228,7 +234,7 @@ class _ChatViewState extends State<ChatView> {
             ? const MossIntroWidget(
                 heroTag: ValueKey("MossLogo"),
               )
-            : null,
+            : const SizedBox(),
         onSendPressed:
             (types.PartialText message, VoidCallback clearInput) async {
           if (isWaitingForResponse) return;

@@ -7,12 +7,24 @@ class MossIntroWidget extends StatelessWidget {
 
   const MossIntroWidget({Key? key, required this.heroTag}) : super(key: key);
 
+  Widget buildBanner(String title, String subtitle, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 12),
+      child: ListTile(
+        leading: Icon(icon),
+        title: Text(title),
+        subtitle: Text(subtitle),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Padding(
@@ -23,25 +35,18 @@ class MossIntroWidget extends StatelessWidget {
                     tag: heroTag, child: Image.asset("assets/images/logo.png")),
               ),
             ),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 368),
+            IntrinsicWidth(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    AppLocalizations.of(context)!.moss_intro_1,
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                  const SizedBox(height: 25),
-                  Text(
-                    AppLocalizations.of(context)!.moss_intro_2,
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                  const SizedBox(height: 25),
-                  Text(
-                    AppLocalizations.of(context)!.moss_intro_3,
-                    style: const TextStyle(fontSize: 20),
-                  ),
+                  buildBanner("Chat with MOSS in English",
+                      "MOSS is learning Chinese...", Icons.chat),
+                  buildBanner("Improve Writing and Coding",
+                      "with the aid of MOSS", Icons.edit),
+                  buildBanner("Help AI Research", "by rating responses of MOSS",
+                      Icons.help)
                 ],
               ),
             ),

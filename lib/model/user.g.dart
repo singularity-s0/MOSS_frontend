@@ -37,6 +37,7 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       chats: (json['chats'] as List<dynamic>?)
           ?.map((e) => ChatThread.fromJson(e as Map<String, dynamic>))
           .toList(),
+      share_consent: json['share_consent'] as bool,
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
@@ -46,5 +47,6 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'last_login': instance.last_login,
       'nickname': instance.nickname,
       'phone': instance.phone,
+      'share_consent': instance.share_consent,
       'chats': instance.chats,
     };

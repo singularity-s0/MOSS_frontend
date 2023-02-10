@@ -152,6 +152,12 @@ class Repository {
         options: Options(headers: _tokenHeader));
     return User.fromJson(response.data!);
   }
+
+  Future<void> setShareInfoConsent(bool value) async {
+    await dio.put("$baseUrl/users/me",
+        options: Options(headers: _tokenHeader),
+        data: {"share_consent": value});
+  }
 }
 
 class JWTInterceptor extends QueuedInterceptor {

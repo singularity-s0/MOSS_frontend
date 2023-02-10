@@ -12,6 +12,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:openchat_frontend/views/components/chat_ui/flutter_chat_ui.dart';
 import 'package:openchat_frontend/views/components/intro.dart';
 import 'package:openchat_frontend/views/components/typing_indicator.dart';
+import 'package:openchat_frontend/views/components/widgets.dart';
 import 'package:openchat_frontend/views/history_page.dart';
 import 'package:provider/provider.dart';
 
@@ -123,10 +124,6 @@ class _ChatViewState extends State<ChatView> {
   void lateInit() {
     lateInitDone = true;
     _messages.clear();
-    // _messages.add(types.SystemMessage(
-    //   text: "",
-    //   id: "${widget.topic.id}divider",
-    // ));
     _getRecords();
   }
 
@@ -300,10 +297,10 @@ class _ChatViewState extends State<ChatView> {
                       : CrossFadeState.showSecond,
                   duration: const Duration(milliseconds: 200),
                   firstChild: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: const [TypingIndicator()]),
                   secondChild: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       TextButton.icon(
                           icon: const Icon(Icons.refresh, size: 16),
@@ -396,6 +393,9 @@ class _ChatViewState extends State<ChatView> {
                                 SnackBar(content: Text(parseError(e))));
                           }
                         },
+                      ),
+                      const Expanded(
+                        child: ShareInfoConsentWidget(),
                       ),
                     ],
                   ),

@@ -38,6 +38,7 @@ class User {
   String last_login;
   String nickname;
   String phone;
+  bool share_consent;
   List<ChatThread>? chats;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
@@ -51,5 +52,6 @@ class User {
       required this.last_login,
       required this.nickname,
       required this.phone,
-      required this.chats});
+      required this.chats,
+      required this.share_consent});
 }

@@ -31,6 +31,7 @@ dependencies:
   flutter_link_previewer: ^3.2.0
   url_launcher: ^6.1.9
   flutter_parsed_text: ^2.2.1
+  local_hero: ^0.2.0
 
 dev_dependencies:
   flutter_test:

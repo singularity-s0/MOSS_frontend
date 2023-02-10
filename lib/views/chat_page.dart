@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter/material.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
-import 'package:openchat_frontend/views/components/local_hero/local_hero.dart';
+import 'package:local_hero/local_hero.dart';
 import 'package:openchat_frontend/model/chat.dart';
 import 'package:openchat_frontend/repository/repository.dart';
 import 'package:openchat_frontend/utils/dialog.dart';

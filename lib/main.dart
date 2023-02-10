@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:openchat_frontend/views/components/local_hero/local_hero.dart';
+import 'package:local_hero/local_hero.dart';
 import 'package:openchat_frontend/repository/repository.dart';
 import 'package:openchat_frontend/utils/settings_provider.dart';
 import 'package:openchat_frontend/views/chat_page.dart';

@@ -9,8 +9,8 @@ class ChatThread {
   int count;
   String created_at;
   String updated_at;
-  int id;
-  int user_id;
+  final int id;
+  final int user_id;
   List<ChatRecord>? records;
 
   factory ChatThread.fromJson(Map<String, dynamic> json) =>
@@ -29,8 +29,8 @@ class ChatThread {
 
 @JsonSerializable()
 class ChatRecord {
-  int chat_id;
-  int id;
+  final int chat_id;
+  final int id;
   String? feedback;
   int like_data;
   String created_at;

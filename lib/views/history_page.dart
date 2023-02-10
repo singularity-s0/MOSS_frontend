@@ -4,6 +4,7 @@ import 'package:openchat_frontend/repository/repository.dart';
 import 'package:openchat_frontend/utils/dialog.dart';
 import 'package:openchat_frontend/views/chat_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:openchat_frontend/views/components/account_card.dart';
 
 class HistoryPage extends StatefulWidget {
   final ChatThread? selectedTopic;
@@ -77,19 +78,6 @@ class _HistoryPageState extends State<HistoryPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.topics),
-        actions: [
-          PopupMenuButton(
-            icon: const Icon(Icons.more_vert),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                child: Text(AppLocalizations.of(context)!.sign_out),
-                onTap: () {
-                  Repository.getInstance().logout();
-                },
-              ),
-            ],
-          ),
-        ],
       ),
       body: ListView.builder(
           itemBuilder: (context, i) {
@@ -128,6 +116,7 @@ class _HistoryPageState extends State<HistoryPage> {
             }
           },
           itemCount: listItemCount),
+      bottomSheet: const AccountCard(),
     );
   }
 }

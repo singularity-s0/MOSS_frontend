@@ -34,8 +34,8 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       last_login: json['last_login'] as String,
       nickname: json['nickname'] as String,
       phone: json['phone'] as String,
-      chats: (json['chats'] as List<dynamic>)
-          .map((e) => ChatThread.fromJson(e as Map<String, dynamic>))
+      chats: (json['chats'] as List<dynamic>?)
+          ?.map((e) => ChatThread.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

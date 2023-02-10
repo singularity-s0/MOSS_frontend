@@ -146,6 +146,12 @@ class Repository {
     await dio.put("$baseUrl/records/$recordId",
         options: Options(headers: _tokenHeader), data: {"like": like});
   }
+
+  Future<User?> getUserInfo() async {
+    final Response response = await dio.get("$baseUrl/users/me",
+        options: Options(headers: _tokenHeader));
+    return User.fromJson(response.data!);
+  }
 }
 
 class JWTInterceptor extends QueuedInterceptor {

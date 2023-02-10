@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:openchat_frontend/model/user.dart';
+import 'package:openchat_frontend/repository/repository.dart';
 import 'package:openchat_frontend/utils/settings_provider.dart';
 
 class AccountProvider with ChangeNotifier {
@@ -17,5 +18,27 @@ class AccountProvider with ChangeNotifier {
   set token(JWToken? value) {
     _token = value;
     notifyListeners();
+  }
+
+  // User info, if this is null, the user is not logged in.
+  User? _user;
+  User? get user {
+    if (_user == null) {
+      fetchUserInfo();
+    }
+    return _user;
+  }
+
+  set user(User? value) {
+    _user = value;
+    notifyListeners();
+  }
+
+  Future<void> fetchUserInfo() async {
+    try {
+      user = await Repository.getInstance().getUserInfo();
+    } catch (e) {
+      print("Error fetching user info: $e");
+    }
   }
 }

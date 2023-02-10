@@ -33,12 +33,12 @@ class ErrorMessage {
 @JsonSerializable()
 class User {
   String email;
-  int id;
+  final int id;
   String joined_time;
   String last_login;
   String nickname;
   String phone;
-  List<ChatThread> chats;
+  List<ChatThread>? chats;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

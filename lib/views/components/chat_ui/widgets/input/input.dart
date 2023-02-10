@@ -56,7 +56,7 @@ class _InputState extends State<Input> {
               PhysicalKeyboardKey.shiftRight,
             }.contains(el),
           )) {
-        if (event is KeyDownEvent) {
+        if (event is KeyDownEvent && !_textController.value.composing.isValid) {
           _handleSendPressed();
         }
         return KeyEventResult.handled;

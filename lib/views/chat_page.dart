@@ -162,6 +162,7 @@ class _ChatViewState extends State<ChatView> {
         await Future.delayed(
             const Duration(milliseconds: 50)); // A hack to let animations run
       }
+      widget.topic.records = records;
       for (final record in records) {
         _messages.insert(
             0,
@@ -197,216 +198,219 @@ class _ChatViewState extends State<ChatView> {
   bool get isWaitingForResponse => _messages.firstOrNull?.author.id == user.id;
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: _messages.isEmpty
-              ? const SizedBox()
-              : LocalHero(
-                  tag: const ValueKey("MossLogo"),
-                  child: Image.asset('assets/images/logo.png', scale: 6.5)),
-          surfaceTintColor: Colors.transparent,
+  Widget build(BuildContext context) {
+    print(widget.topic.records);
+    return Scaffold(
+      appBar: AppBar(
+        title: widget.topic.records?.isEmpty == true
+            ? const SizedBox()
+            : LocalHero(
+                tag: const ValueKey("MossLogo"),
+                child: Image.asset('assets/images/logo.png', scale: 6.5)),
+        surfaceTintColor: Colors.transparent,
+      ),
+      body: Chat(
+        messages: _messages,
+        user: user,
+        showUserAvatars: false,
+        inputOptions: const InputOptions(
+            inputClearMode: InputClearMode.never,
+            sendButtonVisibilityMode: SendButtonVisibilityMode.always),
+        theme: DefaultChatTheme(
+          primaryColor: Theme.of(context).primaryColor,
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          inputBackgroundColor: Theme.of(context).colorScheme.secondary,
+          inputTextCursorColor: Theme.of(context).colorScheme.onSecondary,
+          inputTextColor: Theme.of(context).colorScheme.onSecondary,
+          inputBorderRadius: const BorderRadius.all(Radius.circular(8)),
+          inputMargin: EdgeInsets.only(
+              left: 16,
+              right: 16,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 16),
         ),
-        body: Chat(
-          messages: _messages,
-          user: user,
-          showUserAvatars: false,
-          inputOptions: const InputOptions(
-              inputClearMode: InputClearMode.never,
-              sendButtonVisibilityMode: SendButtonVisibilityMode.always),
-          theme: DefaultChatTheme(
-            primaryColor: Theme.of(context).primaryColor,
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            inputBackgroundColor: Theme.of(context).colorScheme.secondary,
-            inputTextCursorColor: Theme.of(context).colorScheme.onSecondary,
-            inputTextColor: Theme.of(context).colorScheme.onSecondary,
-            inputBorderRadius: const BorderRadius.all(Radius.circular(8)),
-            inputMargin: EdgeInsets.only(
-                left: 16,
-                right: 16,
-                bottom: MediaQuery.of(context).viewInsets.bottom + 16),
-          ),
-          emptyState: const MossIntroWidget(
-            heroTag: ValueKey("MossLogo"),
-          ),
-          onSendPressed:
-              (types.PartialText message, VoidCallback clearInput) async {
-            if (isWaitingForResponse) return;
-            clearInput();
+        emptyState: widget.topic.records?.isEmpty == true
+            ? const MossIntroWidget(
+                heroTag: ValueKey("MossLogo"),
+              )
+            : null,
+        onSendPressed:
+            (types.PartialText message, VoidCallback clearInput) async {
+          if (isWaitingForResponse) return;
+          clearInput();
+          setState(() {
+            if (records.isEmpty) {
+              _messages.insert(
+                  0,
+                  types.SystemMessage(
+                    text: AppLocalizations.of(context)!.aigc_warning_message,
+                    id: "${widget.topic.id}ai-alert",
+                  ));
+            }
+            _messages.insert(
+                0,
+                types.TextMessage(
+                    author: user,
+                    text: message.text,
+                    // ignore: prefer_const_literals_to_create_immutables
+                    metadata: {'animatedIndex': 0},
+                    id: _messages.length.toString(),
+                    type: types.MessageType.text));
+          });
+          try {
+            final response = (await Repository.getInstance()
+                .chatSendMessage(widget.topic.id, message.text))!;
+            if (records.isEmpty) {
+              // Handle first record: change title and add warning message
+              final provider =
+                  Provider.of<AccountProvider>(context, listen: false);
+              provider.user!.chats!
+                  .firstWhere((element) => element.id == widget.topic.id)
+                  .name = response.request;
+            }
+            records.add(response);
             setState(() {
-              if (records.isEmpty) {
-                _messages.insert(
-                    0,
-                    types.SystemMessage(
-                      text: AppLocalizations.of(context)!.aigc_warning_message,
-                      id: "${widget.topic.id}ai-alert",
-                    ));
-              }
               _messages.insert(
                   0,
                   types.TextMessage(
-                      author: user,
-                      text: message.text,
+                      author: reply,
+                      text: response.response,
                       // ignore: prefer_const_literals_to_create_immutables
                       metadata: {'animatedIndex': 0},
                       id: _messages.length.toString(),
                       type: types.MessageType.text));
             });
-            try {
-              final response = (await Repository.getInstance()
-                  .chatSendMessage(widget.topic.id, message.text))!;
-              if (records.isEmpty) {
-                // Handle first record: change title and add warning message
-                final provider =
-                    Provider.of<AccountProvider>(context, listen: false);
-                provider.user!.chats!
-                    .firstWhere((element) => element.id == widget.topic.id)
-                    .name = response.request;
-              }
-              records.add(response);
-              setState(() {
-                _messages.insert(
-                    0,
-                    types.TextMessage(
-                        author: reply,
-                        text: response.response,
-                        // ignore: prefer_const_literals_to_create_immutables
-                        metadata: {'animatedIndex': 0},
-                        id: _messages.length.toString(),
-                        type: types.MessageType.text));
-              });
-            } catch (e) {
-              setState(() {
-                _messages.insert(
-                    0,
-                    types.SystemMessage(
-                      text: parseError(e),
-                      id: "ai-error${_messages.length}",
-                    ));
-              });
-            }
-          },
-          listBottomWidget: Padding(
-            padding: const EdgeInsets.only(left: 16, right: 8, bottom: 8),
-            child: (_messages.firstOrNull?.author.id != user.id &&
-                    _messages.firstOrNull?.author.id != reply.id)
-                ? const SizedBox(height: 40)
-                : AnimatedCrossFade(
-                    crossFadeState: isWaitingForResponse
-                        ? CrossFadeState.showFirst
-                        : CrossFadeState.showSecond,
-                    duration: const Duration(milliseconds: 200),
-                    firstChild: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: const [TypingIndicator()]),
-                    secondChild: Row(
+          } catch (e) {
+            setState(() {
+              _messages.insert(
+                  0,
+                  types.SystemMessage(
+                    text: parseError(e),
+                    id: "ai-error${_messages.length}",
+                  ));
+            });
+          }
+        },
+        listBottomWidget: Padding(
+          padding: const EdgeInsets.only(left: 16, right: 8, bottom: 8),
+          child: (_messages.firstOrNull?.author.id != user.id &&
+                  _messages.firstOrNull?.author.id != reply.id)
+              ? const SizedBox(height: 40)
+              : AnimatedCrossFade(
+                  crossFadeState: isWaitingForResponse
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
+                  duration: const Duration(milliseconds: 200),
+                  firstChild: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        TextButton.icon(
-                            icon: const Icon(Icons.refresh, size: 16),
-                            label:
-                                Text(AppLocalizations.of(context)!.regenerate),
-                            onPressed: () async {
-                              setState(() {
-                                _messages.removeAt(0);
-                                records.removeAt(0);
-                              });
-                              try {
-                                final response = (await Repository.getInstance()
-                                    .chatRegenerateLast(widget.topic.id))!;
-                                records.add(response);
-                                setState(() {
-                                  _messages.insert(
-                                      0,
-                                      types.TextMessage(
-                                          author: reply,
-                                          text: response.response,
-                                          // ignore: prefer_const_literals_to_create_immutables
-                                          metadata: {'animatedIndex': 0},
-                                          id: _messages.length.toString(),
-                                          type: types.MessageType.text));
-                                });
-                              } catch (e) {
-                                setState(() {
-                                  _messages.insert(
-                                      0,
-                                      types.SystemMessage(
-                                        text: parseError(e),
-                                        id: "ai-error${_messages.length}",
-                                      ));
-                                });
-                              }
-                            }),
-                        IconButton(
-                          icon: Icon(Icons.thumb_up,
-                              size: 16,
-                              color: records.lastOrNull?.like_data == 1
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Theme.of(context)
-                                      .buttonTheme
-                                      .colorScheme
-                                      ?.onSurface
-                                      .withAlpha(130)),
-                          padding: EdgeInsets.zero,
+                      children: const [TypingIndicator()]),
+                  secondChild: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      TextButton.icon(
+                          icon: const Icon(Icons.refresh, size: 16),
+                          label: Text(AppLocalizations.of(context)!.regenerate),
                           onPressed: () async {
-                            if (records.isEmpty) return;
-                            int newLike = 1;
-                            if (records.last.like_data == newLike) {
-                              newLike = 0;
-                            }
+                            setState(() {
+                              _messages.removeAt(0);
+                              records.removeAt(0);
+                            });
                             try {
-                              await Repository.getInstance()
-                                  .modifyRecord(records.last.id, newLike);
+                              final response = (await Repository.getInstance()
+                                  .chatRegenerateLast(widget.topic.id))!;
+                              records.add(response);
                               setState(() {
-                                records.last.like_data = newLike;
+                                _messages.insert(
+                                    0,
+                                    types.TextMessage(
+                                        author: reply,
+                                        text: response.response,
+                                        // ignore: prefer_const_literals_to_create_immutables
+                                        metadata: {'animatedIndex': 0},
+                                        id: _messages.length.toString(),
+                                        type: types.MessageType.text));
                               });
                             } catch (e) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(parseError(e))));
-                            }
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.thumb_down,
-                              size: 16,
-                              color: records.lastOrNull?.like_data == -1
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Theme.of(context)
-                                      .buttonTheme
-                                      .colorScheme
-                                      ?.onSurface
-                                      .withAlpha(130)),
-                          padding: EdgeInsets.zero,
-                          onPressed: () async {
-                            if (records.isEmpty) return;
-                            int newLike = -1;
-                            if (records.last.like_data == newLike) {
-                              newLike = 0;
-                            }
-                            try {
-                              await Repository.getInstance()
-                                  .modifyRecord(records.last.id, newLike);
                               setState(() {
-                                records.last.like_data = newLike;
+                                _messages.insert(
+                                    0,
+                                    types.SystemMessage(
+                                      text: parseError(e),
+                                      id: "ai-error${_messages.length}",
+                                    ));
                               });
-                            } catch (e) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(parseError(e))));
                             }
-                          },
-                        ),
-                      ],
-                    ),
+                          }),
+                      IconButton(
+                        icon: Icon(Icons.thumb_up,
+                            size: 16,
+                            color: records.lastOrNull?.like_data == 1
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context)
+                                    .buttonTheme
+                                    .colorScheme
+                                    ?.onSurface
+                                    .withAlpha(130)),
+                        padding: EdgeInsets.zero,
+                        onPressed: () async {
+                          if (records.isEmpty) return;
+                          int newLike = 1;
+                          if (records.last.like_data == newLike) {
+                            newLike = 0;
+                          }
+                          try {
+                            await Repository.getInstance()
+                                .modifyRecord(records.last.id, newLike);
+                            setState(() {
+                              records.last.like_data = newLike;
+                            });
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(parseError(e))));
+                          }
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.thumb_down,
+                            size: 16,
+                            color: records.lastOrNull?.like_data == -1
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context)
+                                    .buttonTheme
+                                    .colorScheme
+                                    ?.onSurface
+                                    .withAlpha(130)),
+                        padding: EdgeInsets.zero,
+                        onPressed: () async {
+                          if (records.isEmpty) return;
+                          int newLike = -1;
+                          if (records.last.like_data == newLike) {
+                            newLike = 0;
+                          }
+                          try {
+                            await Repository.getInstance()
+                                .modifyRecord(records.last.id, newLike);
+                            setState(() {
+                              records.last.like_data = newLike;
+                            });
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(parseError(e))));
+                          }
+                        },
+                      ),
+                    ],
                   ),
-          ),
-          textMessageBuilder: (msg,
-              {required messageWidth, required showName}) {
-            return AnimatedTextMessage(
-              message: msg,
-              animate: false,
-            );
-          },
+                ),
         ),
-      );
+        textMessageBuilder: (msg, {required messageWidth, required showName}) {
+          return AnimatedTextMessage(
+            message: msg,
+            animate: false,
+          );
+        },
+      ),
+    );
+  }
 }
 
 extension ExtList<T> on List<T> {

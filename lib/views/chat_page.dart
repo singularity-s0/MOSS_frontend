@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter/material.dart';
+import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:openchat_frontend/views/components/local_hero/local_hero.dart';
 import 'package:openchat_frontend/model/chat.dart';
 import 'package:openchat_frontend/repository/repository.dart';
@@ -12,6 +13,7 @@ import 'package:openchat_frontend/views/components/chat_ui/flutter_chat_ui.dart'
 import 'package:openchat_frontend/views/components/intro.dart';
 import 'package:openchat_frontend/views/components/typing_indicator.dart';
 import 'package:openchat_frontend/views/history_page.dart';
+import 'package:provider/provider.dart';
 
 const user = types.User(id: 'user');
 const reply = types.User(id: 'moss');
@@ -231,6 +233,14 @@ class _ChatViewState extends State<ChatView> {
             try {
               final response = (await Repository.getInstance()
                   .chatSendMessage(widget.topic.id, message.text))!;
+              if (records.isEmpty) {
+                // Handle first record: change title
+                final provider =
+                    Provider.of<AccountProvider>(context, listen: false);
+                provider.user!.chats!
+                    .firstWhere((element) => element.id == widget.topic.id)
+                    .name = response.request;
+              }
               records.add(response);
               setState(() {
                 _messages.insert(

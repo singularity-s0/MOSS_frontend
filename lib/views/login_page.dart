@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:openchat_frontend/model/user.dart';
 import 'package:openchat_frontend/repository/repository.dart';
+import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:openchat_frontend/utils/dialog.dart';
 import 'package:openchat_frontend/views/chat_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 // ignore: constant_identifier_names
 enum Region { CN, Global }
@@ -40,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
   late TextEditingController verifycodeController;
   late TextEditingController passwordController;
 
-  late Future<Region> _region;
+  late Future<Region> _regionAndUserData;
 
   LoginMode _loginMode = LoginMode.login;
 
@@ -49,7 +51,9 @@ class _LoginScreenState extends State<LoginScreen> {
     accountController = TextEditingController();
     passwordController = TextEditingController();
     verifycodeController = TextEditingController();
-    _region = Future.delayed(const Duration(seconds: 1), () => Region.Global);
+    _regionAndUserData = Provider.of<AccountProvider>(context, listen: false)
+        .fetchUserInfo()
+        .then((value) => Region.Global);
     super.initState();
   }
 
@@ -383,7 +387,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget buildContent(BuildContext context) {
     return FutureBuilder(
-      future: _region,
+      future: _regionAndUserData,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return buildLandingPage(context, error: snapshot.error);

@@ -24,7 +24,8 @@ class MainApp extends StatelessWidget {
     '/': (context, {arguments}) {
       // Dynamically show chat page or login page based on logged in or not
       final token = context.watch<AccountProvider>().token;
-      if (token == null) {
+      final user = context.watch<AccountProvider>().user;
+      if (token == null || user == null) {
         return const LoginScreen();
       } else {
         return ChatPage();

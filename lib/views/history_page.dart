@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:openchat_frontend/model/chat.dart';
 import 'package:openchat_frontend/repository/repository.dart';
+import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:openchat_frontend/utils/dialog.dart';
 import 'package:openchat_frontend/views/chat_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:openchat_frontend/views/components/account_card.dart';
+import 'package:provider/provider.dart';
 
 class HistoryPage extends StatefulWidget {
   final ChatThread? selectedTopic;
@@ -18,12 +20,8 @@ class HistoryPage extends StatefulWidget {
 class _HistoryPageState extends State<HistoryPage> {
   bool isLoading = true;
   Object? error;
-  List<ChatThread> data = [];
 
   bool _isEditing = false;
-
-  int get listItemCount =>
-      (1 + ((isLoading || error != null) ? 1 : 0) + data.length);
 
   void selectTopic(ChatThread t) {
     var parent = context.findAncestorWidgetOfExactType<ChatPage>();
@@ -33,10 +31,11 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Future<void> refresh() async {
+    final provider = Provider.of<AccountProvider>(context, listen: false);
     isLoading = true;
     try {
       final t = await Repository.getInstance().getChatThreads();
-      data = t ?? [];
+      provider.user!.chats = t;
       error = null;
     } catch (e) {
       error = e;
@@ -48,9 +47,10 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Future<void> addNewTopic(BuildContext context) async {
+    final provider = Provider.of<AccountProvider>(context, listen: false);
     try {
       final thread = await Repository.getInstance().newChatThread();
-      data.add(thread!);
+      provider.user!.chats!.add(thread!);
       selectTopic(thread);
     } catch (e) {
       if (context.mounted) {
@@ -61,9 +61,10 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   void init() async {
+    final provider = Provider.of<AccountProvider>(context, listen: false);
     await refresh();
-    if (data.isNotEmpty) {
-      selectTopic(data.first);
+    if (provider.user!.chats!.isNotEmpty) {
+      selectTopic(provider.user!.chats!.first);
     } else {
       addNewTopic(context);
     }
@@ -77,6 +78,10 @@ class _HistoryPageState extends State<HistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<AccountProvider>(context);
+    final listItemCount = (1 +
+        ((isLoading || error != null) ? 1 : 0) +
+        (provider.user?.chats?.length ?? 0));
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.topics),
@@ -101,7 +106,7 @@ class _HistoryPageState extends State<HistoryPage> {
             } else if (i == listItemCount - 1 && isLoading) {
               return const Center(child: CircularProgressIndicator());
             } else {
-              ChatThread thread = data[i - 1];
+              ChatThread thread = provider.user!.chats![i - 1];
               return ListTile(
                 title: Text(thread.name.isEmpty
                     ? AppLocalizations.of(context)!.untitled_topic
@@ -120,10 +125,10 @@ class _HistoryPageState extends State<HistoryPage> {
                             await Repository.getInstance()
                                 .deleteChatThread(thread.id);
                             setState(() {
-                              data.remove(thread);
+                              provider.user!.chats!.remove(thread);
                               if (widget.selectedTopic?.id == thread.id) {
-                                if (data.isNotEmpty) {
-                                  selectTopic(data.first);
+                                if (provider.user!.chats!.isNotEmpty) {
+                                  selectTopic(provider.user!.chats!.first);
                                 }
                               }
                             });

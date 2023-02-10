@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 
 import 'models/date_header.dart';
 import 'models/emoji_enlargement_behavior.dart';
-import 'models/message_spacer.dart';
 import 'models/preview_image.dart';
 import 'models/unread_header_data.dart';
 

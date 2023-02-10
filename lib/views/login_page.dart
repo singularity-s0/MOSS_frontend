@@ -1,10 +1,8 @@
 import 'dart:async';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:openchat_frontend/model/user.dart';
 import 'package:openchat_frontend/repository/repository.dart';
-import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:openchat_frontend/utils/dialog.dart';
 import 'package:openchat_frontend/views/chat_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -230,8 +228,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   child: Text(
                                       AppLocalizations.of(context)!.sign_in),
                                   onPressed: () async {
-                                    if (!lpformKey.currentState!.validate())
+                                    if (!lpformKey.currentState!.validate()) {
                                       return;
+                                    }
                                     try {
                                       await showLoadingDialogUntilFutureCompletes<
                                               JWToken?>(
@@ -348,8 +347,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                     : AppLocalizations.of(context)!
                                         .resetpassword),
                                 onPressed: () async {
-                                  if (!suformKey.currentState!.validate())
+                                  if (!suformKey.currentState!.validate()) {
                                     return;
+                                  }
                                   try {
                                     await showLoadingDialogUntilFutureCompletes<
                                             JWToken?>(

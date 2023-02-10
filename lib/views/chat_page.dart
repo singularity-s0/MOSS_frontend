@@ -153,13 +153,15 @@ class _ChatViewState extends State<ChatView> {
           id: "${widget.topic.id}-${record.id}r",
           text: record.response,
           author: reply,
-          metadata: {'animatedIndex': 0}, // DO NOT mark this as constant
+          // ignore: prefer_const_literals_to_create_immutables
+          metadata: {'animatedIndex': 0},
         ));
         _messages.add(types.TextMessage(
           id: "${widget.topic.id}-${record.id}",
           text: record.request,
           author: user,
-          metadata: {'animatedIndex': 0}, // DO NOT mark this as constant
+          // ignore: prefer_const_literals_to_create_immutables
+          metadata: {'animatedIndex': 0},
         ));
       }
     } catch (e) {
@@ -221,6 +223,7 @@ class _ChatViewState extends State<ChatView> {
                   types.TextMessage(
                       author: user,
                       text: message.text,
+                      // ignore: prefer_const_literals_to_create_immutables
                       metadata: {'animatedIndex': 0},
                       id: _messages.length.toString(),
                       type: types.MessageType.text));
@@ -235,6 +238,7 @@ class _ChatViewState extends State<ChatView> {
                     types.TextMessage(
                         author: reply,
                         text: response.response,
+                        // ignore: prefer_const_literals_to_create_immutables
                         metadata: {'animatedIndex': 0},
                         id: _messages.length.toString(),
                         type: types.MessageType.text));
@@ -285,6 +289,7 @@ class _ChatViewState extends State<ChatView> {
                                       types.TextMessage(
                                           author: reply,
                                           text: response.response,
+                                          // ignore: prefer_const_literals_to_create_immutables
                                           metadata: {'animatedIndex': 0},
                                           id: _messages.length.toString(),
                                           type: types.MessageType.text));

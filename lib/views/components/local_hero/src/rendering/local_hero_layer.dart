@@ -1,5 +1,4 @@
 import 'package:flutter/animation.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import './controller.dart';
 import './layer.dart';
@@ -123,7 +122,7 @@ class RenderLocalHeroFollowerLayer extends RenderProxyBox {
   /// If the [FollowerLayer] has not yet been created, was never composited, or
   /// was unable to determine the transform (see
   /// [FollowerLayer.getLastTransform]), this returns the identity matrix (see
-  /// [new Matrix4.identity].
+  /// [Matrix4.identity].
   Matrix4 getCurrentTransform() {
     return layer?.getLastTransform() ?? Matrix4.identity();
   }

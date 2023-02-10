@@ -46,6 +46,13 @@ String parseError(Object? error) {
   }
 }
 
+String parseDateTime(DateTime? date) {
+  if (date == null) {
+    return "";
+  }
+  return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}:${date.second.toString().padLeft(2, '0')}";
+}
+
 class ErrorRetryWidget extends StatelessWidget {
   final Object? error;
   final void Function()? onRetry;

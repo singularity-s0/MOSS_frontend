@@ -118,10 +118,8 @@ class _HistoryPageState extends State<HistoryPage> {
                 },
                 child: ListTile(
                     title: Text("Topic ${thread.id}"),
-                    subtitle: Text(DateTime.tryParse(thread.updated_at)
-                            ?.toLocal()
-                            .toString() ??
-                        ""),
+                    subtitle: Text(parseDateTime(
+                        DateTime.tryParse(thread.updated_at)?.toLocal())),
                     selected: widget.selectedTopic?.id == thread.id,
                     onTap: () {
                       selectTopic(thread);

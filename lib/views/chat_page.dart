@@ -110,19 +110,18 @@ class ChatView extends StatefulWidget {
 }
 
 class _ChatViewState extends State<ChatView> {
-  late List<types.Message> _messages;
+  final List<types.Message> _messages = [];
   late List<ChatRecord> records;
 
   bool lateInitDone = false;
   void lateInit() {
     lateInitDone = true;
-    _messages = [
-      types.SystemMessage(
-        text: AppLocalizations.of(context)!.aigc_warning_message,
-        id: "ai-alert",
-      ),
-    ];
+    _messages.clear();
     _getRecords();
+    _messages.add(types.SystemMessage(
+      text: parseDateTime(DateTime.now()),
+      id: "datetime",
+    ));
   }
 
   @override
@@ -168,10 +167,17 @@ class _ChatViewState extends State<ChatView> {
           id: "ai-error${_messages.length}",
         ));
       });
+    } finally {
+      setState(() {
+        _messages.add(types.SystemMessage(
+          text: AppLocalizations.of(context)!.aigc_warning_message,
+          id: "ai-alert",
+        ));
+      });
     }
   }
 
-  bool get isWaitingForResponse => _messages.first.author.id == user.id;
+  bool get isWaitingForResponse => _messages.firstOrNull?.author.id == user.id;
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -239,8 +245,8 @@ class _ChatViewState extends State<ChatView> {
           },
           listBottomWidget: Padding(
             padding: const EdgeInsets.only(left: 16, right: 8, bottom: 8),
-            child: (_messages.first.author.id != user.id &&
-                    _messages.first.author.id != reply.id)
+            child: (_messages.firstOrNull?.author.id != user.id &&
+                    _messages.firstOrNull?.author.id != reply.id)
                 ? const SizedBox(height: 40)
                 : AnimatedCrossFade(
                     crossFadeState: isWaitingForResponse
@@ -362,4 +368,5 @@ class _ChatViewState extends State<ChatView> {
 
 extension ExtList<T> on List<T> {
   T? get lastOrNull => isNotEmpty ? last : null;
+  T? get firstOrNull => isNotEmpty ? first : null;
 }

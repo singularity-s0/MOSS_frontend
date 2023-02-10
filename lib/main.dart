@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:openchat_frontend/views/components/local_hero/local_hero.dart';
 import 'package:openchat_frontend/repository/repository.dart';
 import 'package:openchat_frontend/utils/settings_provider.dart';
 import 'package:openchat_frontend/views/chat_page.dart';
@@ -41,18 +42,22 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider<SettingsProvider>.value(
             value: SettingsProvider.getInstance())
       ],
-      child: MaterialApp(
-        onGenerateTitle: (context) => AppLocalizations.of(context)!.app_name,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        theme: ThemeData(
-            colorSchemeSeed: const Color.fromRGBO(56, 100, 184, 1),
-            bottomSheetTheme: BottomSheetThemeData(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20))),
-            useMaterial3: true),
-        initialRoute: '/',
-        routes: routes,
+      child: LocalHeroScope(
+        duration: const Duration(milliseconds: 700),
+        curve: Curves.fastLinearToSlowEaseIn,
+        child: MaterialApp(
+          onGenerateTitle: (context) => AppLocalizations.of(context)!.app_name,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          theme: ThemeData(
+              colorSchemeSeed: const Color.fromRGBO(56, 100, 184, 1),
+              bottomSheetTheme: BottomSheetThemeData(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20))),
+              useMaterial3: true),
+          initialRoute: '/',
+          routes: routes,
+        ),
       ),
     );
   }

@@ -2,12 +2,14 @@ import 'dart:math';
 
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter/material.dart';
+import 'package:openchat_frontend/views/components/local_hero/local_hero.dart';
 import 'package:openchat_frontend/model/chat.dart';
 import 'package:openchat_frontend/repository/repository.dart';
 import 'package:openchat_frontend/utils/dialog.dart';
 import 'package:openchat_frontend/views/components/animated_text.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:openchat_frontend/views/components/chat_ui/flutter_chat_ui.dart';
+import 'package:openchat_frontend/views/components/intro.dart';
 import 'package:openchat_frontend/views/components/typing_indicator.dart';
 import 'package:openchat_frontend/views/history_page.dart';
 
@@ -83,7 +85,9 @@ class ChatPage extends StatelessWidget {
                       child: ValueListenableBuilder(
                           valueListenable: currentTopic,
                           builder: (context, value, child) => value == null
-                              ? const SizedBox()
+                              ? const MossIntroWidget(
+                                  heroTag: ValueKey("MossLogo"),
+                                )
                               : ChatView(topic: value)),
                     ),
                   ),
@@ -117,10 +121,10 @@ class _ChatViewState extends State<ChatView> {
   void lateInit() {
     lateInitDone = true;
     _messages.clear();
-    _messages.add(types.SystemMessage(
-      text: "",
-      id: "${widget.topic.id}divider",
-    ));
+    // _messages.add(types.SystemMessage(
+    //   text: "",
+    //   id: "${widget.topic.id}divider",
+    // ));
     _getRecords();
   }
 
@@ -165,10 +169,10 @@ class _ChatViewState extends State<ChatView> {
       ));
     } finally {
       setState(() {
-        _messages.add(types.SystemMessage(
-          text: AppLocalizations.of(context)!.aigc_warning_message,
-          id: "${widget.topic.id}ai-alert",
-        ));
+        // _messages.add(types.SystemMessage(
+        //   text: AppLocalizations.of(context)!.aigc_warning_message,
+        //   id: "${widget.topic.id}ai-alert",
+        // ));
       });
     }
   }
@@ -178,7 +182,11 @@ class _ChatViewState extends State<ChatView> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Image.asset('assets/images/logo.png', scale: 6.5),
+          title: _messages.isEmpty
+              ? const SizedBox()
+              : LocalHero(
+                  tag: const ValueKey("MossLogo"),
+                  child: Image.asset('assets/images/logo.png', scale: 6.5)),
           surfaceTintColor: Colors.transparent,
         ),
         body: Chat(
@@ -199,6 +207,9 @@ class _ChatViewState extends State<ChatView> {
                 left: 16,
                 right: 16,
                 bottom: MediaQuery.of(context).viewInsets.bottom + 16),
+          ),
+          emptyState: const MossIntroWidget(
+            heroTag: ValueKey("MossLogo"),
           ),
           onSendPressed:
               (types.PartialText message, VoidCallback clearInput) async {

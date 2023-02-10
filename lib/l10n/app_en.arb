@@ -24,5 +24,8 @@
     "password": "Password",
     "topics": "Topics",
     "new_topic": "New topic",
-    "regenerate": "Regenerate"
+    "regenerate": "Regenerate",
+    "edit": "Edit",
+    "delete": "Delete",
+    "done": "Done"
 }

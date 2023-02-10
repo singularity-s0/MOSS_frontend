@@ -20,6 +20,8 @@ class _HistoryPageState extends State<HistoryPage> {
   Object? error;
   List<ChatThread> data = [];
 
+  bool _isEditing = false;
+
   int get listItemCount =>
       (1 + ((isLoading || error != null) ? 1 : 0) + data.length);
 
@@ -78,6 +80,15 @@ class _HistoryPageState extends State<HistoryPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.topics),
+        actions: [
+          IconButton(
+              onPressed: () => setState(() {
+                    _isEditing = !_isEditing;
+                  }),
+              icon: Text(_isEditing
+                  ? AppLocalizations.of(context)!.done
+                  : AppLocalizations.of(context)!.edit))
+        ],
       ),
       body: ListView.builder(
           itemBuilder: (context, i) {
@@ -91,27 +102,34 @@ class _HistoryPageState extends State<HistoryPage> {
               return const Center(child: CircularProgressIndicator());
             } else {
               ChatThread thread = data[i - 1];
-              return Dismissible(
-                key: Key(thread.id.toString()),
-                onDismissed: (direction) async {
-                  try {
-                    await Repository.getInstance().deleteChatThread(thread.id);
-                    setState(() {
-                      data.remove(thread);
-                    });
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(parseError(e), maxLines: 3)));
-                  }
+              return ListTile(
+                title: Text("Topic ${thread.id}"),
+                subtitle: Text(parseDateTime(
+                    DateTime.tryParse(thread.updated_at)?.toLocal())),
+                selected: widget.selectedTopic?.id == thread.id,
+                onTap: () {
+                  selectTopic(thread);
                 },
-                child: ListTile(
-                    title: Text("Topic ${thread.id}"),
-                    subtitle: Text(parseDateTime(
-                        DateTime.tryParse(thread.updated_at)?.toLocal())),
-                    selected: widget.selectedTopic?.id == thread.id,
-                    onTap: () {
-                      selectTopic(thread);
-                    }),
+                trailing: _isEditing
+                    ? IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () async {
+                          try {
+                            await Repository.getInstance()
+                                .deleteChatThread(thread.id);
+                            setState(() {
+                              data.remove(thread);
+                              if (widget.selectedTopic?.id == thread.id) {
+                                selectTopic(data.first);
+                              }
+                            });
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text(parseError(e), maxLines: 3)));
+                          }
+                        },
+                      )
+                    : null,
               );
             }
           },

@@ -44,6 +44,9 @@ class MainApp extends StatelessWidget {
             value: SettingsProvider.getInstance())
       ],
       child: LocalHeroScope(
+        createRectTween: (begin, end) {
+          return RectTween(begin: begin, end: end);
+        },
         duration: const Duration(milliseconds: 700),
         curve: Curves.fastLinearToSlowEaseIn,
         child: MaterialApp(

@@ -146,17 +146,17 @@ class _ChatViewState extends State<ChatView> {
       records = (widget.topic.records ??
           await Repository.getInstance().getChatRecords(widget.topic.id))!;
       setState(() {
-        for (final record in records) {
-          _messages.add(types.TextMessage(
-            id: record.id.toString(),
-            text: record.request,
-            author: user,
-            metadata: {'animatedIndex': 0}, // DO NOT mark this as constant
-          ));
+        for (final record in records.reversed) {
           _messages.add(types.TextMessage(
             id: '${record.id}r',
             text: record.response,
             author: reply,
+            metadata: {'animatedIndex': 0}, // DO NOT mark this as constant
+          ));
+          _messages.add(types.TextMessage(
+            id: record.id.toString(),
+            text: record.request,
+            author: user,
             metadata: {'animatedIndex': 0}, // DO NOT mark this as constant
           ));
         }

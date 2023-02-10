@@ -122,7 +122,9 @@ class _HistoryPageState extends State<HistoryPage> {
                             setState(() {
                               data.remove(thread);
                               if (widget.selectedTopic?.id == thread.id) {
-                                selectTopic(data.first);
+                                if (data.isNotEmpty) {
+                                  selectTopic(data.first);
+                                }
                               }
                             });
                           } catch (e) {

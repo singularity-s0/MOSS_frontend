@@ -199,7 +199,6 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.topic.records);
     return Scaffold(
       appBar: AppBar(
         title: widget.topic.records?.isEmpty == true
@@ -217,7 +216,7 @@ class _ChatViewState extends State<ChatView> {
             inputClearMode: InputClearMode.never,
             sendButtonVisibilityMode: SendButtonVisibilityMode.always),
         theme: DefaultChatTheme(
-          primaryColor: Theme.of(context).primaryColor,
+          primaryColor: Theme.of(context).colorScheme.secondary,
           backgroundColor: Theme.of(context).colorScheme.surface,
           inputBackgroundColor: Theme.of(context).colorScheme.secondary,
           inputTextCursorColor: Theme.of(context).colorScheme.onSecondary,

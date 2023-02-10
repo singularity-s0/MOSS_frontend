@@ -233,6 +233,14 @@ class _ChatViewState extends State<ChatView> {
             if (isWaitingForResponse) return;
             clearInput();
             setState(() {
+              if (records.isEmpty) {
+                _messages.insert(
+                    0,
+                    types.SystemMessage(
+                      text: AppLocalizations.of(context)!.aigc_warning_message,
+                      id: "${widget.topic.id}ai-alert",
+                    ));
+              }
               _messages.insert(
                   0,
                   types.TextMessage(
@@ -253,12 +261,6 @@ class _ChatViewState extends State<ChatView> {
                 provider.user!.chats!
                     .firstWhere((element) => element.id == widget.topic.id)
                     .name = response.request;
-              }
-              if (_messages.isEmpty) {
-                _messages.add(types.SystemMessage(
-                  text: AppLocalizations.of(context)!.aigc_warning_message,
-                  id: "${widget.topic.id}ai-alert",
-                ));
               }
               records.add(response);
               setState(() {

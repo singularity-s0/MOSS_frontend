@@ -7,6 +7,7 @@ part 'chat.g.dart';
 @JsonSerializable()
 class ChatThread {
   int count;
+  String name;
   String created_at;
   String updated_at;
   final int id;
@@ -20,6 +21,7 @@ class ChatThread {
 
   ChatThread(
       {required this.count,
+      required this.name,
       required this.created_at,
       required this.updated_at,
       required this.id,

@@ -103,7 +103,9 @@ class _HistoryPageState extends State<HistoryPage> {
             } else {
               ChatThread thread = data[i - 1];
               return ListTile(
-                title: Text("Topic ${thread.id}"),
+                title: Text(thread.name.isEmpty
+                    ? AppLocalizations.of(context)!.untitled_topic
+                    : thread.name),
                 subtitle: Text(parseDateTime(
                     DateTime.tryParse(thread.updated_at)?.toLocal())),
                 selected: widget.selectedTopic?.id == thread.id,

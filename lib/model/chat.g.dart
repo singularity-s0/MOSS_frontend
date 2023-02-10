@@ -8,6 +8,7 @@ part of 'chat.dart';
 
 ChatThread _$ChatThreadFromJson(Map<String, dynamic> json) => ChatThread(
       count: json['count'] as int,
+      name: json['name'] as String,
       created_at: json['created_at'] as String,
       updated_at: json['updated_at'] as String,
       id: json['id'] as int,
@@ -20,6 +21,7 @@ ChatThread _$ChatThreadFromJson(Map<String, dynamic> json) => ChatThread(
 Map<String, dynamic> _$ChatThreadToJson(ChatThread instance) =>
     <String, dynamic>{
       'count': instance.count,
+      'name': instance.name,
       'created_at': instance.created_at,
       'updated_at': instance.updated_at,
       'id': instance.id,

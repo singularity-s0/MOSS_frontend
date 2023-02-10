@@ -37,6 +37,10 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^2.0.0
   build_runner: ^2.3.3
+#   flutter_launcher_icons: ^0.11.0
+
+# dependency_overrides:
+#   image: ^3.0.0 # Needed for flutter_launcher_icons
 
 flutter:
   uses-material-design: true
@@ -48,3 +52,21 @@ flutter_native_splash:
   color: "#FDFBFF"
   color_dark: "#1B1B1F"
   image: assets/images/logo.png
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/icon.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "assets/images/icon.png"
+    background_color: "#ffffffff"
+    theme_color: "#ffffffff"
+  windows:
+    generate: true
+    image_path: "assets/images/icon.png"
+    icon_size: 48 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "assets/images/icon.png"

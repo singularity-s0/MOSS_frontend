@@ -16,31 +16,27 @@ class _ShareInfoConsentWidgetState extends State<ShareInfoConsentWidget> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<AccountProvider>(context).user!;
-    return LayoutBuilder(
-      builder: (context, constraints) => Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Checkbox(
-            value: user.share_consent,
-            onChanged: (value) async {
-              try {
-                await Repository.getInstance().setShareInfoConsent(value!);
-                setState(() {
-                  user.share_consent = value;
-                });
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(parseError(e), maxLines: 3)));
-              }
-            },
-          ),
-          ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: constraints.maxWidth - 48),
-            child: Text(AppLocalizations.of(context)!.share_consent_msg,
-                softWrap: true),
-          ),
-        ],
-      ),
+    return Row(
+      children: [
+        Checkbox(
+          value: user.share_consent,
+          onChanged: (value) async {
+            try {
+              await Repository.getInstance().setShareInfoConsent(value!);
+              setState(() {
+                user.share_consent = value;
+              });
+            } catch (e) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(parseError(e), maxLines: 3)));
+            }
+          },
+        ),
+        Expanded(
+          child: Text(AppLocalizations.of(context)!.share_consent_msg,
+              softWrap: true),
+        ),
+      ],
     );
   }
 }

@@ -199,8 +199,7 @@ class Chat extends StatefulWidget {
   /// certain properties, see more here [ChatL10nEn].
   final ChatL10n l10n;
 
-  /// See [ChatList.bottomWidget]. For a custom chat input
-  /// use [customBottomWidget] instead.
+  /// Widget below the input
   final Widget? listBottomWidget;
 
   /// List of [types.Message] to render in the chat widget.
@@ -321,7 +320,6 @@ class ChatState extends State<Chat> {
   List<PreviewImage> _gallery = [];
   PageController? _galleryPageController;
   bool _hadScrolledToUnreadOnOpen = false;
-  bool _isImageViewVisible = false;
 
   /// Keep track of all the auto scroll indices by their respective message's id to allow animating to them.
   final Map<String, int> _autoScrollIndexById = {};
@@ -439,13 +437,13 @@ class ChatState extends State<Chat> {
                                 ),
                               ),
                       ),
-                      widget.customBottomWidget ??
-                          Input(
-                            isAttachmentUploading: widget.isAttachmentUploading,
-                            onAttachmentPressed: widget.onAttachmentPressed,
-                            onSendPressed: widget.onSendPressed,
-                            options: widget.inputOptions,
-                          ),
+                      Input(
+                        isAttachmentUploading: widget.isAttachmentUploading,
+                        onAttachmentPressed: widget.onAttachmentPressed,
+                        onSendPressed: widget.onSendPressed,
+                        options: widget.inputOptions,
+                      ),
+                      widget.customBottomWidget ?? const SizedBox(),
                     ],
                   ),
                 ),
@@ -585,9 +583,6 @@ class ChatState extends State<Chat> {
       (element) => element.id == message.id && element.uri == message.uri,
     );
     _galleryPageController = PageController(initialPage: initialPage);
-    setState(() {
-      _isImageViewVisible = true;
-    });
   }
 
   void _onPreviewDataFetched(

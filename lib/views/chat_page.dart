@@ -235,6 +235,9 @@ class _ChatViewState extends State<ChatView> {
                 heroTag: ValueKey("MossLogo"),
               )
             : const SizedBox(),
+        customBottomWidget: const Padding(
+            padding: EdgeInsets.only(left: 12, bottom: 12, right: 12),
+            child: ShareInfoConsentWidget()),
         onSendPressed:
             (types.PartialText message, VoidCallback clearInput) async {
           if (isWaitingForResponse) return;
@@ -399,9 +402,6 @@ class _ChatViewState extends State<ChatView> {
                                 SnackBar(content: Text(parseError(e))));
                           }
                         },
-                      ),
-                      const Expanded(
-                        child: ShareInfoConsentWidget(),
                       ),
                     ],
                   ),

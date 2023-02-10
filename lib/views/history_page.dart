@@ -19,12 +19,8 @@ class _HistoryPageState extends State<HistoryPage> {
   Object? error;
   List<ChatThread> data = [];
 
-  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
-
-  int get _listItemCount =>
+  int get listItemCount =>
       (1 + ((isLoading || error != null) ? 1 : 0) + data.length);
-
-  int listItemCount = 2;
 
   void selectTopic(ChatThread t) {
     var parent = context.findAncestorWidgetOfExactType<ChatPage>();
@@ -33,21 +29,8 @@ class _HistoryPageState extends State<HistoryPage> {
     widget.onTopicSelected?.call(t);
   }
 
-  void updateAnimatedList() {
-    while (listItemCount < _listItemCount) {
-      _listKey.currentState!.insertItem(listItemCount);
-      listItemCount++;
-    }
-    while (listItemCount > _listItemCount) {
-      _listKey.currentState!
-          .removeItem(listItemCount - 1, (context, animation) => Container());
-      listItemCount--;
-    }
-  }
-
   Future<void> refresh() async {
     isLoading = true;
-    updateAnimatedList();
     try {
       final t = await Repository.getInstance().getChatThreads();
       data = t ?? [];
@@ -58,7 +41,6 @@ class _HistoryPageState extends State<HistoryPage> {
       setState(() {
         isLoading = false;
       });
-      updateAnimatedList();
     }
   }
 
@@ -66,7 +48,6 @@ class _HistoryPageState extends State<HistoryPage> {
     try {
       final thread = await Repository.getInstance().newChatThread();
       data.add(thread!);
-      updateAnimatedList();
       selectTopic(thread);
     } catch (e) {
       if (context.mounted) {
@@ -110,9 +91,8 @@ class _HistoryPageState extends State<HistoryPage> {
           ),
         ],
       ),
-      body: AnimatedList(
-          key: _listKey,
-          itemBuilder: (context, i, animation) {
+      body: ListView.builder(
+          itemBuilder: (context, i) {
             if (i == 0) {
               return NewTopicButton(onTap: () async {
                 addNewTopic(context);
@@ -128,9 +108,9 @@ class _HistoryPageState extends State<HistoryPage> {
                 onDismissed: (direction) async {
                   try {
                     await Repository.getInstance().deleteChatThread(thread.id);
-                    _listKey.currentState!.removeItem(
-                        i, (context, animation) => const SizedBox());
-                    data.remove(thread);
+                    setState(() {
+                      data.remove(thread);
+                    });
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text(parseError(e), maxLines: 3)));
@@ -149,7 +129,7 @@ class _HistoryPageState extends State<HistoryPage> {
               );
             }
           },
-          initialItemCount: 2),
+          itemCount: listItemCount),
     );
   }
 }

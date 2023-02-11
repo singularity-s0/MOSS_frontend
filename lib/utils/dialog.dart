@@ -28,6 +28,21 @@ Future<T> showLoadingDialogUntilFutureCompletes<T>(
   }
 }
 
+showAlert(BuildContext context, String message, String title) {
+  return showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+            scrollable: true,
+            title: Text(title),
+            content: Text(message),
+            actions: <Widget>[
+              TextButton(
+                  child: Text(AppLocalizations.of(context)!.ok),
+                  onPressed: () => Navigator.pop(context)),
+            ],
+          ));
+}
+
 String parseError(Object? error) {
   if (error is String) {
     return error;
@@ -35,9 +50,9 @@ String parseError(Object? error) {
     if (error.response != null) {
       ErrorMessage? em =
           ErrorMessage.fromJson(error.response!.data as Map<String, dynamic>);
-      return em.message;
+      return "HTTP ${error.response!.statusCode}: ${em.message}";
     } else {
-      return error.message;
+      return "HTTP ${error.response!.statusCode}: ${error.message}";
     }
   } else if (error is Exception) {
     return error.toString();

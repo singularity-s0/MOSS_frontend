@@ -241,8 +241,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 autoLoginFunc(region)(accountController.text,
                                     passwordController.text));
                           } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text(parseError(e), maxLines: 3)));
+                            await showAlert(context, parseError(e),
+                                AppLocalizations.of(context)!.error);
                           }
                         }),
                   ],
@@ -357,8 +357,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     resetPassword:
                                         _loginMode == LoginMode.reset));
                           } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text(parseError(e), maxLines: 3)));
+                            await showAlert(context, parseError(e),
+                                AppLocalizations.of(context)!.error);
                           }
                         }),
                   ],
@@ -462,8 +462,8 @@ class VerifyCodeRequestButtonState extends State<VerifyCodeRequestButton> {
                     }
                   });
                 } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(parseError(e), maxLines: 3)));
+                  await showAlert(context, parseError(e),
+                      AppLocalizations.of(context)!.error);
                   setState(() {
                     _isRequesting = false;
                   });

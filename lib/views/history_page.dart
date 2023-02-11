@@ -54,8 +54,8 @@ class _HistoryPageState extends State<HistoryPage> {
       selectTopic(thread);
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(parseError(e), maxLines: 3)));
+        await showAlert(
+            context, parseError(e), AppLocalizations.of(context)!.error);
       }
     }
   }
@@ -133,8 +133,8 @@ class _HistoryPageState extends State<HistoryPage> {
                               }
                             });
                           } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text(parseError(e), maxLines: 3)));
+                            await showAlert(context, parseError(e),
+                                AppLocalizations.of(context)!.error);
                           }
                         },
                       )

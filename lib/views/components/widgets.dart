@@ -27,8 +27,8 @@ class _ShareInfoConsentWidgetState extends State<ShareInfoConsentWidget> {
                 user.share_consent = value;
               });
             } catch (e) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(parseError(e), maxLines: 3)));
+              await showAlert(
+                  context, parseError(e), AppLocalizations.of(context)!.error);
             }
           },
         ),

@@ -36,5 +36,7 @@
     "moss_intro_2a": "Improve Writing and Coding",
     "moss_intro_2b": "with the aid of MOSS",
     "moss_intro_3a": "Help AI Research",
-    "moss_intro_3b": "by rating responses of MOSS"
+    "moss_intro_3b": "by rating responses of MOSS",
+    "ok": "OK",
+    "cancel": "Cancel"
 }

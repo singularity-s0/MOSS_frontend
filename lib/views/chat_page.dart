@@ -393,8 +393,8 @@ class _ChatViewState extends State<ChatView> {
                               widget.topic.records!.last.like_data = newLike;
                             });
                           } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(parseError(e))));
+                            await showAlert(context, parseError(e),
+                                AppLocalizations.of(context)!.error);
                           }
                         },
                       ),
@@ -424,8 +424,8 @@ class _ChatViewState extends State<ChatView> {
                               widget.topic.records!.last.like_data = newLike;
                             });
                           } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(parseError(e))));
+                            await showAlert(context, parseError(e),
+                                AppLocalizations.of(context)!.error);
                           }
                         },
                       ),

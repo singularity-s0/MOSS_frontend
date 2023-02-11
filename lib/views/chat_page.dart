@@ -88,8 +88,9 @@ class ChatPage extends StatelessWidget {
                       child: ValueListenableBuilder(
                           valueListenable: currentTopic,
                           builder: (context, value, child) => value == null
-                              ? const MossIntroWidget(
-                                  heroTag: ValueKey("MossLogo"),
+                              ? MossIntroWidget(
+                                  heroTag:
+                                      "MossLogo${isDesktop(context) ? "Desktop" : value?.id}}",
                                 )
                               : ChatView(topic: value)),
                     ),
@@ -200,14 +201,26 @@ class _ChatViewState extends State<ChatView> {
 
   bool get isWaitingForResponse => _messages.firstOrNull?.author.id == user.id;
 
+  bool get shouldUseLargeLogo {
+    if (_messages.isNotEmpty) {
+      return false;
+    }
+    if (widget.topic.records == null) {
+      return widget.topic.name.isEmpty ||
+          widget.topic.name == AppLocalizations.of(context)!.untitled_topic;
+    }
+    return widget.topic.records!.isEmpty;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: widget.topic.records?.isEmpty == true
+        title: shouldUseLargeLogo
             ? const SizedBox()
             : LocalHero(
-                tag: const ValueKey("MossLogo"),
+                tag:
+                    "MossLogo${isDesktop(context) ? "Desktop" : widget.topic.id}}",
                 child: Image.asset('assets/images/logo.png', scale: 6.5)),
         surfaceTintColor: Colors.transparent,
       ),
@@ -230,9 +243,10 @@ class _ChatViewState extends State<ChatView> {
               right: 16,
               bottom: MediaQuery.of(context).viewInsets.bottom + 16),
         ),
-        emptyState: widget.topic.records?.isEmpty == true
-            ? const MossIntroWidget(
-                heroTag: ValueKey("MossLogo"),
+        emptyState: shouldUseLargeLogo
+            ? MossIntroWidget(
+                heroTag:
+                    "MossLogo${isDesktop(context) ? "Desktop" : widget.topic.id}}",
               )
             : const SizedBox(),
         customBottomWidget: const Padding(

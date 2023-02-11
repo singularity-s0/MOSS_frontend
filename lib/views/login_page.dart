@@ -38,9 +38,10 @@ class LoginScreen extends StatefulWidget {
 enum LoginMode { login, register, reset }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late TextEditingController accountController;
-  late TextEditingController verifycodeController;
-  late TextEditingController passwordController;
+  TextEditingController accountController = TextEditingController();
+  TextEditingController verifycodeController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController inviteCodeController = TextEditingController();
 
   late Future<Region> _regionAndUserData;
 
@@ -48,9 +49,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    accountController = TextEditingController();
-    passwordController = TextEditingController();
-    verifycodeController = TextEditingController();
     _regionAndUserData = Provider.of<AccountProvider>(context, listen: false)
         .fetchUserInfo()
         .then((value) => Region.Global);
@@ -62,6 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
     accountController.dispose();
     passwordController.dispose();
     verifycodeController.dispose();
+    inviteCodeController.dispose();
     super.dispose();
   }
 
@@ -115,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<JWToken?> Function(String, String, String,
+  Future<JWToken?> Function(String, String, String, String,
       {required bool resetPassword}) autoSignupFunc(Region region) {
     switch (region) {
       case Region.Global:
@@ -304,6 +303,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             ? null
                             : AppLocalizations.of(context)!
                                 .please_enter_verify_code),
+                    const SizedBox(height: 20),
+                    if (_loginMode == LoginMode.register)
+                      TextFormField(
+                          textCapitalization: TextCapitalization.none,
+                          enableSuggestions: false,
+                          autocorrect: false,
+                          decoration: InputDecoration(
+                            labelText: AppLocalizations.of(context)!.invitecode,
+                          ),
+                          controller: inviteCodeController),
                     const SizedBox(height: 30),
                     TextButton(
                         onPressed: () => setState(() {
@@ -337,6 +346,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     accountController.text,
                                     passwordController.text,
                                     verifycodeController.text,
+                                    inviteCodeController.text,
                                     resetPassword:
                                         _loginMode == LoginMode.reset));
                           } catch (e) {

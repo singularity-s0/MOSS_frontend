@@ -46,7 +46,7 @@ class Repository {
   }
 
   Future<JWToken?> registerWithEmailPassword(
-      String email, String password, String verifyCode,
+      String email, String password, String verifyCode, String inviteCode,
       {bool resetPassword = false}) async {
     final Response<Map<String, dynamic>> response = await dio.fetch(
         RequestOptions(
@@ -56,13 +56,14 @@ class Repository {
           "password": password,
           "email": email,
           "verification": verifyCode,
+          if (resetPassword) "invite_code": inviteCode,
         }));
     return provider.token =
         SettingsProvider.getInstance().token = JWToken.fromJson(response.data!);
   }
 
   Future<JWToken?> registerWithPhonePassword(
-      String phone, String password, String verifyCode,
+      String phone, String password, String verifyCode, String inviteCode,
       {bool resetPassword = false}) async {
     final Response<Map<String, dynamic>> response = await dio.fetch(
         RequestOptions(
@@ -72,6 +73,7 @@ class Repository {
           "password": password,
           "phone": phone,
           "verification": verifyCode,
+          if (resetPassword) "invite_code": inviteCode,
         }));
     return provider.token =
         SettingsProvider.getInstance().token = JWToken.fromJson(response.data!);

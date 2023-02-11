@@ -7,11 +7,12 @@ class MossIntroWidget extends StatelessWidget {
 
   const MossIntroWidget({Key? key, required this.heroTag}) : super(key: key);
 
-  Widget buildBanner(String title, String subtitle, IconData icon) {
+  Widget buildBanner(
+      BuildContext context, String title, String subtitle, IconData icon) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 12),
       child: ListTile(
-        leading: Icon(icon),
+        leading: Icon(icon, color: Theme.of(context).colorScheme.secondary),
         title: Text(title),
         subtitle: Text(subtitle),
       ),
@@ -25,29 +26,43 @@ class MossIntroWidget extends StatelessWidget {
         padding: const EdgeInsets.all(12.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 48.0),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 256),
-                child: LocalHero(
-                    tag: heroTag, child: Image.asset("assets/images/logo.png")),
+            Flexible(
+              flex: 8,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 48.0),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 256),
+                    child: LocalHero(
+                        tag: heroTag,
+                        child: Image.asset("assets/images/logo.png")),
+                  ),
+                ),
               ),
             ),
-            IntrinsicWidth(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  buildBanner("Chat with MOSS in English",
-                      "MOSS is learning Chinese...", Icons.chat),
-                  buildBanner("Improve Writing and Coding",
-                      "with the aid of MOSS", Icons.edit),
-                  buildBanner("Help AI Research", "by rating responses of MOSS",
-                      Icons.help)
-                ],
+            const Spacer(flex: 1),
+            Flexible(
+              flex: 12,
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: IntrinsicWidth(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      buildBanner(context, "Chat with MOSS in English",
+                          "MOSS is still learning Chinese...", Icons.chat),
+                      buildBanner(context, "Improve Writing and Coding",
+                          "with the aid of MOSS", Icons.edit),
+                      buildBanner(context, "Help AI Research",
+                          "by rating responses of MOSS", Icons.help)
+                    ],
+                  ),
+                ),
               ),
             ),
           ],

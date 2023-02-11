@@ -331,7 +331,7 @@ class _ChatViewState extends State<ChatView> {
                           onPressed: () async {
                             setState(() {
                               _messages.removeAt(0);
-                              records.removeAt(0);
+                              records.removeLast();
                             });
                             try {
                               final response = (await Repository.getInstance()

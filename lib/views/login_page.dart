@@ -451,14 +451,18 @@ class VerifyCodeRequestButtonState extends State<VerifyCodeRequestButton> {
                     countdown = 60;
                   });
                   Timer.periodic(const Duration(seconds: 1), (timer) {
-                    setState(() {
-                      countdown--;
-                    });
-                    if (countdown == 0) {
-                      timer.cancel();
+                    if (mounted) {
                       setState(() {
-                        _isRequesting = false;
+                        countdown--;
                       });
+                      if (countdown == 0) {
+                        timer.cancel();
+                        setState(() {
+                          _isRequesting = false;
+                        });
+                      }
+                    } else {
+                      timer.cancel();
                     }
                   });
                 } catch (e) {

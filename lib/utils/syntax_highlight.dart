@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_highlighter/flutter_highlighter.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart' as md;
+import 'package:openchat_frontend/views/components/flutter_highlighter.dart';
 
 class CodeElementBuilder extends MarkdownElementBuilder {
   @override
@@ -18,41 +18,40 @@ class CodeElementBuilder extends MarkdownElementBuilder {
     return Column(
       children: [
         ColoredBox(
-          color: codeTheme['titlebg']!.backgroundColor!,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 16),
-                child: Text(language,
-                    style: TextStyle(
-                        fontSize: 12, color: codeTheme['titlebg']!.color!)),
-              ),
-              TextButton.icon(
-                  onPressed: () {
-                    FlutterClipboard.copy(element.textContent.trim());
-                  },
-                  icon: Icon(Icons.copy,
-                      size: 12, color: codeTheme['titlebg']!.color!),
-                  label: Text('Copy',
-                      style: TextStyle(
-                          fontSize: 12, color: codeTheme['titlebg']!.color!))),
-            ],
+          color: codeTheme['root']!.backgroundColor!,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                TextButton.icon(
+                    style: ButtonStyle(
+                        padding: MaterialStateProperty.all(EdgeInsets.zero)),
+                    onPressed: () {
+                      FlutterClipboard.copy(element.textContent.trim());
+                    },
+                    icon: const Icon(Icons.copy, size: 12),
+                    label: const Text('Copy', style: TextStyle(fontSize: 12))),
+                const Spacer(),
+                Text(language, style: const TextStyle(fontSize: 12)),
+              ],
+            ),
           ),
         ),
         ColoredBox(
           color: codeTheme['root']!.backgroundColor!,
-          child: Row(
-            children: [
-              HighlightView(element.textContent.trim(),
-                  language: language,
-                  // All available themes are listed in `themes` folder
-                  theme: codeTheme,
-                  padding: const EdgeInsets.all(16),
-                  textStyle: const TextStyle(
-                      fontFamily:
-                          'SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace'))
-            ],
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                HighlightView(element.textContent.trim(),
+                    language: language,
+                    // All available themes are listed in `themes` folder
+                    theme: codeTheme,
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                    textStyle: const TextStyle(fontFamily: 'RobotoMono'))
+              ],
+            ),
           ),
         ),
       ],
@@ -62,7 +61,7 @@ class CodeElementBuilder extends MarkdownElementBuilder {
 
 const githubTheme = {
   'root':
-      TextStyle(color: Color(0xff333333), backgroundColor: Color(0xfff8f8f8)),
+      TextStyle(color: Color(0xff333333), backgroundColor: Color(0x7ff8f8f8)),
   'comment': TextStyle(color: Color(0xff999988), fontStyle: FontStyle.italic),
   'quote': TextStyle(color: Color(0xff999988), fontStyle: FontStyle.italic),
   'keyword': TextStyle(color: Color(0xff333333), fontWeight: FontWeight.bold),

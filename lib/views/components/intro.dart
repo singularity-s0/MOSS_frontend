@@ -54,12 +54,21 @@ class MossIntroWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      buildBanner(context, "Chat with MOSS in English",
-                          "MOSS is still learning Chinese...", Icons.chat),
-                      buildBanner(context, "Improve Writing and Coding",
-                          "with the aid of MOSS", Icons.edit),
-                      buildBanner(context, "Help AI Research",
-                          "by rating responses of MOSS", Icons.help)
+                      buildBanner(
+                          context,
+                          AppLocalizations.of(context)!.moss_intro_1a,
+                          AppLocalizations.of(context)!.moss_intro_1b,
+                          Icons.chat),
+                      buildBanner(
+                          context,
+                          AppLocalizations.of(context)!.moss_intro_2a,
+                          AppLocalizations.of(context)!.moss_intro_2b,
+                          Icons.edit),
+                      buildBanner(
+                          context,
+                          AppLocalizations.of(context)!.moss_intro_3a,
+                          AppLocalizations.of(context)!.moss_intro_3b,
+                          Icons.help)
                     ],
                   ),
                 ),

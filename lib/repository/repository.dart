@@ -57,7 +57,7 @@ class Repository {
           "password": password,
           "email": email,
           "verification": verifyCode,
-          if (resetPassword) "invite_code": inviteCode,
+          if (!resetPassword) "invite_code": inviteCode,
         }));
     return provider.token =
         SettingsProvider.getInstance().token = JWToken.fromJson(response.data!);
@@ -74,7 +74,7 @@ class Repository {
           "password": password,
           "phone": phone,
           "verification": verifyCode,
-          if (resetPassword) "invite_code": inviteCode,
+          if (!resetPassword) "invite_code": inviteCode,
         }));
     return provider.token =
         SettingsProvider.getInstance().token = JWToken.fromJson(response.data!);

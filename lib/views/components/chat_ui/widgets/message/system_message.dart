@@ -18,6 +18,7 @@ class SystemMessage extends StatelessWidget {
         margin: InheritedChatTheme.of(context).theme.systemMessageTheme.margin,
         child: Text(
           message,
+          textAlign: TextAlign.center,
           style:
               InheritedChatTheme.of(context).theme.systemMessageTheme.textStyle,
         ),

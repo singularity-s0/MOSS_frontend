@@ -50,7 +50,7 @@ class _HistoryPageState extends State<HistoryPage> {
     final provider = Provider.of<AccountProvider>(context, listen: false);
     try {
       final thread = await Repository.getInstance().newChatThread();
-      provider.user!.chats!.add(thread!);
+      provider.user!.chats!.insert(0, thread!);
       selectTopic(thread);
     } catch (e) {
       if (context.mounted) {

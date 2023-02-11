@@ -15,33 +15,38 @@ class CodeElementBuilder extends MarkdownElementBuilder {
 
     const codeTheme = githubTheme;
 
-    return ColoredBox(
-      color: codeTheme['root']!.backgroundColor!,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: TextButton.icon(
-                style: ButtonStyle(
-                    padding: MaterialStateProperty.all(EdgeInsets.zero)),
-                onPressed: () {
-                  FlutterClipboard.copy(element.textContent.trim());
-                },
-                icon: const Icon(Icons.copy, size: 12),
-                label: const Text('Copy', style: TextStyle(fontSize: 12))),
+    return LayoutBuilder(builder: (context, constraints) {
+      return SizedBox(
+        width: constraints.maxWidth,
+        child: ColoredBox(
+          color: codeTheme['root']!.backgroundColor!,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: TextButton.icon(
+                    style: ButtonStyle(
+                        padding: MaterialStateProperty.all(EdgeInsets.zero)),
+                    onPressed: () {
+                      FlutterClipboard.copy(element.textContent.trim());
+                    },
+                    icon: const Icon(Icons.copy, size: 12),
+                    label: const Text('Copy', style: TextStyle(fontSize: 12))),
+              ),
+              SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: HighlightView(element.textContent.trim(),
+                      language: language,
+                      // All available themes are listed in `themes` folder
+                      theme: codeTheme,
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                      textStyle: const TextStyle(fontFamily: 'RobotoMono'))),
+            ],
           ),
-          SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: HighlightView(element.textContent.trim(),
-                  language: language,
-                  // All available themes are listed in `themes` folder
-                  theme: codeTheme,
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                  textStyle: const TextStyle(fontFamily: 'RobotoMono'))),
-        ],
-      ),
-    );
+        ),
+      );
+    });
   }
 }
 

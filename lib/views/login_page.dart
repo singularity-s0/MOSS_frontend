@@ -163,7 +163,8 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Text(
                 error == null
                     ? AppLocalizations.of(context)!.please_wait
-                    : error.toString(),
+                    : parseError(error),
+                maxLines: 3,
                 style: const TextStyle(fontSize: 35),
               ),
             ),

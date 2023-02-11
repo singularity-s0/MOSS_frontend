@@ -37,7 +37,8 @@ class ChatPage extends StatelessWidget {
   Widget buildMobile(BuildContext context) => HistoryPage(
         onTopicSelected: (topicId) {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: ((context) => ChatView(topic: topicId))));
+              builder: ((context) =>
+                  ChatView(key: ValueKey(topicId), topic: topicId))));
         },
       );
 
@@ -92,7 +93,7 @@ class ChatPage extends StatelessWidget {
                                   heroTag:
                                       "MossLogo${isDesktop(context) ? "Desktop" : value?.id}}",
                                 )
-                              : ChatView(topic: value)),
+                              : ChatView(key: ValueKey(value), topic: value)),
                     ),
                   ),
                 ),
@@ -119,7 +120,6 @@ class ChatView extends StatefulWidget {
 
 class _ChatViewState extends State<ChatView> {
   final List<types.Message> _messages = [];
-  late List<ChatRecord> records;
 
   bool lateInitDone = false;
   void lateInit() {
@@ -146,9 +146,9 @@ class _ChatViewState extends State<ChatView> {
 
   Future<void> _getRecords() async {
     try {
-      records = (widget.topic.records ??
-          await Repository.getInstance().getChatRecords(widget.topic.id))!;
-      if (records.isNotEmpty) {
+      widget.topic.records ??=
+          await Repository.getInstance().getChatRecords(widget.topic.id);
+      if (widget.topic.records!.isNotEmpty) {
         setState(() {
           _messages.insert(
               0,
@@ -166,8 +166,7 @@ class _ChatViewState extends State<ChatView> {
               id: "${widget.topic.id}ai-alert",
             ));
       }
-      widget.topic.records = records;
-      for (final record in records) {
+      for (final record in widget.topic.records!) {
         _messages.insert(
             0,
             types.TextMessage(
@@ -255,10 +254,12 @@ class _ChatViewState extends State<ChatView> {
             child: ShareInfoConsentWidget()),
         onSendPressed:
             (types.PartialText message, VoidCallback clearInput) async {
-          if (isWaitingForResponse) return;
+          if (isWaitingForResponse || widget.topic.records == null) return;
+          final topic = widget.topic;
+          final provider = Provider.of<AccountProvider>(context, listen: false);
           clearInput();
           setState(() {
-            if (records.isEmpty) {
+            if (topic.records!.isEmpty) {
               _messages.insert(
                   0,
                   types.SystemMessage(
@@ -278,36 +279,38 @@ class _ChatViewState extends State<ChatView> {
           });
           try {
             final response = (await Repository.getInstance()
-                .chatSendMessage(widget.topic.id, message.text))!;
-            if (records.isEmpty) {
+                .chatSendMessage(topic.id, message.text))!;
+            if (topic.records!.isEmpty) {
               // Handle first record: change title and add warning message
-              final provider =
-                  Provider.of<AccountProvider>(context, listen: false);
               provider.user!.chats!
-                  .firstWhere((element) => element.id == widget.topic.id)
+                  .firstWhere((element) => element.id == topic.id)
                   .name = response.request;
             }
-            records.add(response);
-            setState(() {
-              _messages.insert(
-                  0,
-                  types.TextMessage(
-                      author: reply,
-                      text: response.response,
-                      // ignore: prefer_const_literals_to_create_immutables
-                      metadata: {'animatedIndex': 0},
-                      id: _messages.length.toString(),
-                      type: types.MessageType.text));
-            });
+            topic.records!.add(response);
+            if (mounted) {
+              setState(() {
+                _messages.insert(
+                    0,
+                    types.TextMessage(
+                        author: reply,
+                        text: response.response,
+                        // ignore: prefer_const_literals_to_create_immutables
+                        metadata: {'animatedIndex': 0},
+                        id: _messages.length.toString(),
+                        type: types.MessageType.text));
+              });
+            }
           } catch (e) {
-            setState(() {
-              _messages.insert(
-                  0,
-                  types.SystemMessage(
-                    text: parseError(e),
-                    id: "ai-error${_messages.length}",
-                  ));
-            });
+            if (mounted) {
+              setState(() {
+                _messages.insert(
+                    0,
+                    types.SystemMessage(
+                      text: parseError(e),
+                      id: "ai-error${_messages.length}",
+                    ));
+              });
+            }
           }
         },
         listBottomWidget: Padding(
@@ -330,58 +333,64 @@ class _ChatViewState extends State<ChatView> {
                           icon: const Icon(Icons.refresh, size: 16),
                           label: Text(AppLocalizations.of(context)!.regenerate),
                           onPressed: () async {
+                            final topic = widget.topic;
                             setState(() {
                               _messages.removeAt(0);
-                              records.removeLast();
+                              topic.records!.removeLast();
                             });
                             try {
                               final response = (await Repository.getInstance()
-                                  .chatRegenerateLast(widget.topic.id))!;
-                              records.add(response);
-                              setState(() {
-                                _messages.insert(
-                                    0,
-                                    types.TextMessage(
-                                        author: reply,
-                                        text: response.response,
-                                        // ignore: prefer_const_literals_to_create_immutables
-                                        metadata: {'animatedIndex': 0},
-                                        id: _messages.length.toString(),
-                                        type: types.MessageType.text));
-                              });
+                                  .chatRegenerateLast(topic.id))!;
+                              topic.records!.add(response);
+                              if (mounted) {
+                                setState(() {
+                                  _messages.insert(
+                                      0,
+                                      types.TextMessage(
+                                          author: reply,
+                                          text: response.response,
+                                          // ignore: prefer_const_literals_to_create_immutables
+                                          metadata: {'animatedIndex': 0},
+                                          id: _messages.length.toString(),
+                                          type: types.MessageType.text));
+                                });
+                              }
                             } catch (e) {
-                              setState(() {
-                                _messages.insert(
-                                    0,
-                                    types.SystemMessage(
-                                      text: parseError(e),
-                                      id: "ai-error${_messages.length}",
-                                    ));
-                              });
+                              if (mounted) {
+                                setState(() {
+                                  _messages.insert(
+                                      0,
+                                      types.SystemMessage(
+                                        text: parseError(e),
+                                        id: "ai-error${_messages.length}",
+                                      ));
+                                });
+                              }
                             }
                           }),
                       IconButton(
                         icon: Icon(Icons.thumb_up,
                             size: 16,
-                            color: records.lastOrNull?.like_data == 1
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context)
-                                    .buttonTheme
-                                    .colorScheme
-                                    ?.onSurface
-                                    .withAlpha(130)),
+                            color:
+                                widget.topic.records!.lastOrNull?.like_data == 1
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Theme.of(context)
+                                        .buttonTheme
+                                        .colorScheme
+                                        ?.onSurface
+                                        .withAlpha(130)),
                         padding: EdgeInsets.zero,
                         onPressed: () async {
-                          if (records.isEmpty) return;
+                          if (widget.topic.records?.isEmpty != false) return;
                           int newLike = 1;
-                          if (records.last.like_data == newLike) {
+                          if (widget.topic.records!.last.like_data == newLike) {
                             newLike = 0;
                           }
                           try {
-                            await Repository.getInstance()
-                                .modifyRecord(records.last.id, newLike);
+                            await Repository.getInstance().modifyRecord(
+                                widget.topic.records!.last.id, newLike);
                             setState(() {
-                              records.last.like_data = newLike;
+                              widget.topic.records!.last.like_data = newLike;
                             });
                           } catch (e) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -392,25 +401,27 @@ class _ChatViewState extends State<ChatView> {
                       IconButton(
                         icon: Icon(Icons.thumb_down,
                             size: 16,
-                            color: records.lastOrNull?.like_data == -1
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context)
-                                    .buttonTheme
-                                    .colorScheme
-                                    ?.onSurface
-                                    .withAlpha(130)),
+                            color:
+                                widget.topic.records!.lastOrNull?.like_data ==
+                                        -1
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Theme.of(context)
+                                        .buttonTheme
+                                        .colorScheme
+                                        ?.onSurface
+                                        .withAlpha(130)),
                         padding: EdgeInsets.zero,
                         onPressed: () async {
-                          if (records.isEmpty) return;
+                          if (widget.topic.records?.isEmpty != false) return;
                           int newLike = -1;
-                          if (records.last.like_data == newLike) {
+                          if (widget.topic.records!.last.like_data == newLike) {
                             newLike = 0;
                           }
                           try {
-                            await Repository.getInstance()
-                                .modifyRecord(records.last.id, newLike);
+                            await Repository.getInstance().modifyRecord(
+                                widget.topic.records!.last.id, newLike);
                             setState(() {
-                              records.last.like_data = newLike;
+                              widget.topic.records!.last.like_data = newLike;
                             });
                           } catch (e) {
                             ScaffoldMessenger.of(context).showSnackBar(

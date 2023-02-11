@@ -3,6 +3,7 @@ import 'package:openchat_frontend/model/user.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:openchat_frontend/utils/settings_provider.dart';
+import 'package:openchat_frontend/views/login_page.dart';
 
 class Repository {
   static final _instance = Repository._();
@@ -160,6 +161,31 @@ class Repository {
         options: Options(headers: _tokenHeader),
         data: {"share_consent": value});
   }
+
+  Future<RepositoryConfig?> getConfiguration() async {
+    final Response response = await dio.get("$baseUrl/config");
+    final Map<String, dynamic> data = response.data!;
+    Region region;
+    switch (data['region']) {
+      case "cn":
+        region = Region.CN;
+        break;
+      case "global":
+        region = Region.Global;
+        break;
+      default:
+        throw Exception("Unknown region");
+    }
+    final bool inviteRequired = data['invite_required'];
+    return RepositoryConfig(region, inviteRequired);
+  }
+}
+
+class RepositoryConfig {
+  final Region region;
+  final bool inviteRequired;
+
+  const RepositoryConfig(this.region, this.inviteRequired);
 }
 
 class JWTInterceptor extends QueuedInterceptor {

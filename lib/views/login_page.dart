@@ -43,15 +43,20 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController inviteCodeController = TextEditingController();
 
-  late Future<Region> _regionAndUserData;
+  late Future<RepositoryConfig?> _regionAndUserData;
 
   LoginMode _loginMode = LoginMode.login;
 
   @override
   void initState() {
-    _regionAndUserData = Provider.of<AccountProvider>(context, listen: false)
-        .fetchUserInfo()
-        .then((value) => Region.Global);
+    final token = context.read<AccountProvider>().token;
+    if (token == null) {
+      _regionAndUserData = Repository.getInstance().getConfiguration();
+    } else {
+      _regionAndUserData = Provider.of<AccountProvider>(context, listen: false)
+          .fetchUserInfo()
+          .then((value) => null);
+    }
     super.initState();
   }
 
@@ -250,7 +255,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   final suformKey = GlobalKey<FormState>();
-  Widget buildSignupPanel(BuildContext context, Region region) {
+  Widget buildSignupPanel(
+      BuildContext context, Region region, bool inviteRequired) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50.0),
       child: SingleChildScrollView(
@@ -304,7 +310,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             : AppLocalizations.of(context)!
                                 .please_enter_verify_code),
                     const SizedBox(height: 20),
-                    if (_loginMode == LoginMode.register)
+                    if (_loginMode == LoginMode.register && inviteRequired)
                       TextFormField(
                           textCapitalization: TextCapitalization.none,
                           enableSuggestions: false,
@@ -365,20 +371,24 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget buildContent(BuildContext context) {
-    return FutureBuilder(
+    return FutureBuilder<RepositoryConfig?>(
       future: _regionAndUserData,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return buildLandingPage(context, error: snapshot.error);
         } else if (snapshot.hasData) {
           return AnimatedCrossFade(
-            firstChild: buildLoginPanel(context, snapshot.data as Region),
-            secondChild: buildSignupPanel(context, snapshot.data as Region),
+            firstChild: buildLoginPanel(context, snapshot.data!.region),
+            secondChild: buildSignupPanel(
+                context, snapshot.data!.region, snapshot.data!.inviteRequired),
             crossFadeState: _loginMode == LoginMode.login
                 ? CrossFadeState.showFirst
                 : CrossFadeState.showSecond,
             duration: const Duration(milliseconds: 200),
           );
+        } else if (snapshot.connectionState == ConnectionState.done) {
+          return buildLandingPage(context,
+              error: "Invalid Server-side Configuration");
         } else {
           return buildLandingPage(context);
         }

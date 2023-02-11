@@ -138,14 +138,7 @@ class _InputState extends State<Input> {
         .theme
         .inputPadding
         .copyWith(left: 16, right: 16);
-    final safeAreaInsets = isMobile
-        ? EdgeInsets.fromLTRB(
-            query.padding.left,
-            0,
-            query.padding.right,
-            query.viewInsets.bottom + query.padding.bottom,
-          )
-        : EdgeInsets.zero;
+    const safeAreaInsets = EdgeInsets.zero;
     final textPadding = InheritedChatTheme.of(context)
         .theme
         .inputPadding

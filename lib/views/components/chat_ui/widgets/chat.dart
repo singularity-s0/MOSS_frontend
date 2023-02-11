@@ -393,61 +393,60 @@ class ChatState extends State<Chat> {
           theme: widget.theme,
           child: InheritedL10n(
             l10n: widget.l10n,
-            child: Stack(
-              children: [
-                Container(
-                  color: widget.theme.backgroundColor,
-                  child: Column(
-                    children: [
-                      Flexible(
-                        child: widget.messages.isEmpty
-                            ? SizedBox.expand(
-                                child: _emptyStateBuilder(),
-                              )
-                            : GestureDetector(
-                                onTap: () {
-                                  FocusManager.instance.primaryFocus?.unfocus();
-                                  widget.onBackgroundTap?.call();
-                                },
-                                child: LayoutBuilder(
-                                  builder: (
-                                    BuildContext context,
-                                    BoxConstraints constraints,
-                                  ) =>
-                                      ChatList(
-                                    bottomWidget: widget.listBottomWidget,
-                                    isLastPage: widget.isLastPage,
-                                    itemBuilder: (Object item, int? index) =>
-                                        _messageBuilder(
-                                      item,
-                                      constraints,
-                                      index,
-                                    ),
-                                    items: _chatMessages,
-                                    keyboardDismissBehavior:
-                                        widget.keyboardDismissBehavior,
-                                    onEndReached: widget.onEndReached,
-                                    onEndReachedThreshold:
-                                        widget.onEndReachedThreshold,
-                                    scrollController: _scrollController,
-                                    scrollPhysics: widget.scrollPhysics,
-                                    useTopSafeAreaInset:
-                                        widget.useTopSafeAreaInset ?? isMobile,
-                                  ),
+            child: Container(
+              color: widget.theme.backgroundColor,
+              child: Column(
+                children: [
+                  Flexible(
+                    child: widget.messages.isEmpty
+                        ? SizedBox.expand(
+                            child: _emptyStateBuilder(),
+                          )
+                        : GestureDetector(
+                            onTap: () {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                              widget.onBackgroundTap?.call();
+                            },
+                            child: LayoutBuilder(
+                              builder: (
+                                BuildContext context,
+                                BoxConstraints constraints,
+                              ) =>
+                                  ChatList(
+                                bottomWidget: widget.listBottomWidget,
+                                isLastPage: widget.isLastPage,
+                                itemBuilder: (Object item, int? index) =>
+                                    _messageBuilder(
+                                  item,
+                                  constraints,
+                                  index,
                                 ),
+                                items: _chatMessages,
+                                keyboardDismissBehavior:
+                                    widget.keyboardDismissBehavior,
+                                onEndReached: widget.onEndReached,
+                                onEndReachedThreshold:
+                                    widget.onEndReachedThreshold,
+                                scrollController: _scrollController,
+                                scrollPhysics: widget.scrollPhysics,
+                                useTopSafeAreaInset:
+                                    widget.useTopSafeAreaInset ?? isMobile,
                               ),
-                      ),
-                      Input(
-                        isAttachmentUploading: widget.isAttachmentUploading,
-                        onAttachmentPressed: widget.onAttachmentPressed,
-                        onSendPressed: widget.onSendPressed,
-                        options: widget.inputOptions,
-                      ),
-                      widget.customBottomWidget ?? const SizedBox(),
-                    ],
+                            ),
+                          ),
                   ),
-                ),
-              ],
+                  Input(
+                    isAttachmentUploading: widget.isAttachmentUploading,
+                    onAttachmentPressed: widget.onAttachmentPressed,
+                    onSendPressed: widget.onSendPressed,
+                    options: widget.inputOptions,
+                  ),
+                  MediaQuery.of(context).viewInsets.bottom <
+                          200 // FIXME: determine keyboard open
+                      ? widget.customBottomWidget ?? const SizedBox()
+                      : const SizedBox(),
+                ],
+              ),
             ),
           ),
         ),

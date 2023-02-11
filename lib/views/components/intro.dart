@@ -29,7 +29,7 @@ class MossIntroWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Flexible(
-              flex: 8,
+              flex: 6,
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
@@ -45,7 +45,7 @@ class MossIntroWidget extends StatelessWidget {
             ),
             const Spacer(flex: 1),
             Flexible(
-              flex: 12,
+              flex: 10,
               child: Align(
                 alignment: Alignment.topCenter,
                 child: IntrinsicWidth(

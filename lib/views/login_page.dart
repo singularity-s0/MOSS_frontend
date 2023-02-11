@@ -197,6 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     autoAccountField(context, region),
                     const SizedBox(height: 20),
@@ -208,50 +209,37 @@ class _LoginScreenState extends State<LoginScreen> {
                           labelText: AppLocalizations.of(context)!.password,
                         ),
                         controller: passwordController),
-                    const SizedBox(height: 60),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextButton(
-                              onPressed: () => setState(() {
-                                    _loginMode = LoginMode.register;
-                                  }),
-                              child:
-                                  Text(AppLocalizations.of(context)!.sign_up)),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              TextButton(
-                                  onPressed: () => setState(() {
-                                        _loginMode = LoginMode.reset;
-                                      }),
-                                  child: Text(AppLocalizations.of(context)!
-                                      .resetpassword)),
-                              const SizedBox(width: 16),
-                              ElevatedButton(
-                                  child: Text(
-                                      AppLocalizations.of(context)!.sign_in),
-                                  onPressed: () async {
-                                    if (!lpformKey.currentState!.validate()) {
-                                      return;
-                                    }
-                                    try {
-                                      await showLoadingDialogUntilFutureCompletes<
-                                              JWToken?>(
-                                          context,
-                                          autoLoginFunc(region)(
-                                              accountController.text,
-                                              passwordController.text));
-                                    } catch (e) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                              content: Text(parseError(e),
-                                                  maxLines: 3)));
-                                    }
-                                  }),
-                            ],
-                          ),
-                        ]),
+                    const SizedBox(height: 45),
+                    TextButton(
+                        onPressed: () => setState(() {
+                              _loginMode = LoginMode.register;
+                            }),
+                        child: Text(AppLocalizations.of(context)!.sign_up)),
+                    const SizedBox(height: 8),
+                    TextButton(
+                        onPressed: () => setState(() {
+                              _loginMode = LoginMode.reset;
+                            }),
+                        child:
+                            Text(AppLocalizations.of(context)!.resetpassword)),
+                    const SizedBox(height: 12),
+                    ElevatedButton(
+                        child: Text(AppLocalizations.of(context)!.sign_in),
+                        onPressed: () async {
+                          if (!lpformKey.currentState!.validate()) {
+                            return;
+                          }
+                          try {
+                            await showLoadingDialogUntilFutureCompletes<
+                                    JWToken?>(
+                                context,
+                                autoLoginFunc(region)(accountController.text,
+                                    passwordController.text));
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text(parseError(e), maxLines: 3)));
+                          }
+                        }),
                   ],
                 ),
               ),
@@ -274,17 +262,10 @@ class _LoginScreenState extends State<LoginScreen> {
             Image.asset('assets/images/logo.png', scale: 6.5),
             const SizedBox(height: 25),
             Text(
-              AppLocalizations.of(context)!.welcome_comma,
+              _loginMode == LoginMode.register
+                  ? AppLocalizations.of(context)!.sign_up
+                  : AppLocalizations.of(context)!.resetpassword,
               style: const TextStyle(fontSize: 35),
-            ),
-            Opacity(
-              opacity: 0.7,
-              child: Text(
-                _loginMode == LoginMode.register
-                    ? AppLocalizations.of(context)!.sign_up
-                    : AppLocalizations.of(context)!.resetpassword,
-                style: const TextStyle(fontSize: 35),
-              ),
             ),
             const SizedBox(height: 30),
             Form(
@@ -292,6 +273,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     autoAccountField(context, region),
                     const SizedBox(height: 20),
@@ -322,59 +304,46 @@ class _LoginScreenState extends State<LoginScreen> {
                             ? null
                             : AppLocalizations.of(context)!
                                 .please_enter_verify_code),
-                    const SizedBox(height: 60),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                            onPressed: () => setState(() {
-                                  _loginMode = LoginMode.login;
-                                }),
-                            child: Text(AppLocalizations.of(context)!.sign_in)),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            TextButton(
-                                onPressed: () => setState(() {
-                                      _loginMode == LoginMode.register
-                                          ? _loginMode = LoginMode.reset
-                                          : _loginMode = LoginMode.register;
-                                    }),
-                                child: Text(_loginMode == LoginMode.register
-                                    ? AppLocalizations.of(context)!
-                                        .resetpassword
-                                    : AppLocalizations.of(context)!.sign_up)),
-                            const SizedBox(width: 16),
-                            ElevatedButton(
-                                child: Text(_loginMode == LoginMode.register
-                                    ? AppLocalizations.of(context)!.sign_up
-                                    : AppLocalizations.of(context)!
-                                        .resetpassword),
-                                onPressed: () async {
-                                  if (!suformKey.currentState!.validate()) {
-                                    return;
-                                  }
-                                  try {
-                                    await showLoadingDialogUntilFutureCompletes<
-                                            JWToken?>(
-                                        context,
-                                        autoSignupFunc(region)(
-                                            accountController.text,
-                                            passwordController.text,
-                                            verifycodeController.text,
-                                            resetPassword:
-                                                _loginMode == LoginMode.reset));
-                                  } catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content: Text(parseError(e),
-                                                maxLines: 3)));
-                                  }
-                                }),
-                          ],
-                        ),
-                      ],
-                    ),
+                    const SizedBox(height: 30),
+                    TextButton(
+                        onPressed: () => setState(() {
+                              _loginMode = LoginMode.login;
+                            }),
+                        child: Text(AppLocalizations.of(context)!.sign_in)),
+                    const SizedBox(height: 8),
+                    TextButton(
+                        onPressed: () => setState(() {
+                              _loginMode == LoginMode.register
+                                  ? _loginMode = LoginMode.reset
+                                  : _loginMode = LoginMode.register;
+                            }),
+                        child: Text(_loginMode == LoginMode.register
+                            ? AppLocalizations.of(context)!.resetpassword
+                            : AppLocalizations.of(context)!.sign_up)),
+                    const SizedBox(height: 12),
+                    ElevatedButton(
+                        child: Text(_loginMode == LoginMode.register
+                            ? AppLocalizations.of(context)!.sign_up
+                            : AppLocalizations.of(context)!.resetpassword),
+                        onPressed: () async {
+                          if (!suformKey.currentState!.validate()) {
+                            return;
+                          }
+                          try {
+                            await showLoadingDialogUntilFutureCompletes<
+                                    JWToken?>(
+                                context,
+                                autoSignupFunc(region)(
+                                    accountController.text,
+                                    passwordController.text,
+                                    verifycodeController.text,
+                                    resetPassword:
+                                        _loginMode == LoginMode.reset));
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text(parseError(e), maxLines: 3)));
+                          }
+                        }),
                   ],
                 ),
               ),

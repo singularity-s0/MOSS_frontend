@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:openchat_frontend/main.dart';
 
 import 'widgets/message/system_message.dart';
 import 'widgets/unread_header.dart';
@@ -52,6 +53,8 @@ const secondaryDark = Color(0xff2b2250);
 abstract class ChatTheme {
   /// Creates a new chat theme based on provided colors and text styles.
   const ChatTheme({
+    required this.receivedMessageSelectionColor,
+    required this.sentMessageSelectionColor,
     required this.attachmentButtonIcon,
     required this.attachmentButtonMargin,
     required this.backgroundColor,
@@ -210,6 +213,10 @@ abstract class ChatTheme {
   /// Text style used for displaying link title on received messages.
   final TextStyle receivedMessageLinkTitleTextStyle;
 
+  final Color? receivedMessageSelectionColor;
+
+  final Color? sentMessageSelectionColor;
+
   /// Secondary color, used as a background of received messages.
   final Color secondaryColor;
 
@@ -292,6 +299,8 @@ class DefaultChatTheme extends ChatTheme {
   /// override only a couple of properties, otherwise create a new class
   /// which extends [ChatTheme]
   const DefaultChatTheme({
+    super.receivedMessageSelectionColor,
+    super.sentMessageSelectionColor,
     super.attachmentButtonIcon,
     super.attachmentButtonMargin,
     super.backgroundColor = neutral7,
@@ -448,6 +457,8 @@ class DarkChatTheme extends ChatTheme {
   /// override only a couple of properties, otherwise create a new class
   /// which extends [ChatTheme]
   const DarkChatTheme({
+    super.receivedMessageSelectionColor,
+    super.sentMessageSelectionColor,
     super.attachmentButtonIcon,
     super.attachmentButtonMargin,
     super.backgroundColor = dark,

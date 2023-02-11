@@ -8,6 +8,9 @@ import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
+const themeColor = Color.fromRGBO(56, 100, 184, 1);
+const themeColorLight = Color.fromRGBO(121, 186, 243, 1);
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SettingsProvider.getInstance().init();
@@ -54,7 +57,7 @@ class MainApp extends StatelessWidget {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           theme: ThemeData(
-              colorSchemeSeed: const Color.fromRGBO(56, 100, 184, 1),
+              colorSchemeSeed: themeColor,
               bottomSheetTheme: BottomSheetThemeData(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20))),

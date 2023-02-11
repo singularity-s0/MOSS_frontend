@@ -116,21 +116,29 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
       final boldTextStyle = user.id == widget.message.author.id
           ? theme.sentMessageBodyBoldTextStyle
           : theme.receivedMessageBodyBoldTextStyle;
-      return Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: MarkdownBody(
-          softLineBreak: true,
-          data: widget.message.text,
-          selectable: true,
-          styleSheet: MarkdownStyleSheet(
-            p: bodyTextStyle,
-            a: bodyLinkTextStyle,
-            strong: boldTextStyle,
-            blockquote: bodyTextStyle,
+      return Theme(
+        data: Theme.of(context).copyWith(
+            textSelectionTheme: TextSelectionThemeData(
+          selectionColor: user.id == widget.message.author.id
+              ? theme.sentMessageSelectionColor
+              : theme.receivedMessageSelectionColor,
+        )),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: MarkdownBody(
+            softLineBreak: true,
+            data: widget.message.text,
+            selectable: true,
+            styleSheet: MarkdownStyleSheet(
+              p: bodyTextStyle,
+              a: bodyLinkTextStyle,
+              strong: boldTextStyle,
+              blockquote: bodyTextStyle,
+            ),
+            builders: {
+              'code': CodeElementBuilder(),
+            },
           ),
-          builders: {
-            'code': CodeElementBuilder(),
-          },
         ),
       );
     }

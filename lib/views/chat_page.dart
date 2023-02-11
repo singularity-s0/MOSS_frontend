@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter/material.dart';
+import 'package:openchat_frontend/main.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:local_hero/local_hero.dart';
 import 'package:openchat_frontend/model/chat.dart';
@@ -232,7 +233,7 @@ class _ChatViewState extends State<ChatView> {
             inputClearMode: InputClearMode.never,
             sendButtonVisibilityMode: SendButtonVisibilityMode.always),
         theme: DefaultChatTheme(
-          primaryColor: Theme.of(context).colorScheme.secondary,
+          primaryColor: themeColor,
           backgroundColor: Theme.of(context).colorScheme.surface,
           inputBackgroundColor: Theme.of(context).colorScheme.secondary,
           inputTextCursorColor: Theme.of(context).colorScheme.onSecondary,
@@ -242,6 +243,8 @@ class _ChatViewState extends State<ChatView> {
               left: 16,
               right: 16,
               bottom: MediaQuery.of(context).viewInsets.bottom + 16),
+          sentMessageSelectionColor: const Color(0x8f1d1c21),
+          receivedMessageSelectionColor: null,
         ),
         emptyState: shouldUseLargeLogo
             ? MossIntroWidget(

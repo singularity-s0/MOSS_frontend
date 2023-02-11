@@ -52,7 +52,7 @@ class CodeElementBuilder extends MarkdownElementBuilder {
 
 const githubTheme = {
   'root':
-      TextStyle(color: Color(0xff333333), backgroundColor: Color(0x7ff8f8f8)),
+      TextStyle(color: Color(0xff333333), backgroundColor: Color(0xfff8f8f8)),
   'comment': TextStyle(color: Color(0xff999988), fontStyle: FontStyle.italic),
   'quote': TextStyle(color: Color(0xff999988), fontStyle: FontStyle.italic),
   'keyword': TextStyle(color: Color(0xff333333), fontWeight: FontWeight.bold),

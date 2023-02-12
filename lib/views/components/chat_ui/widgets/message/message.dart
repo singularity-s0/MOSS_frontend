@@ -244,32 +244,27 @@ class Message extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                GestureDetector(
-                  onDoubleTap: () => onMessageDoubleTap?.call(context, message),
-                  onLongPress: () => onMessageLongPress?.call(context, message),
-                  onTap: () => onMessageTap?.call(context, message),
-                  child: onMessageVisibilityChanged != null
-                      ? VisibilityDetector(
-                          key: Key(message.id),
-                          onVisibilityChanged: (visibilityInfo) =>
-                              onMessageVisibilityChanged!(
-                            message,
-                            visibilityInfo.visibleFraction > 0.1,
-                          ),
-                          child: _bubbleBuilder(
-                            context,
-                            borderRadius.resolve(Directionality.of(context)),
-                            currentUserIsAuthor,
-                            enlargeEmojis,
-                          ),
-                        )
-                      : _bubbleBuilder(
+                onMessageVisibilityChanged != null
+                    ? VisibilityDetector(
+                        key: Key(message.id),
+                        onVisibilityChanged: (visibilityInfo) =>
+                            onMessageVisibilityChanged!(
+                          message,
+                          visibilityInfo.visibleFraction > 0.1,
+                        ),
+                        child: _bubbleBuilder(
                           context,
                           borderRadius.resolve(Directionality.of(context)),
                           currentUserIsAuthor,
                           enlargeEmojis,
                         ),
-                ),
+                      )
+                    : _bubbleBuilder(
+                        context,
+                        borderRadius.resolve(Directionality.of(context)),
+                        currentUserIsAuthor,
+                        enlargeEmojis,
+                      ),
               ],
             ),
           ),

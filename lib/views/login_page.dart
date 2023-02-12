@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:openchat_frontend/model/user.dart';
@@ -67,23 +68,47 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  Widget accountField(BuildContext context, Region region) => TextFormField(
-      keyboardType: region == Region.CN
-          ? TextInputType.phone
-          : TextInputType.emailAddress,
-      textCapitalization: TextCapitalization.none,
-      autocorrect: false,
-      enableSuggestions: false,
-      enableIMEPersonalizedLearning: false,
-      decoration: InputDecoration(
-        labelText: AppLocalizations.of(context)!.account,
-      ),
-      validator: (value) {
-        return (isValidEmail(value!) || isValidCNPhoneNumber(value))
-            ? null
-            : AppLocalizations.of(context)!.please_enter_valid_account;
-      },
-      controller: accountController);
+  Widget accountField(BuildContext context, Region region,
+      {bool login = true}) {
+    TextInputType keyboard;
+    String labelText;
+    if (login) {
+      keyboard = TextInputType.emailAddress;
+      labelText = AppLocalizations.of(context)!.account;
+    } else if (region == Region.CN) {
+      keyboard = TextInputType.phone;
+      labelText = AppLocalizations.of(context)!.phone_number;
+    } else {
+      keyboard = TextInputType.emailAddress;
+      labelText = AppLocalizations.of(context)!.email;
+    }
+    return TextFormField(
+        keyboardType: keyboard,
+        textCapitalization: TextCapitalization.none,
+        autocorrect: false,
+        enableSuggestions: false,
+        enableIMEPersonalizedLearning: false,
+        decoration: InputDecoration(
+          labelText: labelText,
+        ),
+        validator: (value) {
+          if (login) {
+            return (isValidEmail(value!) || isValidCNPhoneNumber(value))
+                ? null
+                : AppLocalizations.of(context)!.please_enter_valid_account;
+          }
+          if (region == Region.CN) {
+            return isValidCNPhoneNumber(value!)
+                ? null
+                : AppLocalizations.of(context)!.please_enter_valid_phone;
+          } else {
+            return isValidEmail(value!)
+                ? null
+                : AppLocalizations.of(context)!.please_enter_valid_email;
+          }
+        },
+        controller: accountController);
+  }
 
   Future<JWToken?> Function(String, String) autoLoginFunc(Region region) {
     if (isValidEmail(accountController.text)) {
@@ -255,7 +280,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    accountField(context, region),
+                    accountField(context, region, login: false),
                     const SizedBox(height: 20),
                     TextFormField(
                         obscureText: true,
@@ -293,7 +318,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           decoration: InputDecoration(
                             labelText: AppLocalizations.of(context)!.invitecode,
                           ),
-                          controller: inviteCodeController),
+                          controller: inviteCodeController,
+                          validator: (value) => (value!.isNotEmpty)
+                              ? null
+                              : AppLocalizations.of(context)!
+                                  .please_enter_valid_invite_code),
                     const SizedBox(height: 30),
                     TextButton(
                         onPressed: () => setState(() {
@@ -375,25 +404,27 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     if (isDesktop(context)) {
       return Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Center(
-            child: SizedBox(
-              width: kTabletSingleContainerWidth,
-              height: 800,
-              child: Card(
-                surfaceTintColor: Colors.transparent,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0)),
-                clipBehavior: Clip.antiAlias,
-                child: buildContent(context),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Center(
+              child: SizedBox(
+                width: kTabletSingleContainerWidth,
+                height: 800,
+                child: Card(
+                  surfaceTintColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0)),
+                  clipBehavior: Clip.antiAlias,
+                  child: buildContent(context),
+                ),
               ),
             ),
           ),
         ),
       );
     } else {
-      return Scaffold(body: buildContent(context));
+      return Scaffold(body: SafeArea(child: buildContent(context)));
     }
   }
 }

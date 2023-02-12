@@ -19,6 +19,8 @@
     "please_enter_valid_email": "Please enter a valid email address",
     "please_enter_valid_phone": "Please enter a valid Chinese phone number",
     "please_enter_verify_code": "Please enter a valid verification code",
+    "please_enter_valid_account": "Please enter a valid account",
+    "account": "Account",
     "phone_number": "Phone Number",
     "email": "Email",
     "password": "Password",

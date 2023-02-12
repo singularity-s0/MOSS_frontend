@@ -19,9 +19,7 @@ bool isValidEmail(String email) {
 }
 
 bool isValidCNPhoneNumber(String phone) {
-  return RegExp(
-          '^((13[0-9])|(15[^4])|(166)|(17[0-8])|(18[0-9])|(19[8-9])|(147,145))\\d{8}\$')
-      .hasMatch(phone);
+  return RegExp(r'^[0-9]{11}$').hasMatch(phone);
 }
 
 bool isValidVerification(String verify) {
@@ -69,53 +67,29 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  Widget emailField(BuildContext context) => TextFormField(
-      keyboardType: TextInputType.emailAddress,
+  Widget accountField(BuildContext context, Region region) => TextFormField(
+      keyboardType: region == Region.CN
+          ? TextInputType.phone
+          : TextInputType.emailAddress,
       textCapitalization: TextCapitalization.none,
       autocorrect: false,
       enableSuggestions: false,
       enableIMEPersonalizedLearning: false,
       decoration: InputDecoration(
-        labelText: AppLocalizations.of(context)!.email,
+        labelText: AppLocalizations.of(context)!.account,
       ),
       validator: (value) {
-        return isValidEmail(value!)
+        return (isValidEmail(value!) || isValidCNPhoneNumber(value))
             ? null
-            : AppLocalizations.of(context)!.please_enter_valid_email;
+            : AppLocalizations.of(context)!.please_enter_valid_account;
       },
       controller: accountController);
-
-  Widget phoneField(BuildContext context) => TextFormField(
-      keyboardType: TextInputType.phone,
-      textCapitalization: TextCapitalization.none,
-      autocorrect: false,
-      enableSuggestions: false,
-      enableIMEPersonalizedLearning: false,
-      decoration: InputDecoration(
-        labelText: AppLocalizations.of(context)!.phone_number,
-      ),
-      validator: (value) {
-        return isValidCNPhoneNumber(value!)
-            ? null
-            : AppLocalizations.of(context)!.please_enter_valid_phone;
-      },
-      controller: accountController);
-
-  Widget autoAccountField(BuildContext context, Region region) {
-    switch (region) {
-      case Region.Global:
-        return emailField(context);
-      case Region.CN:
-        return phoneField(context);
-    }
-  }
 
   Future<JWToken?> Function(String, String) autoLoginFunc(Region region) {
-    switch (region) {
-      case Region.Global:
-        return Repository.getInstance().loginWithEmailPassword;
-      case Region.CN:
-        return Repository.getInstance().loginWithPhonePassword;
+    if (isValidEmail(accountController.text)) {
+      return Repository.getInstance().loginWithEmailPassword;
+    } else {
+      return Repository.getInstance().loginWithPhonePassword;
     }
   }
 
@@ -204,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    autoAccountField(context, region),
+                    accountField(context, region),
                     const SizedBox(height: 20),
                     TextFormField(
                         obscureText: true,
@@ -281,7 +255,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    autoAccountField(context, region),
+                    accountField(context, region),
                     const SizedBox(height: 20),
                     TextFormField(
                         obscureText: true,

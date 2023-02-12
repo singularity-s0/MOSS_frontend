@@ -1,11 +1,11 @@
 {
-    "name": "openchat_frontend",
-    "short_name": "openchat_frontend",
+    "name": "MOSS",
+    "short_name": "MOSS",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#ffffffff",
     "theme_color": "#ffffffff",
-    "description": "A new Flutter project.",
+    "description": "MOSS Chat AI",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

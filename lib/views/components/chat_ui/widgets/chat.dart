@@ -408,6 +408,10 @@ class ChatState extends State<Chat> {
                               widget.onBackgroundTap?.call();
                             },
                             child: SelectionArea(
+                              selectionControls:
+                                  MaterialTextSelectionControls(),
+                              magnifierConfiguration:
+                                  TextMagnifier.adaptiveMagnifierConfiguration,
                               child: LayoutBuilder(
                                 builder: (
                                   BuildContext context,

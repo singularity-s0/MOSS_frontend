@@ -139,7 +139,8 @@ class _ChatListState extends State<ChatList>
           reverse: true,
           slivers: [
             if (widget.bottomWidget != null)
-              SliverToBoxAdapter(child: widget.bottomWidget),
+              SelectionContainer.disabled(
+                  child: SliverToBoxAdapter(child: widget.bottomWidget)),
             SliverPadding(
               padding: const EdgeInsets.only(bottom: 4),
               sliver: PatchedSliverAnimatedList(

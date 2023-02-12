@@ -225,233 +225,223 @@ class _ChatViewState extends State<ChatView> {
                 child: Image.asset('assets/images/logo.png', scale: 6.5)),
         surfaceTintColor: Colors.transparent,
       ),
-      body: SelectionArea(
-        selectionControls: MaterialTextSelectionControls(),
-        magnifierConfiguration: TextMagnifier.adaptiveMagnifierConfiguration,
-        child: Chat(
-          messages: _messages,
-          user: user,
-          showUserAvatars: false,
-          inputOptions: const InputOptions(
-              inputClearMode: InputClearMode.never,
-              sendButtonVisibilityMode: SendButtonVisibilityMode.always),
-          theme: DefaultChatTheme(
-            primaryColor: themeColor,
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            inputBackgroundColor: Theme.of(context).colorScheme.secondary,
-            inputTextCursorColor: Theme.of(context).colorScheme.onSecondary,
-            inputTextColor: Theme.of(context).colorScheme.onSecondary,
-            inputBorderRadius: const BorderRadius.all(Radius.circular(8)),
-            inputMargin: EdgeInsets.only(
-                left: 16,
-                right: 16,
-                bottom: MediaQuery.of(context).viewInsets.bottom + 16),
-            sentMessageSelectionColor: const Color(0x7fdda0dd),
-            receivedMessageSelectionColor: null,
-          ),
-          emptyState: shouldUseLargeLogo
-              ? MossIntroWidget(
-                  heroTag:
-                      "MossLogo${isDesktop(context) ? "Desktop" : widget.topic.id}}",
-                )
-              : const SizedBox(),
-          customBottomWidget: const Padding(
-              padding: EdgeInsets.only(left: 12, bottom: 12, right: 12),
-              child: ShareInfoConsentWidget()),
-          onSendPressed:
-              (types.PartialText message, VoidCallback clearInput) async {
-            if (isWaitingForResponse || widget.topic.records == null) return;
-            final topic = widget.topic;
-            final provider =
-                Provider.of<AccountProvider>(context, listen: false);
-            clearInput();
-            setState(() {
-              if (topic.records!.isEmpty) {
+      body: Chat(
+        messages: _messages,
+        user: user,
+        showUserAvatars: false,
+        inputOptions: const InputOptions(
+            inputClearMode: InputClearMode.never,
+            sendButtonVisibilityMode: SendButtonVisibilityMode.always),
+        theme: DefaultChatTheme(
+          primaryColor: themeColor,
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          inputBackgroundColor: Theme.of(context).colorScheme.secondary,
+          inputTextCursorColor: Theme.of(context).colorScheme.onSecondary,
+          inputTextColor: Theme.of(context).colorScheme.onSecondary,
+          inputBorderRadius: const BorderRadius.all(Radius.circular(8)),
+          inputMargin: EdgeInsets.only(
+              left: 16,
+              right: 16,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 16),
+          sentMessageSelectionColor: const Color(0x7fdda0dd),
+          receivedMessageSelectionColor: null,
+        ),
+        emptyState: shouldUseLargeLogo
+            ? MossIntroWidget(
+                heroTag:
+                    "MossLogo${isDesktop(context) ? "Desktop" : widget.topic.id}}",
+              )
+            : const SizedBox(),
+        customBottomWidget: const Padding(
+            padding: EdgeInsets.only(left: 12, bottom: 12, right: 12),
+            child: ShareInfoConsentWidget()),
+        onSendPressed:
+            (types.PartialText message, VoidCallback clearInput) async {
+          if (isWaitingForResponse || widget.topic.records == null) return;
+          final topic = widget.topic;
+          final provider = Provider.of<AccountProvider>(context, listen: false);
+          clearInput();
+          setState(() {
+            if (topic.records!.isEmpty) {
+              _messages.insert(
+                  0,
+                  types.SystemMessage(
+                    text: AppLocalizations.of(context)!.aigc_warning_message,
+                    id: "${widget.topic.id}ai-alert",
+                  ));
+            }
+            _messages.insert(
+                0,
+                types.TextMessage(
+                    author: user,
+                    text: message.text,
+                    // ignore: prefer_const_literals_to_create_immutables
+                    metadata: {'animatedIndex': 0},
+                    id: _messages.length.toString(),
+                    type: types.MessageType.text));
+          });
+          try {
+            final response = (await Repository.getInstance()
+                .chatSendMessage(topic.id, message.text))!;
+            if (topic.records!.isEmpty) {
+              // Handle first record: change title and add warning message
+              provider.user!.chats!
+                  .firstWhere((element) => element.id == topic.id)
+                  .name = response.request;
+            }
+            topic.records!.add(response);
+            if (mounted) {
+              setState(() {
+                _messages.insert(
+                    0,
+                    types.TextMessage(
+                        author: reply,
+                        text: response.response,
+                        // ignore: prefer_const_literals_to_create_immutables
+                        metadata: {'animatedIndex': 0},
+                        id: _messages.length.toString(),
+                        type: types.MessageType.text));
+              });
+            }
+          } catch (e) {
+            if (mounted) {
+              setState(() {
                 _messages.insert(
                     0,
                     types.SystemMessage(
-                      text: AppLocalizations.of(context)!.aigc_warning_message,
-                      id: "${widget.topic.id}ai-alert",
+                      text: parseError(e),
+                      id: "ai-error${_messages.length}",
                     ));
-              }
-              _messages.insert(
-                  0,
-                  types.TextMessage(
-                      author: user,
-                      text: message.text,
-                      // ignore: prefer_const_literals_to_create_immutables
-                      metadata: {'animatedIndex': 0},
-                      id: _messages.length.toString(),
-                      type: types.MessageType.text));
-            });
-            try {
-              final response = (await Repository.getInstance()
-                  .chatSendMessage(topic.id, message.text))!;
-              if (topic.records!.isEmpty) {
-                // Handle first record: change title and add warning message
-                provider.user!.chats!
-                    .firstWhere((element) => element.id == topic.id)
-                    .name = response.request;
-              }
-              topic.records!.add(response);
-              if (mounted) {
-                setState(() {
-                  _messages.insert(
-                      0,
-                      types.TextMessage(
-                          author: reply,
-                          text: response.response,
-                          // ignore: prefer_const_literals_to_create_immutables
-                          metadata: {'animatedIndex': 0},
-                          id: _messages.length.toString(),
-                          type: types.MessageType.text));
-                });
-              }
-            } catch (e) {
-              if (mounted) {
-                setState(() {
-                  _messages.insert(
-                      0,
-                      types.SystemMessage(
-                        text: parseError(e),
-                        id: "ai-error${_messages.length}",
-                      ));
-                });
-              }
+              });
             }
-          },
-          listBottomWidget: Padding(
-            padding: const EdgeInsets.only(left: 16, right: 8, bottom: 8),
-            child: (_messages.firstOrNull?.author.id != user.id &&
-                    _messages.firstOrNull?.author.id != reply.id)
-                ? const SizedBox(height: 40)
-                : AnimatedCrossFade(
-                    crossFadeState: isWaitingForResponse
-                        ? CrossFadeState.showFirst
-                        : CrossFadeState.showSecond,
-                    duration: const Duration(milliseconds: 200),
-                    firstChild: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: const [TypingIndicator()]),
-                    secondChild: Row(
+          }
+        },
+        listBottomWidget: Padding(
+          padding: const EdgeInsets.only(left: 16, right: 8, bottom: 8),
+          child: (_messages.firstOrNull?.author.id != user.id &&
+                  _messages.firstOrNull?.author.id != reply.id)
+              ? const SizedBox(height: 40)
+              : AnimatedCrossFade(
+                  crossFadeState: isWaitingForResponse
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
+                  duration: const Duration(milliseconds: 200),
+                  firstChild: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        TextButton.icon(
-                            icon: const Icon(Icons.refresh, size: 16),
-                            label:
-                                Text(AppLocalizations.of(context)!.regenerate),
-                            onPressed: () async {
-                              final topic = widget.topic;
-                              setState(() {
-                                _messages.removeAt(0);
-                                topic.records!.removeLast();
-                              });
-                              try {
-                                final response = (await Repository.getInstance()
-                                    .chatRegenerateLast(topic.id))!;
-                                topic.records!.add(response);
-                                if (mounted) {
-                                  setState(() {
-                                    _messages.insert(
-                                        0,
-                                        types.TextMessage(
-                                            author: reply,
-                                            text: response.response,
-                                            // ignore: prefer_const_literals_to_create_immutables
-                                            metadata: {'animatedIndex': 0},
-                                            id: _messages.length.toString(),
-                                            type: types.MessageType.text));
-                                  });
-                                }
-                              } catch (e) {
-                                if (mounted) {
-                                  setState(() {
-                                    _messages.insert(
-                                        0,
-                                        types.SystemMessage(
-                                          text: parseError(e),
-                                          id: "ai-error${_messages.length}",
-                                        ));
-                                  });
-                                }
+                      children: const [TypingIndicator()]),
+                  secondChild: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      TextButton.icon(
+                          icon: const Icon(Icons.refresh, size: 16),
+                          label: Text(AppLocalizations.of(context)!.regenerate),
+                          onPressed: () async {
+                            final topic = widget.topic;
+                            setState(() {
+                              _messages.removeAt(0);
+                              topic.records!.removeLast();
+                            });
+                            try {
+                              final response = (await Repository.getInstance()
+                                  .chatRegenerateLast(topic.id))!;
+                              topic.records!.add(response);
+                              if (mounted) {
+                                setState(() {
+                                  _messages.insert(
+                                      0,
+                                      types.TextMessage(
+                                          author: reply,
+                                          text: response.response,
+                                          // ignore: prefer_const_literals_to_create_immutables
+                                          metadata: {'animatedIndex': 0},
+                                          id: _messages.length.toString(),
+                                          type: types.MessageType.text));
+                                });
                               }
-                            }),
-                        IconButton(
-                          icon: Icon(Icons.thumb_up,
-                              size: 16,
-                              color:
-                                  widget.topic.records!.lastOrNull?.like_data ==
-                                          1
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Theme.of(context)
-                                          .buttonTheme
-                                          .colorScheme
-                                          ?.onSurface
-                                          .withAlpha(130)),
-                          padding: EdgeInsets.zero,
-                          onPressed: () async {
-                            if (widget.topic.records?.isEmpty != false) return;
-                            int newLike = 1;
-                            if (widget.topic.records!.last.like_data ==
-                                newLike) {
-                              newLike = 0;
-                            }
-                            try {
-                              await Repository.getInstance().modifyRecord(
-                                  widget.topic.records!.last.id, newLike);
-                              setState(() {
-                                widget.topic.records!.last.like_data = newLike;
-                              });
                             } catch (e) {
-                              await showAlert(context, parseError(e),
-                                  AppLocalizations.of(context)!.error);
+                              if (mounted) {
+                                setState(() {
+                                  _messages.insert(
+                                      0,
+                                      types.SystemMessage(
+                                        text: parseError(e),
+                                        id: "ai-error${_messages.length}",
+                                      ));
+                                });
+                              }
                             }
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.thumb_down,
-                              size: 16,
-                              color:
-                                  widget.topic.records!.lastOrNull?.like_data ==
-                                          -1
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Theme.of(context)
-                                          .buttonTheme
-                                          .colorScheme
-                                          ?.onSurface
-                                          .withAlpha(130)),
-                          padding: EdgeInsets.zero,
-                          onPressed: () async {
-                            if (widget.topic.records?.isEmpty != false) return;
-                            int newLike = -1;
-                            if (widget.topic.records!.last.like_data ==
-                                newLike) {
-                              newLike = 0;
-                            }
-                            try {
-                              await Repository.getInstance().modifyRecord(
-                                  widget.topic.records!.last.id, newLike);
-                              setState(() {
-                                widget.topic.records!.last.like_data = newLike;
-                              });
-                            } catch (e) {
-                              await showAlert(context, parseError(e),
-                                  AppLocalizations.of(context)!.error);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+                          }),
+                      IconButton(
+                        icon: Icon(Icons.thumb_up,
+                            size: 16,
+                            color:
+                                widget.topic.records!.lastOrNull?.like_data == 1
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Theme.of(context)
+                                        .buttonTheme
+                                        .colorScheme
+                                        ?.onSurface
+                                        .withAlpha(130)),
+                        padding: EdgeInsets.zero,
+                        onPressed: () async {
+                          if (widget.topic.records?.isEmpty != false) return;
+                          int newLike = 1;
+                          if (widget.topic.records!.last.like_data == newLike) {
+                            newLike = 0;
+                          }
+                          try {
+                            await Repository.getInstance().modifyRecord(
+                                widget.topic.records!.last.id, newLike);
+                            setState(() {
+                              widget.topic.records!.last.like_data = newLike;
+                            });
+                          } catch (e) {
+                            await showAlert(context, parseError(e),
+                                AppLocalizations.of(context)!.error);
+                          }
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.thumb_down,
+                            size: 16,
+                            color:
+                                widget.topic.records!.lastOrNull?.like_data ==
+                                        -1
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Theme.of(context)
+                                        .buttonTheme
+                                        .colorScheme
+                                        ?.onSurface
+                                        .withAlpha(130)),
+                        padding: EdgeInsets.zero,
+                        onPressed: () async {
+                          if (widget.topic.records?.isEmpty != false) return;
+                          int newLike = -1;
+                          if (widget.topic.records!.last.like_data == newLike) {
+                            newLike = 0;
+                          }
+                          try {
+                            await Repository.getInstance().modifyRecord(
+                                widget.topic.records!.last.id, newLike);
+                            setState(() {
+                              widget.topic.records!.last.like_data = newLike;
+                            });
+                          } catch (e) {
+                            await showAlert(context, parseError(e),
+                                AppLocalizations.of(context)!.error);
+                          }
+                        },
+                      ),
+                    ],
                   ),
-          ),
-          textMessageBuilder: (msg,
-              {required messageWidth, required showName}) {
-            return AnimatedTextMessage(
-              message: msg,
-              animate: false,
-            );
-          },
+                ),
         ),
+        textMessageBuilder: (msg, {required messageWidth, required showName}) {
+          return AnimatedTextMessage(
+            message: msg,
+            animate: false,
+          );
+        },
       ),
     );
   }

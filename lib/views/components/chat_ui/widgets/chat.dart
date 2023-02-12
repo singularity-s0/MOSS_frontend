@@ -407,30 +407,32 @@ class ChatState extends State<Chat> {
                               FocusManager.instance.primaryFocus?.unfocus();
                               widget.onBackgroundTap?.call();
                             },
-                            child: LayoutBuilder(
-                              builder: (
-                                BuildContext context,
-                                BoxConstraints constraints,
-                              ) =>
-                                  ChatList(
-                                bottomWidget: widget.listBottomWidget,
-                                isLastPage: widget.isLastPage,
-                                itemBuilder: (Object item, int? index) =>
-                                    _messageBuilder(
-                                  item,
-                                  constraints,
-                                  index,
+                            child: SelectionArea(
+                              child: LayoutBuilder(
+                                builder: (
+                                  BuildContext context,
+                                  BoxConstraints constraints,
+                                ) =>
+                                    ChatList(
+                                  bottomWidget: widget.listBottomWidget,
+                                  isLastPage: widget.isLastPage,
+                                  itemBuilder: (Object item, int? index) =>
+                                      _messageBuilder(
+                                    item,
+                                    constraints,
+                                    index,
+                                  ),
+                                  items: _chatMessages,
+                                  keyboardDismissBehavior:
+                                      widget.keyboardDismissBehavior,
+                                  onEndReached: widget.onEndReached,
+                                  onEndReachedThreshold:
+                                      widget.onEndReachedThreshold,
+                                  scrollController: _scrollController,
+                                  scrollPhysics: widget.scrollPhysics,
+                                  useTopSafeAreaInset:
+                                      widget.useTopSafeAreaInset ?? isMobile,
                                 ),
-                                items: _chatMessages,
-                                keyboardDismissBehavior:
-                                    widget.keyboardDismissBehavior,
-                                onEndReached: widget.onEndReached,
-                                onEndReachedThreshold:
-                                    widget.onEndReachedThreshold,
-                                scrollController: _scrollController,
-                                scrollPhysics: widget.scrollPhysics,
-                                useTopSafeAreaInset:
-                                    widget.useTopSafeAreaInset ?? isMobile,
                               ),
                             ),
                           ),

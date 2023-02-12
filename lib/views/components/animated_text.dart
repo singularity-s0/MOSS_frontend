@@ -128,7 +128,6 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
           child: MarkdownBody(
             softLineBreak: true,
             data: widget.message.text,
-            selectable: true,
             styleSheet: MarkdownStyleSheet(
               p: bodyTextStyle,
               a: bodyLinkTextStyle,
@@ -138,6 +137,7 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
             builders: {
               'code': CodeElementBuilder(),
             },
+            selectionColor: Theme.of(context).textSelectionTheme.selectionColor,
           ),
         ),
       );

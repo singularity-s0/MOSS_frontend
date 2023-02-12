@@ -226,6 +226,8 @@ class _ChatViewState extends State<ChatView> {
         surfaceTintColor: Colors.transparent,
       ),
       body: SelectionArea(
+        selectionControls: MaterialTextSelectionControls(),
+        magnifierConfiguration: TextMagnifier.adaptiveMagnifierConfiguration,
         child: Chat(
           messages: _messages,
           user: user,
@@ -244,7 +246,7 @@ class _ChatViewState extends State<ChatView> {
                 left: 16,
                 right: 16,
                 bottom: MediaQuery.of(context).viewInsets.bottom + 16),
-            sentMessageSelectionColor: const Color(0x8f1d1c21),
+            sentMessageSelectionColor: const Color(0x7fdda0dd),
             receivedMessageSelectionColor: null,
           ),
           emptyState: shouldUseLargeLogo

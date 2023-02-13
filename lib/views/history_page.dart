@@ -64,11 +64,7 @@ class _HistoryPageState extends State<HistoryPage> {
   void init() async {
     final provider = Provider.of<AccountProvider>(context, listen: false);
     await refresh();
-    if (provider.user!.chats!.isNotEmpty) {
-      selectTopic(provider.user!.chats!.first);
-    } else {
-      addNewTopic(context);
-    }
+    addNewTopic(context);
   }
 
   @override

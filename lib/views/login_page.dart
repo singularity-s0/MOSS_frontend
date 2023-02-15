@@ -9,6 +9,8 @@ import 'package:openchat_frontend/utils/dialog.dart';
 import 'package:openchat_frontend/views/chat_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 // ignore: constant_identifier_names
 enum Region { CN, Global }
@@ -316,8 +318,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           enableSuggestions: false,
                           autocorrect: false,
                           decoration: InputDecoration(
-                            labelText: AppLocalizations.of(context)!.invitecode,
-                          ),
+                              labelText:
+                                  AppLocalizations.of(context)!.invitecode,
+                              suffixIcon: TextButton(
+                                child: Text(AppLocalizations.of(context)!
+                                    .join_waitlist),
+                                onPressed: () =>
+                                    launchUrlString(Repository.waitlistUrl),
+                              )),
                           controller: inviteCodeController,
                           validator: (value) => (value!.isNotEmpty)
                               ? null

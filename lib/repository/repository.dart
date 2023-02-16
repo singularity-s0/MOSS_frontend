@@ -12,6 +12,8 @@ class Repository {
 
   static const String baseUrl = "https://moss.fastnlp.top/api";
 
+  static const String waitlistUrl = "https://survey.moss.fastnlp.top/s/Ntd4eG";
+
   final Dio dio = Dio();
 
   late AccountProvider provider;

@@ -1,16 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:openchat_frontend/model/user.dart';
 import 'package:openchat_frontend/repository/repository.dart';
 import 'package:openchat_frontend/utils/settings_provider.dart';
-
-bool _isFrameReady = false;
-void setFrameReady() {
-  if (!_isFrameReady) {
-    _isFrameReady = true;
-    FlutterNativeSplash.remove();
-  }
-}
 
 class AccountProvider with ChangeNotifier {
   // Single instance class

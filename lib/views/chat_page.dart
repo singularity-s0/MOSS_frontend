@@ -130,12 +130,6 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Future.delayed(
-          const Duration(milliseconds: 700)); // transition duration
-      setFrameReady();
-    });
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -145,14 +139,6 @@ class _ChatViewState extends State<ChatView> {
                 tag:
                     "MossLogo${isDesktop(context) ? "Desktop" : widget.topic.id}}",
                 child: Image.asset('assets/images/logo.png', scale: 6.5)),
-        automaticallyImplyLeading: false,
-        leading: ((ModalRoute.of(context)?.impliesAppBarDismissal ?? false) ||
-                (ModalRoute.of(context)?.canPop ?? false))
-            ? IconButton(
-                icon: const Icon(Icons.menu),
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            : null,
         surfaceTintColor: Colors.transparent,
       ),
       body: Chat(

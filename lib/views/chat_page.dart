@@ -375,7 +375,7 @@ class _ChatViewState extends State<ChatView> {
                         },
                       ),
                       const Spacer(),
-                      TextButton.icon(
+                      IconButton(
                           onPressed: () {
                             String content = "";
                             for (final record in widget.topic.records!) {
@@ -387,20 +387,18 @@ class _ChatViewState extends State<ChatView> {
                                 content: Text(AppLocalizations.of(context)!
                                     .copied_to_clipboard)));
                           },
-                          icon: const Icon(Icons.copy_all),
-                          label: Text(AppLocalizations.of(context)!.copy_all)),
-                      TextButton.icon(
+                          icon: const Icon(Icons.copy_all)),
+                      IconButton(
                           onPressed: () {
                             _chatKey.currentState!
                                 .takeScreenshot()
                                 .then((bytes) {
                               WebImageDownloader.downloadImageFromUInt8List(
-                                  uInt8List: bytes);
+                                  uInt8List: bytes,
+                                  name: "moss-${widget.topic.id}.png");
                             });
                           },
-                          icon: const Icon(Icons.share),
-                          label:
-                              Text(AppLocalizations.of(context)!.export_image)),
+                          icon: const Icon(Icons.share)),
                     ],
                   ),
                 ),

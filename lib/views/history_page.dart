@@ -15,20 +15,22 @@ class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key, this.selectedTopic, this.onTopicSelected});
 
   @override
-  State<HistoryPage> createState() => _HistoryPageState();
+  State<HistoryPage> createState() => HistoryPageState();
 }
 
-class _HistoryPageState extends State<HistoryPage> {
+class HistoryPageState extends State<HistoryPage> {
   bool isLoading = true;
   Object? error;
 
   bool _isEditing = false;
 
-  void selectTopic(ChatThread t) {
+  static void selectTopic(
+      BuildContext context, ChatThread t, Function(ChatThread)? callback) {
+    if (!context.mounted) return;
     var parent = context.findAncestorWidgetOfExactType<ChatPage>();
     assert(parent != null, "A History Page must be a child of a Chat Page");
     parent!.currentTopic.value = t;
-    widget.onTopicSelected?.call(t);
+    callback?.call(t);
   }
 
   Future<void> refresh() async {
@@ -47,12 +49,14 @@ class _HistoryPageState extends State<HistoryPage> {
     }
   }
 
-  Future<void> addNewTopic(BuildContext context) async {
+  static Future<void> addNewTopic(
+      BuildContext context, Function(ChatThread)? callback) async {
+    if (!context.mounted) return;
     final provider = Provider.of<AccountProvider>(context, listen: false);
     try {
       final thread = await Repository.getInstance().newChatThread();
       provider.user!.chats!.insert(0, thread!);
-      selectTopic(thread);
+      selectTopic(context, thread, callback);
     } catch (e) {
       if (context.mounted) {
         await showAlert(
@@ -62,9 +66,8 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   void init() async {
-    final provider = Provider.of<AccountProvider>(context, listen: false);
     await refresh();
-    addNewTopic(context);
+    addNewTopic(context, widget.onTopicSelected);
   }
 
   @override
@@ -96,7 +99,7 @@ class _HistoryPageState extends State<HistoryPage> {
           itemBuilder: (context, i) {
             if (i == 0) {
               return NewTopicButton(onTap: () async {
-                addNewTopic(context);
+                addNewTopic(context, widget.onTopicSelected);
               });
             } else if (i == listItemCount - 1 && error != null) {
               return ErrorRetryWidget(error: error, onRetry: refresh);
@@ -112,7 +115,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     DateTime.tryParse(thread.updated_at)?.toLocal())),
                 selected: widget.selectedTopic?.id == thread.id,
                 onTap: () {
-                  selectTopic(thread);
+                  selectTopic(context, thread, widget.onTopicSelected);
                 },
                 trailing: _isEditing
                     ? IconButton(
@@ -125,7 +128,10 @@ class _HistoryPageState extends State<HistoryPage> {
                               provider.user!.chats!.remove(thread);
                               if (widget.selectedTopic?.id == thread.id) {
                                 if (provider.user!.chats!.isNotEmpty) {
-                                  selectTopic(provider.user!.chats!.first);
+                                  selectTopic(
+                                      context,
+                                      provider.user!.chats!.first,
+                                      widget.onTopicSelected);
                                 }
                               }
                             });

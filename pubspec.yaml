@@ -24,6 +24,7 @@ dependencies:
   json_annotation: ^4.8.0
   shared_preferences: ^2.0.17
   local_hero: ^0.2.0
+  image_downloader_web: ^2.0.2
 
   # Chat UI dependencies
   diffutil_dart: ^3.0.0

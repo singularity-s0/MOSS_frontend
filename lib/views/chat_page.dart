@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:clipboard/clipboard.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter/material.dart';
 import 'package:openchat_frontend/main.dart';
@@ -17,6 +18,7 @@ import 'package:openchat_frontend/views/components/typing_indicator.dart';
 import 'package:openchat_frontend/views/components/widgets.dart';
 import 'package:openchat_frontend/views/history_page.dart';
 import 'package:provider/provider.dart';
+import 'package:image_downloader_web/image_downloader_web.dart';
 
 const user = types.User(id: 'user');
 const reply = types.User(id: 'moss');
@@ -38,6 +40,7 @@ class ChatView extends StatefulWidget {
 }
 
 class _ChatViewState extends State<ChatView> {
+  final GlobalKey<ChatState> _chatKey = GlobalKey();
   final List<types.Message> _messages = [];
 
   bool lateInitDone = false;
@@ -164,6 +167,7 @@ class _ChatViewState extends State<ChatView> {
         surfaceTintColor: Colors.transparent,
       ),
       body: Chat(
+        key: _chatKey,
         messages: _messages,
         user: user,
         showUserAvatars: false,
@@ -384,7 +388,19 @@ class _ChatViewState extends State<ChatView> {
                                     .copied_to_clipboard)));
                           },
                           icon: const Icon(Icons.copy_all),
-                          label: Text(AppLocalizations.of(context)!.copy_all))
+                          label: Text(AppLocalizations.of(context)!.copy_all)),
+                      TextButton.icon(
+                          onPressed: () {
+                            _chatKey.currentState!
+                                .takeScreenshot()
+                                .then((bytes) {
+                              WebImageDownloader.downloadImageFromUInt8List(
+                                  uInt8List: bytes);
+                            });
+                          },
+                          icon: const Icon(Icons.share),
+                          label:
+                              Text(AppLocalizations.of(context)!.export_image)),
                     ],
                   ),
                 ),

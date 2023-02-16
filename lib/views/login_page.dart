@@ -387,8 +387,10 @@ class _LoginScreenState extends State<LoginScreen> {
       future: _regionAndUserData,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
+          setFrameReady();
           return buildLandingPage(context, error: snapshot.error);
         } else if (snapshot.hasData) {
+          setFrameReady();
           return AnimatedCrossFade(
             firstChild: buildLoginPanel(context, snapshot.data!.region),
             secondChild: buildSignupPanel(
@@ -398,9 +400,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 : CrossFadeState.showSecond,
             duration: const Duration(milliseconds: 200),
           );
-        } else if (snapshot.connectionState == ConnectionState.done) {
-          return buildLandingPage(context,
-              error: "Invalid Server-side Configuration");
         } else {
           return buildLandingPage(context);
         }

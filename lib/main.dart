@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:local_hero/local_hero.dart';
 import 'package:openchat_frontend/model/chat.dart';
 import 'package:openchat_frontend/repository/repository.dart';
@@ -17,7 +18,8 @@ const themeColor = Color.fromRGBO(56, 100, 184, 1);
 const themeColorLight = Color.fromRGBO(121, 186, 243, 1);
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await SettingsProvider.getInstance().init();
   Repository.init(AccountProvider.getInstance());
   runApp(const MainApp());

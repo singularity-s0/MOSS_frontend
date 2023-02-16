@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:intl/intl.dart';
 import 'package:openchat_frontend/utils/screenshot.dart';
@@ -402,7 +403,7 @@ class ChatState extends State<Chat> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(vertical: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 20),
                       child: Image.asset('assets/images/logo.png', scale: 6.5),
                     ),
                     Expanded(
@@ -412,18 +413,17 @@ class ChatState extends State<Chat> {
                           BoxConstraints constraints,
                         ) =>
                             ChatList(
-                          itemBuilder: (Object item, int? index) =>
-                              _messageBuilder(
-                            item,
-                            constraints,
-                            index,
-                          ),
-                          items: _chatMessages,
-                          scrollController: ScrollController(),
-                          scrollPhysics: widget.scrollPhysics,
-                          useTopSafeAreaInset:
-                              widget.useTopSafeAreaInset ?? isMobile,
-                        ),
+                                itemBuilder: (Object item, int? index) =>
+                                    _messageBuilder(
+                                      item,
+                                      constraints,
+                                      index,
+                                    ),
+                                items: _chatMessages,
+                                scrollController: ScrollController(),
+                                scrollPhysics:
+                                    const NeverScrollableScrollPhysics(),
+                                useTopSafeAreaInset: false),
                       ),
                     ),
                   ],
@@ -433,7 +433,12 @@ class ChatState extends State<Chat> {
           ),
         ),
         context: context,
-        targetSize: Size(700, _scrollController.position.maxScrollExtent + 70));
+        pixelRatio: 2,
+        targetSize: Size(
+            800,
+            _scrollController.position.maxScrollExtent +
+                _scrollController.position.viewportDimension +
+                70));
   }
 
   @override

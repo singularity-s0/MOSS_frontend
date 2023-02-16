@@ -16,8 +16,12 @@ class AccountProvider with ChangeNotifier {
   JWToken? _token;
   JWToken? get token => _token;
   set token(JWToken? value) {
+    bool isPreviousNull = _token == null;
+    bool isNewNull = value == null;
     _token = value;
-    notifyListeners();
+    if (isPreviousNull != isNewNull) {
+      notifyListeners();
+    }
   }
 
   // User info, if this is null, the user is not logged in.
@@ -30,8 +34,11 @@ class AccountProvider with ChangeNotifier {
   }
 
   set user(User? value) {
+    User? previous_user = _user;
     _user = value;
-    notifyListeners();
+    if (previous_user != _user) {
+      notifyListeners();
+    }
   }
 
   Future<void> fetchUserInfo() async {

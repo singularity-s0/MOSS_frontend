@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter/material.dart';
 import 'package:openchat_frontend/main.dart';
@@ -369,6 +370,21 @@ class _ChatViewState extends State<ChatView> {
                           }
                         },
                       ),
+                      const Spacer(),
+                      TextButton.icon(
+                          onPressed: () {
+                            String content = "";
+                            for (final record in widget.topic.records!) {
+                              content += "[User]\n${record.request}\n\n";
+                              content += "[MOSS]\n${record.response}\n\n";
+                            }
+                            FlutterClipboard.copy(content);
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text(AppLocalizations.of(context)!
+                                    .copied_to_clipboard)));
+                          },
+                          icon: const Icon(Icons.copy_all),
+                          label: Text(AppLocalizations.of(context)!.copy_all))
                     ],
                   ),
                 ),

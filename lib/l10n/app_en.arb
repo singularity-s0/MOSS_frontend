@@ -42,5 +42,8 @@
     "moss_intro_3b": "by rating responses of MOSS",
     "ok": "OK",
     "cancel": "Cancel",
-    "join_waitlist": "Join the waitlist"
+    "join_waitlist": "Join the waitlist",
+    "copy_all": "Copy All",
+    "export": "Export",
+    "copied_to_clipboard": "Copied to clipboard"
 }

@@ -24,17 +24,14 @@ class HistoryPageState extends State<HistoryPage> {
 
   bool _isEditing = false;
 
-  static void selectTopic(
-      BuildContext context, ChatThread t, Function(ChatThread)? callback) {
-    if (!context.mounted) return;
-    var parent = context.findAncestorWidgetOfExactType<ChatPage>();
-    assert(parent != null, "A History Page must be a child of a Chat Page");
-    parent!.currentTopic.value = t;
-    callback?.call(t);
-  }
-
-  Future<void> refresh() async {
+  Future<void> load() async {
     final provider = Provider.of<AccountProvider>(context, listen: false);
+    if (provider.user!.chats != null) {
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
     isLoading = true;
     try {
       final t = await Repository.getInstance().getChatThreads();
@@ -46,6 +43,18 @@ class HistoryPageState extends State<HistoryPage> {
       setState(() {
         isLoading = false;
       });
+    }
+  }
+
+  static void selectTopic(
+      BuildContext context, ChatThread t, Function(ChatThread)? callback) {
+    if (!context.mounted) return;
+    if (callback != null) {
+      callback(t);
+    } else {
+      var parent = context.findAncestorWidgetOfExactType<ChatPage>();
+      assert(parent != null, "A History Page must be a child of a Chat Page");
+      parent!.currentTopic.value = t;
     }
   }
 
@@ -65,15 +74,18 @@ class HistoryPageState extends State<HistoryPage> {
     }
   }
 
-  void init() async {
-    await refresh();
-    addNewTopic(context, widget.onTopicSelected);
+  bool lateInitDone = false;
+  void lateInit() async {
+    lateInitDone = true;
+    await load();
   }
 
   @override
-  void initState() {
-    super.initState();
-    init();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!lateInitDone) {
+      lateInit();
+    }
   }
 
   @override
@@ -102,7 +114,7 @@ class HistoryPageState extends State<HistoryPage> {
                 addNewTopic(context, widget.onTopicSelected);
               });
             } else if (i == listItemCount - 1 && error != null) {
-              return ErrorRetryWidget(error: error, onRetry: refresh);
+              return ErrorRetryWidget(error: error, onRetry: load);
             } else if (i == listItemCount - 1 && isLoading) {
               return const Center(child: CircularProgressIndicator());
             } else {

@@ -84,13 +84,13 @@ class ChatPage extends StatelessWidget {
   ChatPage({super.key});
 
   // Mobile UI
-  Widget buildMobile(BuildContext context) => HistoryPage(
-        onTopicSelected: (topicId) {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: ((context) =>
-                  ChatView(key: ValueKey(topicId), topic: topicId))));
-        },
-      );
+  Widget buildMobile(BuildContext context) => ValueListenableBuilder(
+      valueListenable: currentTopic,
+      builder: (context, value, child) => value == null
+          ? NullChatLoader(
+              heroTag: "MossLogo${isDesktop(context) ? "Desktop" : value?.id}}",
+            )
+          : ChatView(key: ValueKey(value), topic: value, showMenu: true));
 
   // Desktop UI
   Widget buildDesktop(BuildContext context) {
@@ -139,7 +139,7 @@ class ChatPage extends StatelessWidget {
                       child: ValueListenableBuilder(
                           valueListenable: currentTopic,
                           builder: (context, value, child) => value == null
-                              ? MossIntroWidget(
+                              ? NullChatLoader(
                                   heroTag:
                                       "MossLogo${isDesktop(context) ? "Desktop" : value?.id}}",
                                 )

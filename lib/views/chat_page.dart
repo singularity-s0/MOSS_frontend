@@ -29,7 +29,8 @@ bool isDesktop(BuildContext context) {
 
 class ChatView extends StatefulWidget {
   final ChatThread topic;
-  const ChatView({super.key, required this.topic});
+  final bool showMenu;
+  const ChatView({super.key, required this.topic, this.showMenu = false});
 
   @override
   State<ChatView> createState() => _ChatViewState();
@@ -133,6 +134,26 @@ class _ChatViewState extends State<ChatView> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: (widget.showMenu)
+            ? IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (historyPageContext) => HistoryPage(
+                          selectedTopic: widget.topic,
+                          onTopicSelected: (p0) {
+                            var parent = context
+                                .findAncestorWidgetOfExactType<ChatPage>();
+                            assert(parent != null,
+                                "A History Page must be a child of a Chat Page");
+                            parent!.currentTopic.value = p0;
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                    ))
+            : null,
         title: shouldUseLargeLogo
             ? const SizedBox()
             : LocalHero(

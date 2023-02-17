@@ -108,7 +108,7 @@ class _ChatViewState extends State<ChatView> {
         } else {
           if (mounted) {
             setState(() {
-              _messages.first.metadata!['currentText'] += event;
+              _messages.first.metadata!['currentText'] = event;
             });
           }
         }
@@ -460,7 +460,7 @@ class _ChatViewState extends State<ChatView> {
         textMessageBuilder: (msg, {required messageWidth, required showName}) {
           return AnimatedTextMessage(
             message: msg,
-            animate: msg.author.id == reply.id,
+            animate: false, //msg.author.id == reply.id
           );
         },
       ),

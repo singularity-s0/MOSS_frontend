@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter/material.dart';
 import 'package:openchat_frontend/main.dart';
+import 'package:openchat_frontend/repository/ws_chat_manager.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:local_hero/local_hero.dart';
 import 'package:openchat_frontend/model/chat.dart';
@@ -19,6 +20,7 @@ import 'package:openchat_frontend/views/components/widgets.dart';
 import 'package:openchat_frontend/views/history_page.dart';
 import 'package:provider/provider.dart';
 import 'package:image_downloader_web/image_downloader_web.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 const user = types.User(id: 'user');
 const reply = types.User(id: 'moss');
@@ -43,11 +45,81 @@ class _ChatViewState extends State<ChatView> {
   final GlobalKey<ChatState> _chatKey = GlobalKey();
   final List<types.Message> _messages = [];
 
+  late final WebSocketChatManager chatManager;
+
+  bool isFirstResponse = true;
+  bool isStreamingResponse = false;
+
   bool lateInitDone = false;
+
   void lateInit() {
     lateInitDone = true;
     _messages.clear();
     _getRecords();
+    chatManager = WebSocketChatManager(
+      widget.topic.id,
+      Provider.of<AccountProvider>(context).token!,
+      onAddRecord: (record) {
+        final provider = Provider.of<AccountProvider>(context, listen: false);
+        if (widget.topic.records!.isEmpty) {
+          // Handle first record: change title and add warning message
+          provider.user!.chats!
+              .firstWhere((element) => element.id == widget.topic.id)
+              .name = record.request;
+        }
+        widget.topic.records!.add(record);
+      },
+      onDone: () {
+        if (mounted) {
+          setState(() {
+            isStreamingResponse = false;
+          });
+        }
+      },
+      onError: (error) {
+        if (mounted) {
+          isStreamingResponse = false;
+          setState(() {
+            _messages.insert(
+                0,
+                types.SystemMessage(
+                  text: parseError(error),
+                  id: "${widget.topic.id}ai-error${_messages.length}",
+                ));
+          });
+        }
+      },
+      onReceive: (event) {
+        if (isFirstResponse) {
+          isFirstResponse = false;
+          if (mounted) {
+            setState(() {
+              _messages.insert(
+                  0,
+                  types.TextMessage(
+                      author: reply,
+                      text: event,
+                      // ignore: prefer_const_literals_to_create_immutables
+                      metadata: {'animatedIndex': 0, 'currentText': event},
+                      id: _messages.length.toString(),
+                      type: types.MessageType.text));
+            });
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              _messages.first.metadata!['currentText'] += event;
+            });
+          }
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    chatManager.dispose();
+    super.dispose();
   }
 
   @override
@@ -96,7 +168,7 @@ class _ChatViewState extends State<ChatView> {
               text: record.request,
               author: user,
               // ignore: prefer_const_literals_to_create_immutables
-              metadata: {'animatedIndex': 0},
+              metadata: {'animatedIndex': record.request.length},
             ));
         _messages.insert(
             0,
@@ -105,7 +177,7 @@ class _ChatViewState extends State<ChatView> {
               text: record.response,
               author: reply,
               // ignore: prefer_const_literals_to_create_immutables
-              metadata: {'animatedIndex': 0},
+              metadata: {'animatedIndex': record.response.length},
             ));
       }
     } catch (e) {
@@ -120,7 +192,8 @@ class _ChatViewState extends State<ChatView> {
     }
   }
 
-  bool get isWaitingForResponse => _messages.firstOrNull?.author.id == user.id;
+  bool get isWaitingForResponse =>
+      (_messages.firstOrNull?.author.id == user.id) || isStreamingResponse;
 
   bool get shouldUseLargeLogo {
     if (_messages.isNotEmpty) {
@@ -223,28 +296,9 @@ class _ChatViewState extends State<ChatView> {
                     type: types.MessageType.text));
           });
           try {
-            final response = (await Repository.getInstance()
-                .chatSendMessage(topic.id, message.text))!;
-            if (topic.records!.isEmpty) {
-              // Handle first record: change title and add warning message
-              provider.user!.chats!
-                  .firstWhere((element) => element.id == topic.id)
-                  .name = response.request;
-            }
-            topic.records!.add(response);
-            if (mounted) {
-              setState(() {
-                _messages.insert(
-                    0,
-                    types.TextMessage(
-                        author: reply,
-                        text: response.response,
-                        // ignore: prefer_const_literals_to_create_immutables
-                        metadata: {'animatedIndex': 0},
-                        id: _messages.length.toString(),
-                        type: types.MessageType.text));
-              });
-            }
+            isFirstResponse = true;
+            isStreamingResponse = true;
+            chatManager.sendMessage(message.text);
           } catch (e) {
             if (mounted) {
               setState(() {
@@ -406,7 +460,7 @@ class _ChatViewState extends State<ChatView> {
         textMessageBuilder: (msg, {required messageWidth, required showName}) {
           return AnimatedTextMessage(
             message: msg,
-            animate: false,
+            animate: msg.author.id == reply.id,
           );
         },
       ),

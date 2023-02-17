@@ -49,3 +49,21 @@ Map<String, dynamic> _$ChatRecordToJson(ChatRecord instance) =>
       'request': instance.request,
       'response': instance.response,
     };
+
+WSInferResponse _$WSInferResponseFromJson(Map<String, dynamic> json) =>
+    WSInferResponse(
+      json['status'] as int,
+      json['status_code'] as int?,
+      json['uuid'] as String?,
+      json['offset'] as int?,
+      json['output'] as String,
+    );
+
+Map<String, dynamic> _$WSInferResponseToJson(WSInferResponse instance) =>
+    <String, dynamic>{
+      'status': instance.status,
+      'status_code': instance.status_code,
+      'uuid': instance.uuid,
+      'offset': instance.offset,
+      'output': instance.output,
+    };

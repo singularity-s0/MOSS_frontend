@@ -53,3 +53,20 @@ class ChatRecord {
       required this.request,
       required this.response});
 }
+
+@JsonSerializable()
+class WSInferResponse {
+  final int status;
+  final int? status_code;
+  final String? uuid;
+  final int? offset;
+  final String output;
+
+  WSInferResponse(
+      this.status, this.status_code, this.uuid, this.offset, this.output);
+
+  factory WSInferResponse.fromJson(Map<String, dynamic> json) =>
+      _$WSInferResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WSInferResponseToJson(this);
+}

@@ -39,12 +39,17 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
     if (widget.animate) {
       _controller = AnimationController(
         vsync: this,
-        duration:
-            Duration(milliseconds: widget.message.text.length * widget.speed),
+        duration: Duration(
+            milliseconds: ((widget.message.metadata!['currentText'] ??
+                            widget.message.text)
+                        .length -
+                    widget.message.metadata!['animatedIndex'] as int) *
+                widget.speed),
       );
       _characterLocation = IntTween(
         begin: widget.message.metadata!['animatedIndex'] as int,
-        end: widget.message.text.length,
+        end: (widget.message.metadata!['currentText'] ?? widget.message.text)
+            .length,
       ).animate(_controller);
       _controller.forward();
     }
@@ -53,20 +58,29 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
   @override
   void didUpdateWidget(AnimatedTextMessage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.animate) {
+    if (widget.animate &&
+        (widget.message.metadata!['animatedIndex'] as int) <
+            (widget.message.metadata!['currentText'] ?? widget.message.text)
+                .length) {
       // New characters have been feeded to the widget
       // so we need to cancel the old animation and start a new one
       _controller.stop();
       _controller.dispose();
       _controller = AnimationController(
         vsync: this,
-        duration:
-            Duration(milliseconds: widget.message.text.length * widget.speed),
+        duration: Duration(
+            milliseconds: ((widget.message.metadata!['currentText'] ??
+                            widget.message.text)
+                        .length -
+                    min(_characterLocation.value,
+                        widget.message.metadata!['animatedIndex'] as int)) *
+                widget.speed),
       );
       _characterLocation = IntTween(
         begin: min(_characterLocation.value,
             widget.message.metadata!['animatedIndex'] as int),
-        end: widget.message.text.length,
+        end: (widget.message.metadata!['currentText'] ?? widget.message.text)
+            .length,
       ).animate(_controller);
       _controller.forward();
     }
@@ -74,48 +88,58 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
 
   @override
   Widget build(BuildContext context) {
+    final theme = InheritedChatTheme.of(context).theme;
+    final bodyLinkTextStyle = user.id == widget.message.author.id
+        ? InheritedChatTheme.of(context).theme.sentMessageBodyLinkTextStyle
+        : InheritedChatTheme.of(context).theme.receivedMessageBodyLinkTextStyle;
+    final bodyTextStyle = user.id == widget.message.author.id
+        ? theme.sentMessageBodyTextStyle
+        : theme.receivedMessageBodyTextStyle;
+    final boldTextStyle = user.id == widget.message.author.id
+        ? theme.sentMessageBodyBoldTextStyle
+        : theme.receivedMessageBodyBoldTextStyle;
     if (widget.animate) {
       return AnimatedBuilder(
-        animation: _characterLocation,
-        builder: (context, child) {
-          var submessage = widget.message.text.substring(
-              0, min(_characterLocation.value, widget.message.text.length));
-          var newmsg =
-              widget.message.copyWith(text: submessage) as types.TextMessage;
-          widget.message.metadata!['animatedIndex'] = _characterLocation.value;
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextMessage(
-                emojiEnlargementBehavior: EmojiEnlargementBehavior.never,
-                hideBackgroundOnEmojiMessages: false,
-                showName: false,
-                message: newmsg,
-                usePreviewData: false,
-              ),
-              if (_characterLocation.value == widget.message.text.length &&
-                  widget.bottomWidget != null)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [widget.bottomWidget!],
-                ),
-            ],
-          );
-        },
-      );
+          animation: _characterLocation,
+          builder: (context, child) {
+            var submessage =
+                (widget.message.metadata!['currentText'] ?? widget.message.text)
+                    .substring(
+                        0,
+                        min<int>(
+                            _characterLocation.value,
+                            (widget.message.metadata!['currentText'] ??
+                                    widget.message.text)
+                                .length));
+            widget.message.metadata!['animatedIndex'] =
+                _characterLocation.value;
+            return Theme(
+                data: Theme.of(context).copyWith(
+                    textSelectionTheme: TextSelectionThemeData(
+                  selectionColor: user.id == widget.message.author.id
+                      ? theme.sentMessageSelectionColor
+                      : theme.receivedMessageSelectionColor,
+                )),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: MarkdownBody(
+                    softLineBreak: true,
+                    data: submessage,
+                    styleSheet: MarkdownStyleSheet(
+                      p: bodyTextStyle,
+                      a: bodyLinkTextStyle,
+                      strong: boldTextStyle,
+                      blockquote: bodyTextStyle,
+                    ),
+                    builders: {
+                      'code': CodeElementBuilder(),
+                    },
+                    selectionColor:
+                        Theme.of(context).textSelectionTheme.selectionColor,
+                  ),
+                ));
+          });
     } else {
-      final theme = InheritedChatTheme.of(context).theme;
-      final bodyLinkTextStyle = user.id == widget.message.author.id
-          ? InheritedChatTheme.of(context).theme.sentMessageBodyLinkTextStyle
-          : InheritedChatTheme.of(context)
-              .theme
-              .receivedMessageBodyLinkTextStyle;
-      final bodyTextStyle = user.id == widget.message.author.id
-          ? theme.sentMessageBodyTextStyle
-          : theme.receivedMessageBodyTextStyle;
-      final boldTextStyle = user.id == widget.message.author.id
-          ? theme.sentMessageBodyBoldTextStyle
-          : theme.receivedMessageBodyBoldTextStyle;
       return Theme(
         data: Theme.of(context).copyWith(
             textSelectionTheme: TextSelectionThemeData(
@@ -127,7 +151,8 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
           padding: const EdgeInsets.all(16.0),
           child: MarkdownBody(
             softLineBreak: true,
-            data: widget.message.text,
+            data:
+                widget.message.metadata!['currentText'] ?? widget.message.text,
             styleSheet: MarkdownStyleSheet(
               p: bodyTextStyle,
               a: bodyLinkTextStyle,

@@ -11,6 +11,7 @@ class Repository {
   factory Repository.getInstance() => _instance;
 
   static const String baseUrl = "https://moss.fastnlp.top/api";
+  static const String wsBaseUrl = "ws://moss.jingyijun.xyz:12442/api/ws";
 
   static const String waitlistUrl = "https://survey.moss.fastnlp.top/s/Ntd4eG";
 

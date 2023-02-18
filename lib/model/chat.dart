@@ -56,11 +56,11 @@ class ChatRecord {
 
 @JsonSerializable()
 class WSInferResponse {
-  final int status;
+  final int? status;
   final int? status_code;
   final String? uuid;
   final int? offset;
-  final String output;
+  final String? output;
 
   WSInferResponse(
       this.status, this.status_code, this.uuid, this.offset, this.output);

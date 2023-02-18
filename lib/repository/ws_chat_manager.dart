@@ -24,7 +24,7 @@ class WebSocketChatManager {
     channel?.sink.close();
   }
 
-  void sendMessage(String message) {
+  void sendMessage(String message) async {
     try {
       channel = WebSocketChannel.connect(Uri.parse(Uri.encodeFull(
           "${Repository.wsBaseUrl}/chats/$topicId/records?jwt=${token.access}")));
@@ -42,23 +42,31 @@ class WebSocketChatManager {
             WSInferResponse response =
                 WSInferResponse.fromJson(json.decode(message));
             if (response.status == 1) {
-              onReceive?.call(response.output);
+              onReceive?.call(response.output!);
             } else if (response.status == 0) {
               onDone?.call();
               expectRecord = true;
-            } else if (response.status < 0) {
+            } else if ((response.status ?? -99) < 0) {
               if (response.status_code == null) {
-                onError?.call(response.output);
+                if (response.output == null) {
+                  onError?.call("Unknown error");
+                } else {
+                  onError?.call(response.output!);
+                }
               } else {
-                onError?.call(
-                    Exception("${response.status_code}: ${response.output}"));
+                onError?.call("${response.status_code}: ${response.output}");
               }
+              try {
+                channel!.sink.close();
+              } catch (_) {}
+              channel = null;
             }
           }
         } catch (e) {
           onError?.call(e);
         }
       });
+      await channel!.ready;
       channel!.sink.add(json.encode({
         "request": message,
       }));
@@ -67,7 +75,7 @@ class WebSocketChatManager {
     }
   }
 
-  void regenerate() {
+  void regenerate() async {
     try {
       channel = WebSocketChannel.connect(Uri.parse(Uri.encodeFull(
           "${Repository.wsBaseUrl}/chats/$topicId/regenerate?jwt=${token.access}")));
@@ -85,19 +93,31 @@ class WebSocketChatManager {
             WSInferResponse response =
                 WSInferResponse.fromJson(json.decode(message));
             if (response.status == 1) {
-              onReceive?.call(response.output);
+              onReceive?.call(response.output!);
             } else if (response.status == 0) {
               onDone?.call();
               expectRecord = true;
-            } else if (response.status < 0) {
-              onError?.call(
-                  Exception("${response.status_code}: ${response.output}"));
+            } else if ((response.status ?? -99) < 0) {
+              if (response.status_code == null) {
+                if (response.output == null) {
+                  onError?.call("Unknown error");
+                } else {
+                  onError?.call(response.output!);
+                }
+              } else {
+                onError?.call("${response.status_code}: ${response.output}");
+              }
+              try {
+                channel!.sink.close();
+              } catch (_) {}
+              channel = null;
             }
           }
         } catch (e) {
           onError?.call(e);
         }
       });
+      await channel!.ready;
     } catch (e) {
       onError?.call(e);
     }

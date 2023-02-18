@@ -217,6 +217,7 @@ class _ChatViewState extends State<ChatView> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        centerTitle: true,
         automaticallyImplyLeading: false,
         leading: (widget.showMenu)
             ? IconButton(

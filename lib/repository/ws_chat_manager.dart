@@ -25,65 +25,77 @@ class WebSocketChatManager {
   }
 
   void sendMessage(String message) {
-    channel = WebSocketChannel.connect(Uri.parse(Uri.encodeFull(
-        "${Repository.wsBaseUrl}/chats/$topicId/records?jwt=${token.access}")));
-    channel!.stream.listen((message) {
-      try {
-        if (expectRecord) {
-          ChatRecord record = ChatRecord.fromJson(json.decode(message));
-          onAddRecord?.call(record);
-          expectRecord = false;
-          channel!.sink.close();
-          channel = null;
-        } else {
-          WSInferResponse response =
-              WSInferResponse.fromJson(json.decode(message));
-          if (response.status == 1) {
-            onReceive?.call(response.output);
-          } else if (response.status == 0) {
-            onDone?.call();
-            expectRecord = true;
-          } else if (response.status < 0) {
-            onError?.call(
-                Exception("${response.status_code}: ${response.output}"));
+    try {
+      channel = WebSocketChannel.connect(Uri.parse(Uri.encodeFull(
+          "${Repository.wsBaseUrl}/chats/$topicId/records?jwt=${token.access}")));
+      channel!.stream.listen((message) {
+        try {
+          if (expectRecord) {
+            ChatRecord record = ChatRecord.fromJson(json.decode(message));
+            onAddRecord?.call(record);
+            expectRecord = false;
+            try {
+              channel!.sink.close();
+            } catch (_) {}
+            channel = null;
+          } else {
+            WSInferResponse response =
+                WSInferResponse.fromJson(json.decode(message));
+            if (response.status == 1) {
+              onReceive?.call(response.output);
+            } else if (response.status == 0) {
+              onDone?.call();
+              expectRecord = true;
+            } else if (response.status < 0) {
+              onError?.call(
+                  Exception("${response.status_code}: ${response.output}"));
+            }
           }
+        } catch (e) {
+          onError?.call(e);
         }
-      } catch (e) {
-        onError?.call(e);
-      }
-    });
-    channel!.sink.add(json.encode({
-      "request": message,
-    }));
+      });
+      channel!.sink.add(json.encode({
+        "request": message,
+      }));
+    } catch (e) {
+      onError?.call(e);
+    }
   }
 
   void regenerate() {
-    channel = WebSocketChannel.connect(Uri.parse(Uri.encodeFull(
-        "${Repository.wsBaseUrl}/chats/$topicId/regenerate?jwt=${token.access}")));
-    channel!.stream.listen((message) {
-      try {
-        if (expectRecord) {
-          ChatRecord record = ChatRecord.fromJson(json.decode(message));
-          onAddRecord?.call(record);
-          expectRecord = false;
-          channel!.sink.close();
-          channel = null;
-        } else {
-          WSInferResponse response =
-              WSInferResponse.fromJson(json.decode(message));
-          if (response.status == 1) {
-            onReceive?.call(response.output);
-          } else if (response.status == 0) {
-            onDone?.call();
-            expectRecord = true;
-          } else if (response.status < 0) {
-            onError?.call(
-                Exception("${response.status_code}: ${response.output}"));
+    try {
+      channel = WebSocketChannel.connect(Uri.parse(Uri.encodeFull(
+          "${Repository.wsBaseUrl}/chats/$topicId/regenerate?jwt=${token.access}")));
+      channel!.stream.listen((message) {
+        try {
+          if (expectRecord) {
+            ChatRecord record = ChatRecord.fromJson(json.decode(message));
+            onAddRecord?.call(record);
+            expectRecord = false;
+            try {
+              channel!.sink.close();
+            } catch (_) {}
+            channel = null;
+          } else {
+            WSInferResponse response =
+                WSInferResponse.fromJson(json.decode(message));
+            if (response.status == 1) {
+              onReceive?.call(response.output);
+            } else if (response.status == 0) {
+              onDone?.call();
+              expectRecord = true;
+            } else if (response.status < 0) {
+              onError?.call(
+                  Exception("${response.status_code}: ${response.output}"));
+            }
           }
+        } catch (e) {
+          onError?.call(e);
         }
-      } catch (e) {
-        onError?.call(e);
-      }
-    });
+      });
+    } catch (e) {
+      onError?.call(e);
+    }
   }
 }

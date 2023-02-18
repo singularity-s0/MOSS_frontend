@@ -50,9 +50,9 @@ String parseError(Object? error) {
     if (error.response != null) {
       ErrorMessage? em =
           ErrorMessage.fromJson(error.response!.data as Map<String, dynamic>);
-      return "HTTP ${error.response!.statusCode}: ${em.message}";
+      return "Code ${error.response!.statusCode}: ${em.message}";
     } else {
-      return "HTTP ${error.response!.statusCode}: ${error.message}";
+      return error.message;
     }
   } else if (error is Exception) {
     return error.toString();

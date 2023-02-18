@@ -47,8 +47,12 @@ class WebSocketChatManager {
               onDone?.call();
               expectRecord = true;
             } else if (response.status < 0) {
-              onError?.call(
-                  Exception("${response.status_code}: ${response.output}"));
+              if (response.status_code == null) {
+                onError?.call(response.output);
+              } else {
+                onError?.call(
+                    Exception("${response.status_code}: ${response.output}"));
+              }
             }
           }
         } catch (e) {

@@ -436,7 +436,7 @@ class _ChatViewState extends State<ChatView> {
                                     .copied_to_clipboard)));
                           },
                           icon: const Icon(Icons.copy_all)),
-                      IconButton(
+                      /*IconButton(
                           onPressed: () {
                             _chatKey.currentState!
                                 .takeScreenshot()
@@ -446,7 +446,7 @@ class _ChatViewState extends State<ChatView> {
                                   name: "moss-${widget.topic.id}.png");
                             });
                           },
-                          icon: const Icon(Icons.share)),
+                          icon: const Icon(Icons.share)),*/
                     ],
                   ),
                 ),

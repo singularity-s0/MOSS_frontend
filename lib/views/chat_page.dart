@@ -452,7 +452,7 @@ class _ChatViewState extends State<ChatView> {
         ),
         textMessageBuilder: (msg, {required messageWidth, required showName}) {
           return AnimatedTextMessage(
-              message: msg, speed: 25, animate: msg.author.id == reply.id);
+              message: msg, speed: 10, animate: msg.author.id == reply.id);
         },
       ),
     );

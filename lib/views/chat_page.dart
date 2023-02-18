@@ -65,7 +65,7 @@ class _ChatViewState extends State<ChatView> {
           // Handle first record: change title and add warning message
           provider.user!.chats!
               .firstWhere((element) => element.id == widget.topic.id)
-              .name = record.request;
+              .name = record.request.substring(0, 30);
         }
         widget.topic.records!.add(record);
       },
@@ -459,9 +459,7 @@ class _ChatViewState extends State<ChatView> {
         ),
         textMessageBuilder: (msg, {required messageWidth, required showName}) {
           return AnimatedTextMessage(
-            message: msg,
-            animate: false, //msg.author.id == reply.id
-          );
+              message: msg, speed: 25, animate: msg.author.id == reply.id);
         },
       ),
     );

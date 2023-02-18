@@ -343,22 +343,9 @@ class _ChatViewState extends State<ChatView> {
                               topic.records!.removeLast();
                             });
                             try {
-                              final response = (await Repository.getInstance()
-                                  .chatRegenerateLast(topic.id))!;
-                              topic.records!.add(response);
-                              if (mounted) {
-                                setState(() {
-                                  _messages.insert(
-                                      0,
-                                      types.TextMessage(
-                                          author: reply,
-                                          text: response.response,
-                                          // ignore: prefer_const_literals_to_create_immutables
-                                          metadata: {'animatedIndex': 0},
-                                          id: _messages.length.toString(),
-                                          type: types.MessageType.text));
-                                });
-                              }
+                              isFirstResponse = true;
+                              isStreamingResponse = true;
+                              chatManager.regenerate();
                             } catch (e) {
                               if (mounted) {
                                 setState(() {

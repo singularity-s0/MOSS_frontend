@@ -56,4 +56,34 @@ class WebSocketChatManager {
       "request": message,
     }));
   }
+
+  void regenerate() {
+    channel = WebSocketChannel.connect(Uri.parse(Uri.encodeFull(
+        "${Repository.wsBaseUrl}/chats/$topicId/regenerate?jwt=${token.access}")));
+    channel!.stream.listen((message) {
+      try {
+        if (expectRecord) {
+          ChatRecord record = ChatRecord.fromJson(json.decode(message));
+          onAddRecord?.call(record);
+          expectRecord = false;
+          channel!.sink.close();
+          channel = null;
+        } else {
+          WSInferResponse response =
+              WSInferResponse.fromJson(json.decode(message));
+          if (response.status == 1) {
+            onReceive?.call(response.output);
+          } else if (response.status == 0) {
+            onDone?.call();
+            expectRecord = true;
+          } else if (response.status < 0) {
+            onError?.call(
+                Exception("${response.status_code}: ${response.output}"));
+          }
+        }
+      } catch (e) {
+        onError?.call(e);
+      }
+    });
+  }
 }

@@ -53,9 +53,9 @@ flutter:
   assets:
     - assets/images/
   fonts:
-    - family: Roboto
+    - family: NotoSerif
       fonts:
-        - asset: assets/fonts/Roboto.ttf
+        - asset: assets/fonts/SourceHanSerifSC-VF.ttf
     - family: RobotoMono
       fonts:
         - asset: assets/fonts/RobotoMono-VariableFont_wght.ttf

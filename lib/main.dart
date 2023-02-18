@@ -66,7 +66,7 @@ class MainApp extends StatelessWidget {
               bottomSheetTheme: BottomSheetThemeData(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20))),
-              fontFamily: 'Roboto',
+              fontFamily: 'NotoSerif',
               useMaterial3: true),
           initialRoute: '/',
           routes: routes,

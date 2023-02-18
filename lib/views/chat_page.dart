@@ -80,6 +80,11 @@ class _ChatViewState extends State<ChatView> {
         if (mounted) {
           isStreamingResponse = false;
           setState(() {
+            if (!isFirstResponse) {
+              // A message has already been created, it must be deleted
+              _messages.removeAt(0);
+              isFirstResponse = true;
+            }
             _messages.insert(
                 0,
                 types.SystemMessage(

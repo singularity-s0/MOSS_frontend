@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:openchat_frontend/model/chat.dart';
 import 'package:openchat_frontend/model/user.dart';
 import 'package:openchat_frontend/repository/repository.dart';
 import 'package:openchat_frontend/utils/settings_provider.dart';
@@ -45,5 +46,20 @@ class AccountProvider with ChangeNotifier {
     try {
       user = await Repository.getInstance().getUserInfo();
     } catch (_) {}
+  }
+}
+
+class TopicStateProvider with ChangeNotifier {
+  // Single instance class
+  static final _instance = TopicStateProvider._();
+  factory TopicStateProvider.getInstance() => _instance;
+  TopicStateProvider._();
+
+  // Current chat topic
+  ChatThread? _currentTopic;
+  ChatThread? get currentTopic => _currentTopic;
+  set currentTopic(ChatThread? value) {
+    _currentTopic = value;
+    notifyListeners();
   }
 }

@@ -34,7 +34,9 @@ void main() async {
         ChangeNotifierProvider<AccountProvider>.value(
             value: AccountProvider.getInstance()),
         ChangeNotifierProvider<SettingsProvider>.value(
-            value: SettingsProvider.getInstance())
+            value: SettingsProvider.getInstance()),
+        ChangeNotifierProvider<TopicStateProvider>.value(
+            value: TopicStateProvider.getInstance())
       ],
       child: LocalHeroScope(
           createRectTween: (begin, end) {
@@ -102,27 +104,19 @@ class _MainAppState extends State<MainApp> {
   }
 }
 
-class ChatPage extends StatefulWidget {
+class ChatPage extends StatelessWidget {
   const ChatPage({super.key});
 
-  @override
-  State<ChatPage> createState() => ChatPageState();
-}
-
-class ChatPageState extends State<ChatPage> {
-  // The state of this page records the "Topic" that the user is currently in
-  // Children can use context.findAncestorStateOfType<ChatPageState>() to read and change this
-  final ValueNotifier<ChatThread?> currentTopic =
-      ValueNotifier<ChatThread?>(null);
-
   // Mobile UI
-  Widget buildMobile(BuildContext context) => ValueListenableBuilder(
-      valueListenable: currentTopic,
-      builder: (context, value, child) => value == null
-          ? NullChatLoader(
-              heroTag: "MossLogo${isDesktop(context) ? "Desktop" : value?.id}}",
-            )
-          : ChatView(key: ValueKey(value), topic: value, showMenu: true));
+  Widget buildMobile(BuildContext context) =>
+      Selector<TopicStateProvider, ChatThread?>(
+          selector: (_, model) => model.currentTopic,
+          builder: (context, value, child) => value == null
+              ? NullChatLoader(
+                  heroTag:
+                      "MossLogo${isDesktop(context) ? "Desktop" : value?.id}}",
+                )
+              : ChatView(key: ValueKey(value), topic: value, showMenu: true));
 
   // Desktop UI
   Widget buildDesktop(BuildContext context) {
@@ -141,8 +135,8 @@ class ChatPageState extends State<ChatPage> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0)),
                 clipBehavior: Clip.antiAlias,
-                child: ValueListenableBuilder(
-                    valueListenable: currentTopic,
+                child: Selector<TopicStateProvider, ChatThread?>(
+                    selector: (_, model) => model.currentTopic,
                     builder: (context, value, child) =>
                         HistoryPage(selectedTopic: value)),
               ),
@@ -168,8 +162,8 @@ class ChatPageState extends State<ChatPage> {
                           MediaQuery.of(context).size.height,
                           MediaQuery.of(context).size.width -
                               kTabletMasterContainerWidth),
-                      child: ValueListenableBuilder(
-                          valueListenable: currentTopic,
+                      child: Selector<TopicStateProvider, ChatThread?>(
+                          selector: (_, model) => model.currentTopic,
                           builder: (context, value, child) => value == null
                               ? NullChatLoader(
                                   heroTag:

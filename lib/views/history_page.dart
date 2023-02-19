@@ -48,21 +48,15 @@ class HistoryPageState extends State<HistoryPage> {
 
   static void selectTopic(
       BuildContext context, ChatThread t, Function(ChatThread)? callback) {
-    if (!context.mounted) return;
     if (callback != null) {
       callback(t);
     } else {
-      if (context.mounted) {
-        var parent = context.findAncestorStateOfType<ChatPageState>();
-        assert(parent != null, "A History Page must be a child of a Chat Page");
-        parent!.currentTopic.value = t;
-      }
+      TopicStateProvider.getInstance().currentTopic = t;
     }
   }
 
   static Future<void> addNewTopic(
       BuildContext context, Function(ChatThread)? callback) async {
-    if (!context.mounted) return;
     final provider = Provider.of<AccountProvider>(context, listen: false);
     try {
       final thread = await Repository.getInstance().newChatThread();

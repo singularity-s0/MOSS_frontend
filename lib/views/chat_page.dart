@@ -227,12 +227,14 @@ class _ChatViewState extends State<ChatView> {
                         builder: (historyPageContext) => HistoryPage(
                           selectedTopic: widget.topic,
                           onTopicSelected: (p0) {
-                            var parent = context
-                                .findAncestorStateOfType<ChatPageState>();
-                            assert(parent != null,
-                                "A History Page must be a child of a Chat Page");
-                            parent!.currentTopic.value = p0;
-                            Navigator.of(context).pop();
+                            if (context.mounted) {
+                              var parent = context
+                                  .findAncestorStateOfType<ChatPageState>();
+                              assert(parent != null,
+                                  "A History Page must be a child of a Chat Page");
+                              parent!.currentTopic.value = p0;
+                            }
+                            Navigator.of(historyPageContext).pop();
                           },
                         ),
                       ),

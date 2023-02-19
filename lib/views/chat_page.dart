@@ -66,7 +66,7 @@ class _ChatViewState extends State<ChatView> {
           provider.user!.chats!
                   .firstWhere((element) => element.id == widget.topic.id)
                   .name =
-              record.request.substring(0, min(30, record.request.length - 1));
+              record.request.substring(0, min(30, record.request.length));
         }
         widget.topic.records!.add(record);
       },
@@ -453,7 +453,7 @@ class _ChatViewState extends State<ChatView> {
         ),
         textMessageBuilder: (msg, {required messageWidth, required showName}) {
           return AnimatedTextMessage(
-              message: msg, speed: 18, animate: msg.author.id == reply.id);
+              message: msg, speed: 20, animate: msg.author.id == reply.id);
         },
       ),
     );

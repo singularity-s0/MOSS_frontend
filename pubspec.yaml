@@ -55,12 +55,13 @@ flutter:
   fonts:
     - family: NotoSerif
       fonts:
-        - asset: assets/fonts/SourceHanSerifCN-Regular.ttf
+        - asset: assets/fonts/H4chBXePl9DZ0Xe7gG9cyOj7oqCcbzhqDtg.otf
     - family: RobotoMono
       fonts:
-        - asset: assets/fonts/RobotoMono-VariableFont_wght.ttf
-        - asset: assets/fonts/RobotoMono-Italic-VariableFont_wght.ttf
-          style: italic
+        - asset: assets/fonts/eJ4cxQe85Lo39t-LVoKa26CWcynf_cDxXwCLxiixG1c.ttf
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/W5F8_SL0XFawnjxHGsZjJA.ttf
 
 flutter_native_splash:
   color: "#FDFBFF"

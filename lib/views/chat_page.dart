@@ -284,7 +284,7 @@ class _ChatViewState extends State<ChatView> {
           final provider = Provider.of<AccountProvider>(context, listen: false);
           clearInput();
           setState(() {
-            if (topic.records!.isEmpty) {
+            if (_messages.isEmpty) {
               _messages.insert(
                   0,
                   types.SystemMessage(

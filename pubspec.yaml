@@ -26,6 +26,7 @@ dependencies:
   local_hero: ^0.2.0
   image_downloader_web: ^2.0.2
   web_socket_channel: ^2.3.0
+  http: ^0.13.5
 
   # Chat UI dependencies
   diffutil_dart: ^3.0.0
@@ -53,9 +54,9 @@ flutter:
   assets:
     - assets/images/
   fonts:
-    - family: NotoSerif
-      fonts:
-        - asset: assets/fonts/H4chBXePl9DZ0Xe7gG9cyOj7oqCcbzhqDtg.otf
+    # - family: NotoSerif
+    #   fonts:
+    #     - asset: assets/fonts/H4chBXePl9DZ0Xe7gG9cyOj7oqCcbzhqDtg.otf
     - family: RobotoMono
       fonts:
         - asset: assets/fonts/eJ4cxQe85Lo39t-LVoKa26CWcynf_cDxXwCLxiixG1c.ttf

@@ -1,6 +1,9 @@
 import 'dart:math';
+import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:local_hero/local_hero.dart';
 import 'package:openchat_frontend/model/chat.dart';
 import 'package:openchat_frontend/repository/repository.dart';
@@ -12,34 +15,36 @@ import 'package:openchat_frontend/views/login_page.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 const themeColor = Color.fromRGBO(56, 100, 184, 1);
 const themeColorLight = Color.fromRGBO(121, 186, 243, 1);
+
+var fontLoader = FontLoader('NotoSerif');
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SettingsProvider.getInstance().init();
   Repository.init(AccountProvider.getInstance());
+  fontLoader.addFont(fetchFont());
   runApp(const MainApp());
+}
+
+Future<ByteData> fetchFont() async {
+  // Noto Serif SC
+  final response = await http.get(Uri.parse(
+      'https://moss.fastnlp.top/assets/assets/fonts/H4chBXePl9DZ0Xe7gG9cyOj7oqCcbzhqDtg.otf'));
+
+  if (response.statusCode == 200) {
+    return ByteData.view(response.bodyBytes.buffer);
+  } else {
+    // If that call was not successful, throw an error.
+    throw Exception('Failed to load font');
+  }
 }
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
-
-  static final Map<String, Widget Function(BuildContext)> routes = {
-    '/empty': (context, {arguments}) =>
-        ColoredBox(color: Theme.of(context).scaffoldBackgroundColor),
-    '/': (context, {arguments}) {
-      // Dynamically show chat page or login page based on logged in or not
-      final token = context.watch<AccountProvider>().token;
-      final user = context.watch<AccountProvider>().user;
-      if (token == null || user == null) {
-        return const LoginScreen();
-      } else {
-        return ChatPage();
-      }
-    },
-  };
 
   @override
   Widget build(BuildContext context) {
@@ -67,10 +72,34 @@ class MainApp extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20))),
               fontFamily: 'Roboto',
-              fontFamilyFallback: const ['NotoSerif'],
               useMaterial3: true),
-          initialRoute: '/',
-          routes: routes,
+          home: FutureBuilder(
+            future: fontLoader.load(),
+            builder: ((context, snapshot) {
+              // Dynamically show chat page or login page based on logged in or not
+              final token = context.watch<AccountProvider>().token;
+              final user = context.watch<AccountProvider>().user;
+              Widget child;
+              if (token == null || user == null) {
+                child = const LoginScreen();
+              } else {
+                child = ChatPage();
+              }
+              return Theme(
+                  data: ThemeData(
+                      colorSchemeSeed: themeColor,
+                      bottomSheetTheme: BottomSheetThemeData(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20))),
+                      fontFamily: 'Roboto',
+                      fontFamilyFallback:
+                          (snapshot.connectionState == ConnectionState.done)
+                              ? const ['NotoSerif']
+                              : null,
+                      useMaterial3: true),
+                  child: child);
+            }),
+          ),
         ),
       ),
     );

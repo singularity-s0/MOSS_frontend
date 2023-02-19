@@ -27,13 +27,31 @@ void main() async {
   await SettingsProvider.getInstance().init();
   Repository.init(AccountProvider.getInstance());
   fontLoader.addFont(fetchFont());
-  runApp(const MainApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        // FIXME: Should create provider instead of using singleton, this allows for multiple accounts without refactor
+        ChangeNotifierProvider<AccountProvider>.value(
+            value: AccountProvider.getInstance()),
+        ChangeNotifierProvider<SettingsProvider>.value(
+            value: SettingsProvider.getInstance())
+      ],
+      child: LocalHeroScope(
+          createRectTween: (begin, end) {
+            return RectTween(begin: begin, end: end);
+          },
+          duration: const Duration(milliseconds: 700),
+          curve: Curves.fastLinearToSlowEaseIn,
+          child: const MainApp()),
+    ),
+  );
 }
 
 Future<ByteData> fetchFont() async {
   // Noto Serif SC
   final response = await http.get(Uri.parse(
-      'https://moss.fastnlp.top/assets/assets/fonts/H4chBXePl9DZ0Xe7gG9cyOj7oqCcbzhqDtg.otf'));
+      "https://fonts.gstatic.googlefonts.cn/s/notoserifsc/v22/H4chBXePl9DZ0Xe7gG9cyOj7oqCcbzhqDtg.otf"));
+  //'https://moss.fastnlp.top/assets/assets/fonts/H4chBXePl9DZ0Xe7gG9cyOj7oqCcbzhqDtg.otf'));
 
   if (response.statusCode == 200) {
     return ByteData.view(response.bodyBytes.buffer);
@@ -43,75 +61,61 @@ Future<ByteData> fetchFont() async {
   }
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
 
   @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  List<String>? fallback;
+
+  @override
+  void initState() {
+    super.initState();
+    fontLoader.load().then((value) {
+      print("done");
+      setState(() {
+        fallback = [fontLoader.family];
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        // FIXME: Should create provider instead of using singleton, this allows for multiple accounts without refactor
-        ChangeNotifierProvider<AccountProvider>.value(
-            value: AccountProvider.getInstance()),
-        ChangeNotifierProvider<SettingsProvider>.value(
-            value: SettingsProvider.getInstance())
-      ],
-      child: LocalHeroScope(
-        createRectTween: (begin, end) {
-          return RectTween(begin: begin, end: end);
-        },
-        duration: const Duration(milliseconds: 700),
-        curve: Curves.fastLinearToSlowEaseIn,
-        child: MaterialApp(
-          onGenerateTitle: (context) => AppLocalizations.of(context)!.app_name,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          theme: ThemeData(
-              colorSchemeSeed: themeColor,
-              bottomSheetTheme: BottomSheetThemeData(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20))),
-              fontFamily: 'Roboto',
-              useMaterial3: true),
-          home: FutureBuilder(
-            future: fontLoader.load(),
-            builder: ((context, snapshot) {
-              // Dynamically show chat page or login page based on logged in or not
-              final token = context.watch<AccountProvider>().token;
-              final user = context.watch<AccountProvider>().user;
-              Widget child;
-              if (token == null || user == null) {
-                child = const LoginScreen();
-              } else {
-                child = ChatPage();
-              }
-              return Theme(
-                  data: ThemeData(
-                      colorSchemeSeed: themeColor,
-                      bottomSheetTheme: BottomSheetThemeData(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20))),
-                      fontFamily: 'Roboto',
-                      fontFamilyFallback:
-                          (snapshot.connectionState == ConnectionState.done)
-                              ? const ['NotoSerif']
-                              : null,
-                      useMaterial3: true),
-                  child: child);
-            }),
-          ),
-        ),
-      ),
+    return MaterialApp(
+      onGenerateTitle: (context) => AppLocalizations.of(context)!.app_name,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      theme: ThemeData(
+          colorSchemeSeed: themeColor,
+          bottomSheetTheme: BottomSheetThemeData(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20))),
+          fontFamily: 'Roboto',
+          fontFamilyFallback: fallback,
+          useMaterial3: true),
+      home: (context.watch<AccountProvider>().token == null ||
+              context.watch<AccountProvider>().user == null)
+          ? const LoginScreen()
+          : const ChatPage(),
     );
   }
 }
 
-class ChatPage extends StatelessWidget {
+class ChatPage extends StatefulWidget {
+  const ChatPage({super.key});
+
+  @override
+  State<ChatPage> createState() => ChatPageState();
+}
+
+class ChatPageState extends State<ChatPage> {
   // The state of this page records the "Topic" that the user is currently in
   // Children can use context.findAncestorStateOfType<ChatPageState>() to read and change this
   final ValueNotifier<ChatThread?> currentTopic =
       ValueNotifier<ChatThread?>(null);
-  ChatPage({super.key});
 
   // Mobile UI
   Widget buildMobile(BuildContext context) => ValueListenableBuilder(

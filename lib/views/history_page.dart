@@ -52,7 +52,7 @@ class HistoryPageState extends State<HistoryPage> {
     if (callback != null) {
       callback(t);
     } else {
-      var parent = context.findAncestorWidgetOfExactType<ChatPage>();
+      var parent = context.findAncestorStateOfType<ChatPageState>();
       assert(parent != null, "A History Page must be a child of a Chat Page");
       parent!.currentTopic.value = t;
     }

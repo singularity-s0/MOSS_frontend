@@ -50,8 +50,7 @@ void main() async {
 Future<ByteData> fetchFont() async {
   // Noto Serif SC
   final response = await http.get(Uri.parse(
-      "https://fonts.gstatic.googlefonts.cn/s/notoserifsc/v22/H4chBXePl9DZ0Xe7gG9cyOj7oqCcbzhqDtg.otf"));
-  //'https://moss.fastnlp.top/assets/assets/fonts/H4chBXePl9DZ0Xe7gG9cyOj7oqCcbzhqDtg.otf'));
+      'https://moss.fastnlp.top/assets/assets/fonts/H4chBXePl9DZ0Xe7gG9cyOj7oqCcbzhqDtg.otf'));
 
   if (response.statusCode == 200) {
     return ByteData.view(response.bodyBytes.buffer);
@@ -75,7 +74,6 @@ class _MainAppState extends State<MainApp> {
   void initState() {
     super.initState();
     fontLoader.load().then((value) {
-      print("done");
       setState(() {
         fallback = [fontLoader.family];
       });

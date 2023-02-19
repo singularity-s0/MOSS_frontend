@@ -44,8 +44,6 @@ class AccountProvider with ChangeNotifier {
   Future<void> fetchUserInfo() async {
     try {
       user = await Repository.getInstance().getUserInfo();
-    } catch (e) {
-      print("Error fetching user info: $e");
-    }
+    } catch (_) {}
   }
 }

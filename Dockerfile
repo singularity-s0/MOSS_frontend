@@ -27,7 +27,7 @@ RUN flutter pub get
 RUN flutter build web --release --dart-define=FLUTTER_WEB_CANVASKIT_URL=https://npm.elemecdn.com/canvaskit-wasm@0.37.1/bin/
 
 # Copy assets to build/web
-COPY /app/assets /app/build/web/assets/assets
+RUN cp -r assets build/web/assets/
 
 # Built web root is at /app/build/web
 # Create the run-time image

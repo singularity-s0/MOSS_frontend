@@ -24,7 +24,7 @@ WORKDIR /app/
 RUN flutter pub get
 
 # Build the app
-RUN flutter build web --release --dart-define=FLUTTER_WEB_CANVASKIT_URL=https://npm.elemecdn.com/canvaskit-wasm@0.37.1/bin/
+RUN flutter build web --debug --dart-define=FLUTTER_WEB_CANVASKIT_URL=https://npm.elemecdn.com/canvaskit-wasm@0.37.1/bin/
 
 # Copy assets to build/web
 RUN cp -r assets build/web/assets/

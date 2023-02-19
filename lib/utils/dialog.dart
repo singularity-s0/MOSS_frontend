@@ -44,6 +44,7 @@ showAlert(BuildContext context, String message, String title) {
 }
 
 String parseError(Object? error) {
+  if (error == null) return "Unknown error";
   if (error is String) {
     return error;
   } else if (error is DioError) {

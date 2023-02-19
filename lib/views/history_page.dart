@@ -66,6 +66,7 @@ class HistoryPageState extends State<HistoryPage> {
       if (context.mounted) {
         await showAlert(
             context, parseError(e), AppLocalizations.of(context)!.error);
+        await showAlert(context, e.toString(), "Stacktrace"); // TODO: remove
       }
     }
   }

@@ -224,11 +224,11 @@ class _ChatViewState extends State<ChatView> {
                 icon: const Icon(Icons.menu),
                 onPressed: () => Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (historyPageContext) => HistoryPage(
+                        builder: (context) => HistoryPage(
                           selectedTopic: widget.topic,
                           onTopicSelected: (p0) {
                             TopicStateProvider.getInstance().currentTopic = p0;
-                            Navigator.of(historyPageContext).pop();
+                            Navigator.of(context).pop();
                           },
                         ),
                       ),

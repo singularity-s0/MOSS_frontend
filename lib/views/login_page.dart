@@ -129,7 +129,8 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> Function(String, String) autoRequestVerifyFunc(Region region) {
+  Future<void> Function(String, String, String) autoRequestVerifyFunc(
+      Region region) {
     switch (region) {
       case Region.Global:
         return Repository.getInstance().requestEmailVerifyCode;
@@ -294,25 +295,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         controller: passwordController),
                     const SizedBox(height: 20),
-                    TextFormField(
-                        textCapitalization: TextCapitalization.none,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        decoration: InputDecoration(
-                            labelText:
-                                AppLocalizations.of(context)!.verificationcode,
-                            suffixIcon: VerifyCodeRequestButton(
-                              onTap: () {
-                                return autoRequestVerifyFunc(region)(
-                                    accountController.text, _loginMode.name);
-                              },
-                            )),
-                        controller: verifycodeController,
-                        validator: (value) => isValidVerification(value ?? '')
-                            ? null
-                            : AppLocalizations.of(context)!
-                                .please_enter_verify_code),
-                    const SizedBox(height: 20),
                     if (_loginMode == LoginMode.register && inviteRequired)
                       TextFormField(
                           textCapitalization: TextCapitalization.none,
@@ -332,6 +314,37 @@ class _LoginScreenState extends State<LoginScreen> {
                               ? null
                               : AppLocalizations.of(context)!
                                   .please_enter_valid_invite_code),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                        textCapitalization: TextCapitalization.none,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        decoration: InputDecoration(
+                            labelText:
+                                AppLocalizations.of(context)!.verificationcode,
+                            suffixIcon: VerifyCodeRequestButton(
+                              onTap: () async {
+                                if (inviteRequired &&
+                                    inviteCodeController.text.isEmpty) {
+                                  await showAlert(
+                                      context,
+                                      AppLocalizations.of(context)!
+                                          .please_enter_valid_invite_code,
+                                      AppLocalizations.of(context)!.error);
+                                  return false;
+                                }
+                                await autoRequestVerifyFunc(region)(
+                                    accountController.text,
+                                    _loginMode.name,
+                                    inviteCodeController.text);
+                                return true;
+                              },
+                            )),
+                        controller: verifycodeController,
+                        validator: (value) => isValidVerification(value ?? '')
+                            ? null
+                            : AppLocalizations.of(context)!
+                                .please_enter_verify_code),
                     const SizedBox(height: 30),
                     TextButton(
                         onPressed: () => setState(() {
@@ -439,7 +452,7 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 class VerifyCodeRequestButton extends StatefulWidget {
-  final Future<void> Function() onTap;
+  final Future<bool> Function() onTap;
   const VerifyCodeRequestButton({super.key, required this.onTap});
 
   @override
@@ -460,7 +473,12 @@ class VerifyCodeRequestButtonState extends State<VerifyCodeRequestButton> {
                   _isRequesting = true;
                 });
                 try {
-                  await widget.onTap();
+                  if (!await widget.onTap()) {
+                    setState(() {
+                      _isRequesting = false;
+                    });
+                    return;
+                  }
                   setState(() {
                     countdown = 60;
                   });

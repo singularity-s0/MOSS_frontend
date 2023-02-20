@@ -54,9 +54,8 @@ class _LoginScreenState extends State<LoginScreen> {
     if (token == null) {
       _regionAndUserData = Repository.getInstance().getConfiguration();
     } else {
-      _regionAndUserData = Provider.of<AccountProvider>(context, listen: false)
-          .fetchUserInfo()
-          .then((value) => null);
+      _regionAndUserData =
+          AccountProvider.getInstance().fetchUserInfo().then((value) => null);
     }
     super.initState();
   }

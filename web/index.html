@@ -1,4 +1,7 @@
-<!DOCTYPE html><html><head>
+<!DOCTYPE html>
+<html>
+
+<head>
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
@@ -27,12 +30,18 @@
   <script src="splash/splash.js"></script>
 </head>
 
-<body>  <picture id="splash">
-      <source srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x" media="(prefers-color-scheme: light)">
-      <source srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x" media="(prefers-color-scheme: dark)">
-      <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="">
+<body>
+  <picture id="splash">
+    <source
+      srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x"
+      media="(prefers-color-scheme: light)">
+    <source
+      srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x"
+      media="(prefers-color-scheme: dark)">
+    <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="">
   </picture>
-  
+  <div class="center" id="loading"></div>
+
   <script>
     window.addEventListener('load', function (ev) {
       // Download main.dart.js
@@ -40,10 +49,11 @@
         serviceWorker: {
           serviceWorkerVersion: serviceWorkerVersion,
         },
-        onEntrypointLoaded: function (engineInitializer) {
-          engineInitializer.initializeEngine().then(function (appRunner) {
-            appRunner.runApp();
-          });
+        onEntrypointLoaded: async function (engineInitializer) {
+          loading.textContent = "Initializing engine...";
+          let appRunner = await engineInitializer.initializeEngine();
+          loading.textContent = "Running app...";
+          await appRunner.runApp();
         }
       });
     });
@@ -52,4 +62,6 @@
 
 
 
-</body></html>
+</body>
+
+</html>

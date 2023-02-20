@@ -109,8 +109,9 @@ class Repository {
 
   Future<void> logout() async {
     await dio.get("$baseUrl/logout", options: Options(headers: _tokenHeader));
-    provider.token = SettingsProvider.getInstance().token = null;
-    provider.user = null;
+    AccountProvider.getInstance().reset();
+    SettingsProvider.getInstance().reset();
+    TopicStateProvider.getInstance().reset();
   }
 
   Map<String, String> get _tokenHeader {
@@ -121,7 +122,6 @@ class Repository {
   Future<List<ChatThread>?> getChatThreads() async {
     final Response response = await dio.get("$baseUrl/chats",
         options: Options(headers: _tokenHeader));
-    print("Received chat threads: ${response.data}");
     return (response.data! as List).map((e) => ChatThread.fromJson(e)).toList();
   }
 
@@ -160,10 +160,8 @@ class Repository {
   }
 
   Future<User?> getUserInfo() async {
-    print("getting user info");
     final Response response = await dio.get("$baseUrl/users/me",
         options: Options(headers: _tokenHeader));
-    print("got user info ${response.data}");
     return User.fromJson(response.data!);
   }
 

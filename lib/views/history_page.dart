@@ -56,6 +56,7 @@ class HistoryPageState extends State<HistoryPage> {
 
   static Future<void> addNewTopic(Function(ChatThread)? callback) async {
     final thread = (await Repository.getInstance().newChatThread())!;
+    thread.records ??= [];
     final user = (await AccountProvider.getInstance().ensureUserInfo());
     if (user.chats == null) {
       throw Exception("Incomplete user info (empty chats)");

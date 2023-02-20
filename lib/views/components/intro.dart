@@ -112,11 +112,13 @@ class _NullChatLoaderState extends State<NullChatLoader> {
   void lateInit() async {
     lateInitDone = true;
     final provider = AccountProvider.getInstance();
-    if (provider.user!.chats == null) {
-      final t = await Repository.getInstance().getChatThreads();
-      provider.user!.chats = t;
-    }
     try {
+      if (provider.user!.chats == null) {
+        print("Getting chat threads");
+        final t = (await Repository.getInstance().getChatThreads())!;
+        provider.user!.chats = t;
+        print("Got chat threads ${t.length}");
+      }
       print("adding new topic");
       await HistoryPageState.addNewTopic(null);
       print("added new topic");

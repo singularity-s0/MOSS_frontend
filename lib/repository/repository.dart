@@ -121,6 +121,7 @@ class Repository {
   Future<List<ChatThread>?> getChatThreads() async {
     final Response response = await dio.get("$baseUrl/chats",
         options: Options(headers: _tokenHeader));
+    print("Received chat threads: ${response.data}");
     return (response.data! as List).map((e) => ChatThread.fromJson(e)).toList();
   }
 

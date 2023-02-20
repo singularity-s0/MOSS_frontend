@@ -46,8 +46,7 @@ class HistoryPageState extends State<HistoryPage> {
     }
   }
 
-  static void selectTopic(
-      BuildContext context, ChatThread t, Function(ChatThread)? callback) {
+  static void selectTopic(ChatThread t, Function(ChatThread)? callback) {
     if (callback != null) {
       callback(t);
     } else {
@@ -55,20 +54,16 @@ class HistoryPageState extends State<HistoryPage> {
     }
   }
 
-  static Future<void> addNewTopic(
-      BuildContext context, Function(ChatThread)? callback) async {
-    final provider = Provider.of<AccountProvider>(context, listen: false);
-    try {
-      final thread = await Repository.getInstance().newChatThread();
-      provider.user!.chats!.insert(0, thread!);
-      selectTopic(context, thread, callback);
-    } catch (e) {
-      if (context.mounted) {
-        await showAlert(
-            context, parseError(e), AppLocalizations.of(context)!.error);
-        await showAlert(context, e.toString(), "Stacktrace"); // TODO: remove
-      }
-    }
+  static Future<void> addNewTopic(Function(ChatThread)? callback) async {
+    print('0');
+    final thread = (await Repository.getInstance().newChatThread())!;
+    print('a');
+    (await AccountProvider.getInstance().ensureUserInfo())
+        .chats!
+        .insert(0, thread);
+    print('b');
+    selectTopic(thread, callback);
+    print('c');
   }
 
   bool lateInitDone = false;
@@ -108,7 +103,7 @@ class HistoryPageState extends State<HistoryPage> {
           itemBuilder: (context, i) {
             if (i == 0) {
               return NewTopicButton(onTap: () async {
-                addNewTopic(context, widget.onTopicSelected);
+                addNewTopic(widget.onTopicSelected);
               });
             } else if (i == listItemCount - 1 && error != null) {
               return ErrorRetryWidget(error: error, onRetry: load);
@@ -124,7 +119,7 @@ class HistoryPageState extends State<HistoryPage> {
                     DateTime.tryParse(thread.updated_at)?.toLocal())),
                 selected: widget.selectedTopic?.id == thread.id,
                 onTap: () {
-                  selectTopic(context, thread, widget.onTopicSelected);
+                  selectTopic(thread, widget.onTopicSelected);
                 },
                 trailing: _isEditing
                     ? IconButton(
@@ -137,9 +132,7 @@ class HistoryPageState extends State<HistoryPage> {
                               provider.user!.chats!.remove(thread);
                               if (widget.selectedTopic?.id == thread.id) {
                                 if (provider.user!.chats!.isNotEmpty) {
-                                  selectTopic(
-                                      context,
-                                      provider.user!.chats!.first,
+                                  selectTopic(provider.user!.chats!.first,
                                       widget.onTopicSelected);
                                 }
                               }

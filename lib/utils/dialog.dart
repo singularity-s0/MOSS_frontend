@@ -29,7 +29,6 @@ Future<T> showLoadingDialogUntilFutureCompletes<T>(
 }
 
 showAlert(BuildContext context, String message, String title) {
-  print(StackTrace.current);
   return showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(

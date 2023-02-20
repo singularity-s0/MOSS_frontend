@@ -60,8 +60,10 @@ class _AccountCardState extends State<AccountCard> {
                   child: Text(AppLocalizations.of(context)!.sign_out),
                   onTap: () async {
                     await Repository.getInstance().logout();
-                    while (Navigator.of(context).canPop()) {
-                      Navigator.of(context).pop();
+                    if (context.mounted) {
+                      while (Navigator.of(context).canPop()) {
+                        Navigator.of(context).pop();
+                      }
                     }
                   },
                 ),

@@ -58,8 +58,11 @@ class _AccountCardState extends State<AccountCard> {
               itemBuilder: (context) => [
                 PopupMenuItem(
                   child: Text(AppLocalizations.of(context)!.sign_out),
-                  onTap: () {
-                    Repository.getInstance().logout();
+                  onTap: () async {
+                    await Repository.getInstance().logout();
+                    while (Navigator.of(context).canPop()) {
+                      Navigator.of(context).pop();
+                    }
                   },
                 ),
               ],

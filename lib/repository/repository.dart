@@ -110,6 +110,7 @@ class Repository {
   Future<void> logout() async {
     await dio.get("$baseUrl/logout", options: Options(headers: _tokenHeader));
     provider.token = SettingsProvider.getInstance().token = null;
+    provider.user = null;
   }
 
   Map<String, String> get _tokenHeader {

@@ -440,7 +440,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (snapshot.hasError) {
           return buildLandingPage(context, error: snapshot.error);
         } else if (snapshot.hasData) {
-          if (snapshot.data!.notice == null) {
+          if (snapshot.data!.notice == null || snapshot.data!.notice!.isEmpty) {
             _noticeAccepted = true;
           }
           return AnimatedCrossFade(

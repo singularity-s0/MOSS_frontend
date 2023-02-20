@@ -47,6 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
   late Future<RepositoryConfig?> _regionAndUserData;
 
   LoginMode _loginMode = LoginMode.login;
+  bool _noticeAccepted = false;
 
   @override
   void initState() {
@@ -137,6 +138,42 @@ class _LoginScreenState extends State<LoginScreen> {
       case Region.CN:
         return Repository.getInstance().requestPhoneVerifyCode;
     }
+  }
+
+  Widget buildNoticePanel(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 50.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 70),
+            Image.asset('assets/images/logo.png', scale: 6.5),
+            const SizedBox(height: 40),
+            Text(
+              "Notice",
+              style: const TextStyle(fontSize: 35),
+            ),
+            const SizedBox(height: 20),
+            Opacity(
+              opacity: 0.7,
+              child: Text(
+                "blah blah blah" * 20,
+                style: const TextStyle(fontSize: 15),
+              ),
+            ),
+            const SizedBox(height: 40),
+            Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton(
+                    onPressed: () => setState(() {
+                          _noticeAccepted = true;
+                        }),
+                    child: Text("Accept"))),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget buildLandingPage(BuildContext context, {Object? error}) {
@@ -404,12 +441,19 @@ class _LoginScreenState extends State<LoginScreen> {
           return buildLandingPage(context, error: snapshot.error);
         } else if (snapshot.hasData) {
           return AnimatedCrossFade(
-            firstChild: buildLoginPanel(context, snapshot.data!.region),
-            secondChild: buildSignupPanel(
-                context, snapshot.data!.region, snapshot.data!.inviteRequired),
-            crossFadeState: _loginMode == LoginMode.login
-                ? CrossFadeState.showFirst
-                : CrossFadeState.showSecond,
+            firstChild: buildNoticePanel(context),
+            secondChild: AnimatedCrossFade(
+              firstChild: buildLoginPanel(context, snapshot.data!.region),
+              secondChild: buildSignupPanel(context, snapshot.data!.region,
+                  snapshot.data!.inviteRequired),
+              crossFadeState: _loginMode == LoginMode.login
+                  ? CrossFadeState.showFirst
+                  : CrossFadeState.showSecond,
+              duration: const Duration(milliseconds: 200),
+            ),
+            crossFadeState: _noticeAccepted
+                ? CrossFadeState.showSecond
+                : CrossFadeState.showFirst,
             duration: const Duration(milliseconds: 200),
           );
         } else if (snapshot.connectionState == ConnectionState.done) {

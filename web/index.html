@@ -40,7 +40,6 @@
       media="(prefers-color-scheme: dark)">
     <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="">
   </picture>
-  <div class="center" id="loading"></div>
 
   <script>
     window.addEventListener('load', function (ev) {
@@ -50,9 +49,7 @@
           serviceWorkerVersion: serviceWorkerVersion,
         },
         onEntrypointLoaded: async function (engineInitializer) {
-          loading.textContent = "Initializing engine...";
           let appRunner = await engineInitializer.initializeEngine();
-          loading.textContent = "Running app...";
           await appRunner.runApp();
         }
       });

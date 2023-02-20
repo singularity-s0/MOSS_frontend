@@ -41,10 +41,6 @@ class AccountProvider with ChangeNotifier {
 
   Future<User> ensureUserInfo() async {
     user ??= (await Repository.getInstance().getUserInfo())!;
-    if (user!.chats == null) {
-      print("Warning: Incomplete user info (empty chats)");
-      throw "Incomplete user info (empty chats)";
-    }
     return user!;
   }
 

@@ -160,8 +160,10 @@ class Repository {
   }
 
   Future<User?> getUserInfo() async {
+    print("getting user info");
     final Response response = await dio.get("$baseUrl/users/me",
         options: Options(headers: _tokenHeader));
+    print("got user info ${response.data}");
     return User.fromJson(response.data!);
   }
 

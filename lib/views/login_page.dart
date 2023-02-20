@@ -240,6 +240,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 context,
                                 autoLoginFunc(region)(accountController.text,
                                     passwordController.text));
+                            await AccountProvider.getInstance()
+                                .ensureUserInfo();
                           } catch (e) {
                             await showAlert(context, parseError(e),
                                 AppLocalizations.of(context)!.error);

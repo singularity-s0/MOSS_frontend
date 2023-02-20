@@ -11,7 +11,7 @@
     "request": "Request",
     "requested": "Requested {time}",
     "region": "Region: {regionName}",
-    "fetching_server_configurations": "Fetching server configurations...",
+    "fetching_server_configurations": "Fetching configurations",
     "please_wait": "Please wait...",
     "error": "Error",
     "try_again": "Try again",

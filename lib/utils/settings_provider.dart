@@ -15,6 +15,10 @@ class SettingsProvider with ChangeNotifier {
   Future<void> init() async =>
       preferences = await SharedPreferences.getInstance();
 
+  void reset() {
+    preferences.clear();
+  }
+
   static const KEY_TOKEN = "token";
   JWToken? get token {
     if (preferences.containsKey(KEY_TOKEN)) {

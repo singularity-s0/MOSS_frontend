@@ -13,6 +13,11 @@ class AccountProvider with ChangeNotifier {
     token = SettingsProvider.getInstance().token;
   }
 
+  void reset() {
+    token = null;
+    user = null;
+  }
+
   // Login info, if this is null, the user is not logged in.
   JWToken? _token;
   JWToken? get token => _token;
@@ -54,6 +59,10 @@ class TopicStateProvider with ChangeNotifier {
   static final _instance = TopicStateProvider._();
   factory TopicStateProvider.getInstance() => _instance;
   TopicStateProvider._();
+
+  void reset() {
+    currentTopic = null;
+  }
 
   // Current chat topic
   ChatThread? _currentTopic;

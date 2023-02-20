@@ -28,6 +28,9 @@ class AccountProvider with ChangeNotifier {
   // User info, if this is null, the user is not logged in.
   User? _user;
   User? get user {
+    if (_user == null) {
+      fetchUserInfo();
+    }
     return _user;
   }
 
@@ -39,16 +42,9 @@ class AccountProvider with ChangeNotifier {
     }
   }
 
-  Future<User> ensureUserInfo() async {
-    if (user == null || user!.chats == null) {
-      return user = (await Repository.getInstance().getUserInfo())!;
-    }
-    return user!;
-  }
-
   Future<void> fetchUserInfo() async {
     try {
-      user = (await Repository.getInstance().getUserInfo())!;
+      user = await Repository.getInstance().getUserInfo();
     } catch (_) {}
   }
 }

@@ -114,16 +114,11 @@ class _NullChatLoaderState extends State<NullChatLoader> {
     final provider = AccountProvider.getInstance();
     try {
       if (provider.user!.chats == null) {
-        print("Getting chat threads");
         final t = (await Repository.getInstance().getChatThreads())!;
         provider.user!.chats = t;
-        print("Got chat threads ${t.length}");
       }
-      print("adding new topic");
       await HistoryPageState.addNewTopic(null);
-      print("added new topic");
-    } catch (e, stacktrace) {
-      print(stacktrace);
+    } catch (e) {
       if (context.mounted) {
         showAlert(context, parseError(e), AppLocalizations.of(context)!.error);
       }

@@ -55,18 +55,13 @@ class HistoryPageState extends State<HistoryPage> {
   }
 
   static Future<void> addNewTopic(Function(ChatThread)? callback) async {
-    print('0');
     final thread = (await Repository.getInstance().newChatThread())!;
-    print('a');
     final user = (await AccountProvider.getInstance().ensureUserInfo());
     if (user.chats == null) {
-      print("Warning: Incomplete user info (empty chats)");
       throw Exception("Incomplete user info (empty chats)");
     }
     user.chats!.insert(0, thread);
-    print('b');
     selectTopic(thread, callback);
-    print('c');
   }
 
   bool lateInitDone = false;

@@ -170,6 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           _noticeAccepted = true;
                         }),
                     child: Text(AppLocalizations.of(context)!.ok))),
+            const SizedBox(height: 40),
           ],
         ),
       ),
@@ -289,6 +290,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
+            const SizedBox(height: 40),
           ],
         ),
       ),
@@ -427,6 +429,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
+            const SizedBox(height: 40),
           ],
         ),
       ),

@@ -194,15 +194,17 @@ class Repository {
         throw Exception("Unknown region");
     }
     final bool inviteRequired = data['invite_required'];
-    return RepositoryConfig(region, inviteRequired);
+    final String? notice = data['notice'];
+    return RepositoryConfig(region, inviteRequired, notice);
   }
 }
 
 class RepositoryConfig {
   final Region region;
   final bool inviteRequired;
+  final String? notice;
 
-  const RepositoryConfig(this.region, this.inviteRequired);
+  const RepositoryConfig(this.region, this.inviteRequired, this.notice);
 }
 
 class JWTInterceptor extends QueuedInterceptor {

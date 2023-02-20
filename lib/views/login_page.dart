@@ -140,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Widget buildNoticePanel(BuildContext context) {
+  Widget buildNoticePanel(BuildContext context, String notice) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50.0),
       child: SingleChildScrollView(
@@ -151,14 +151,14 @@ class _LoginScreenState extends State<LoginScreen> {
             Image.asset('assets/images/logo.png', scale: 6.5),
             const SizedBox(height: 40),
             Text(
-              "Notice",
+              AppLocalizations.of(context)!.notice,
               style: const TextStyle(fontSize: 35),
             ),
             const SizedBox(height: 20),
             Opacity(
               opacity: 0.7,
               child: Text(
-                "blah blah blah" * 20,
+                notice,
                 style: const TextStyle(fontSize: 15),
               ),
             ),
@@ -169,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: () => setState(() {
                           _noticeAccepted = true;
                         }),
-                    child: Text("Accept"))),
+                    child: Text(AppLocalizations.of(context)!.ok))),
           ],
         ),
       ),
@@ -440,8 +440,11 @@ class _LoginScreenState extends State<LoginScreen> {
         if (snapshot.hasError) {
           return buildLandingPage(context, error: snapshot.error);
         } else if (snapshot.hasData) {
+          if (snapshot.data!.notice == null) {
+            _noticeAccepted = true;
+          }
           return AnimatedCrossFade(
-            firstChild: buildNoticePanel(context),
+            firstChild: buildNoticePanel(context, snapshot.data!.notice ?? ""),
             secondChild: AnimatedCrossFade(
               firstChild: buildLoginPanel(context, snapshot.data!.region),
               secondChild: buildSignupPanel(context, snapshot.data!.region,

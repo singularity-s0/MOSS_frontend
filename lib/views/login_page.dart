@@ -150,11 +150,6 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 70),
             Image.asset('assets/images/logo.png', scale: 6.5),
             const SizedBox(height: 40),
-            Text(
-              AppLocalizations.of(context)!.notice,
-              style: const TextStyle(fontSize: 35),
-            ),
-            const SizedBox(height: 20),
             Opacity(
               opacity: 0.7,
               child: Text(

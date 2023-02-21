@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:openchat_frontend/model/chat.dart';
@@ -10,12 +11,23 @@ class WebSocketChatManager {
   final JWToken token;
   WebSocketChannel? channel;
 
+  static const Duration wsTimeout = Duration(seconds: 32);
+  Timer? wsTimer;
+  void onTimeout() async {
+    onError?.call("Connection Timeout");
+    try {
+      await channel!.sink.close();
+    } catch (_) {}
+    channel = null;
+  }
+
   final void Function(String text)? onReceive;
   final void Function()? onDone;
   final void Function(Object error)? onError;
   final void Function(ChatRecord record)? onAddRecord;
 
   bool expectRecord = false;
+  bool ended = false;
 
   WebSocketChatManager(this.topicId, this.token,
       {this.onReceive, this.onDone, this.onError, this.onAddRecord});
@@ -25,17 +37,22 @@ class WebSocketChatManager {
   }
 
   void sendMessage(String message) async {
+    ended = false;
     try {
       channel = WebSocketChannel.connect(Uri.parse(Uri.encodeFull(
           "${Repository.wsBaseUrl}/chats/$topicId/records?jwt=${token.access}")));
-      channel!.stream.listen((message) {
+      channel!.stream.listen((message) async {
+        wsTimer?.cancel();
+        wsTimer = Timer(wsTimeout, onTimeout);
         try {
           if (expectRecord) {
             ChatRecord record = ChatRecord.fromJson(json.decode(message));
             onAddRecord?.call(record);
             expectRecord = false;
+            wsTimer?.cancel();
+            ended = true;
             try {
-              channel!.sink.close();
+              await channel!.sink.close();
             } catch (_) {}
             channel = null;
           } else {
@@ -57,7 +74,7 @@ class WebSocketChatManager {
                 onError?.call("${response.status_code}: ${response.output}");
               }
               try {
-                channel!.sink.close();
+                await channel!.sink.close();
               } catch (_) {}
               channel = null;
             }
@@ -65,13 +82,36 @@ class WebSocketChatManager {
         } catch (e) {
           onError?.call(e);
         }
-      });
+      }, onDone: () async {
+        ended = true;
+        wsTimer?.cancel();
+        onDone?.call();
+        try {
+          await channel!.sink.close();
+        } catch (_) {}
+        channel = null;
+      }, onError: (e) {
+        if (!ended) {
+          onError?.call(e);
+        }
+        wsTimer?.cancel();
+        ended = true;
+      }, cancelOnError: true);
       await channel!.ready;
+      // Set timeout
+      wsTimer = Timer(wsTimeout, onTimeout);
       channel!.sink.add(json.encode({
         "request": message,
       }));
     } catch (e) {
-      onError?.call(e);
+      wsTimer?.cancel();
+      try {
+        await channel?.sink.close();
+      } catch (_) {}
+      if (!ended) {
+        onError?.call(e);
+      }
+      ended = true;
     }
   }
 

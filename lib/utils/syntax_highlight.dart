@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:openchat_frontend/views/components/flutter_highlighter.dart';
 
@@ -41,7 +42,8 @@ class CodeElementBuilder extends MarkdownElementBuilder {
                       // All available themes are listed in `themes` folder
                       theme: codeTheme,
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                      textStyle: const TextStyle(fontFamily: 'RobotoMono'))),
+                      textStyle: GoogleFonts.sourceCodePro(
+                          fontSize: 14, color: codeTheme['root']!.color!))),
             ],
           ),
         ),

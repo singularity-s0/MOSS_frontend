@@ -15,18 +15,14 @@ import 'package:openchat_frontend/views/login_page.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 
 const themeColor = Color.fromRGBO(56, 100, 184, 1);
 const themeColorLight = Color.fromRGBO(121, 186, 243, 1);
-
-var fontLoader = FontLoader('NotoSerif');
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SettingsProvider.getInstance().init();
   Repository.init(AccountProvider.getInstance());
-  fontLoader.addFont(fetchFont());
   runApp(
     MultiProvider(
       providers: [
@@ -49,19 +45,6 @@ void main() async {
   );
 }
 
-Future<ByteData> fetchFont() async {
-  // Noto Serif SC
-  final response = await http.get(Uri.parse(
-      'https://moss.fastnlp.top/assets/assets/fonts/H4chBXePl9DZ0Xe7gG9cyOj7oqCcbzhqDtg.otf'));
-
-  if (response.statusCode == 200) {
-    return ByteData.view(response.bodyBytes.buffer);
-  } else {
-    // If that call was not successful, throw an error.
-    throw Exception('Failed to load font');
-  }
-}
-
 class MainApp extends StatefulWidget {
   const MainApp({super.key});
 
@@ -75,11 +58,6 @@ class _MainAppState extends State<MainApp> {
   @override
   void initState() {
     super.initState();
-    fontLoader.load().then((value) {
-      setState(() {
-        fallback = [fontLoader.family];
-      });
-    });
   }
 
   @override

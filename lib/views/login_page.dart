@@ -359,7 +359,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             suffixIcon: VerifyCodeRequestButton(
                               onTap: () async {
                                 if (inviteRequired &&
-                                    inviteCodeController.text.isEmpty) {
+                                    inviteCodeController.text.isEmpty &&
+                                    _loginMode == LoginMode.register) {
                                   await showAlert(
                                       context,
                                       AppLocalizations.of(context)!

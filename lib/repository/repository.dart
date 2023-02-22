@@ -10,7 +10,7 @@ class Repository {
 
   factory Repository.getInstance() => _instance;
 
-  static String get baseUrl => "${Uri.base}api";
+  static String get baseUrl => "${uri.scheme}://${uri.host}:${uri.port}/api";
   static String get wsBaseUrl {
     final uri = Uri.base;
     return "${uri.scheme == "https" ? "wss" : "ws"}://${uri.host}:${uri.port}/api/ws";

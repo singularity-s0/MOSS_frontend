@@ -539,8 +539,3 @@ class ChatPage extends StatelessWidget {
       curve: Curves.fastLinearToSlowEaseIn,
       child: isDesktop(context) ? buildDesktop(context) : buildMobile(context));
 }
-
-extension ExtList<T> on List<T> {
-  T? get lastOrNull => isNotEmpty ? last : null;
-  T? get firstOrNull => isNotEmpty ? first : null;
-}

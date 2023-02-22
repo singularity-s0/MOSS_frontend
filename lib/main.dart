@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:openchat_frontend/repository/repository.dart';
 import 'package:openchat_frontend/utils/settings_provider.dart';
-import 'package:openchat_frontend/views/chat_page.dart';
+import 'package:openchat_frontend/views/chat_page.dart' deferred as ChatPageLib;
 import 'package:openchat_frontend/views/login_page.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -45,6 +45,22 @@ class _MainAppState extends State<MainApp> {
     super.initState();
   }
 
+  Widget _buildChatPageLoader(BuildContext context) {
+    return FutureBuilder(
+        future: ChatPageLib.loadLibrary(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return const SizedBox();
+          }
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text("Error loading program, please refresh page"),
+            );
+          }
+          return ChatPageLib.ChatPage();
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -62,7 +78,12 @@ class _MainAppState extends State<MainApp> {
       home: (context.watch<AccountProvider>().token == null ||
               context.watch<AccountProvider>().user == null)
           ? const LoginScreen()
-          : const ChatPage(),
+          : _buildChatPageLoader(context),
     );
   }
+}
+
+extension ExtList<T> on List<T> {
+  T? get lastOrNull => isNotEmpty ? last : null;
+  T? get firstOrNull => isNotEmpty ? first : null;
 }

@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:clipboard/clipboard.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter/material.dart';
 import 'package:openchat_frontend/main.dart';
@@ -19,8 +18,6 @@ import 'package:openchat_frontend/views/components/typing_indicator.dart';
 import 'package:openchat_frontend/views/components/widgets.dart';
 import 'package:openchat_frontend/views/history_page.dart';
 import 'package:provider/provider.dart';
-import 'package:image_downloader_web/image_downloader_web.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 
 const user = types.User(id: 'user');
 const reply = types.User(id: 'moss');
@@ -454,6 +451,93 @@ class _ChatViewState extends State<ChatView> {
       ),
     );
   }
+}
+
+class ChatPage extends StatelessWidget {
+  const ChatPage({super.key});
+
+  // Mobile UI
+  Widget buildMobile(BuildContext context) =>
+      Selector<TopicStateProvider, ChatThread?>(
+          selector: (_, model) => model.currentTopic,
+          builder: (context, value, child) => value == null
+              ? NullChatLoader(
+                  heroTag:
+                      "MossLogo${isDesktop(context) ? "Desktop" : value?.id}}",
+                )
+              : ChatView(key: ValueKey(value), topic: value, showMenu: true));
+
+  // Desktop UI
+  Widget buildDesktop(BuildContext context) {
+    return ColoredBox(
+      color: Theme.of(context).colorScheme.background,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Left View
+          SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: kTabletMasterContainerWidth,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)),
+                clipBehavior: Clip.antiAlias,
+                child: Selector<TopicStateProvider, ChatThread?>(
+                    selector: (_, model) => model.currentTopic,
+                    builder: (context, value, child) =>
+                        HistoryPage(selectedTopic: value)),
+              ),
+            ),
+          ),
+          // Right View
+          ScaffoldMessenger(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width -
+                  kTabletMasterContainerWidth,
+              child: SizedBox.expand(
+                child: Card(
+                  margin: const EdgeInsets.only(top: 16, right: 16, bottom: 16),
+                  color: Theme.of(context).colorScheme.background,
+                  surfaceTintColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0)),
+                  clipBehavior: Clip.antiAlias,
+                  child: Center(
+                    child: SizedBox(
+                      width: min(
+                          MediaQuery.of(context).size.height,
+                          MediaQuery.of(context).size.width -
+                              kTabletMasterContainerWidth),
+                      child: Selector<TopicStateProvider, ChatThread?>(
+                          selector: (_, model) => model.currentTopic,
+                          builder: (context, value, child) => value == null
+                              ? NullChatLoader(
+                                  heroTag:
+                                      "MossLogo${isDesktop(context) ? "Desktop" : value?.id}}",
+                                )
+                              : ChatView(key: ValueKey(value), topic: value)),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) => LocalHeroScope(
+      createRectTween: (begin, end) {
+        return RectTween(begin: begin, end: end);
+      },
+      duration: const Duration(milliseconds: 700),
+      curve: Curves.fastLinearToSlowEaseIn,
+      child: isDesktop(context) ? buildDesktop(context) : buildMobile(context));
 }
 
 extension ExtList<T> on List<T> {

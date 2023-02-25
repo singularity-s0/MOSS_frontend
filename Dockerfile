@@ -29,6 +29,9 @@ RUN flutter build web --release --web-renderer html --dart-define=FLUTTER_WEB_CA
 # Copy assets to build/web
 RUN cp -r assets build/web/assets/
 
+# Copy tree-shaked icons
+RUN cp assets/fonts/MaterialIcons-Regular.otf build/web/assets/fonts/MaterialIcons-Regular.otf
+
 # Built web root is at /app/build/web
 # Create the run-time image
 FROM nginx:1.23.3-alpine

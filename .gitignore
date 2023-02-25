@@ -30,3 +30,7 @@ assets/.DS_Store
 lib/.DS_Store
 lib/repository/.DS_Store
 macos/.DS_Store
+android/.idea/vcs.xml
+android/.idea/misc.xml
+android/.idea/gradle.xml
+.DS_Store

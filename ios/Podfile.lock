@@ -2,6 +2,9 @@ PODS:
   - Flutter (1.0.0)
   - flutter_native_splash (0.0.1):
     - Flutter
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -11,6 +14,7 @@ PODS:
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
@@ -19,6 +23,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_native_splash:
     :path: ".symlinks/plugins/flutter_native_splash/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/ios"
   url_launcher_ios:
@@ -27,6 +33,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_native_splash: 52501b97d1c0a5f898d687f1646226c1f93c56ef
+  path_provider_foundation: 37748e03f12783f9de2cb2c4eadfaa25fe6d4852
   shared_preferences_foundation: 297b3ebca31b34ec92be11acd7fb0ba932c822ca
   url_launcher_ios: fb12c43172927bb5cf75aeebd073f883801f1993
 

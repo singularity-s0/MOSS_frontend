@@ -236,7 +236,7 @@ class _ChatViewState extends State<ChatView> {
             : LocalHero(
                 tag:
                     "MossLogo${isDesktop(context) ? "Desktop" : widget.topic.id}}",
-                child: Image.asset('assets/images/logo.png', scale: 7)),
+                child: Image.asset('assets/images/logo.webp', scale: 7)),
         surfaceTintColor: Colors.transparent,
       ),
       body: Chat(

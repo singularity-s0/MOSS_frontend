@@ -67,7 +67,7 @@ flutter:
 flutter_native_splash:
   color: "#FDFBFF"
   color_dark: "#1B1B1F"
-  image: assets/images/logo.png
+  image: assets/images/logo.webp
 
 flutter_icons:
   android: true

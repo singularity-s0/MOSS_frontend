@@ -404,7 +404,7 @@ class ChatState extends State<Chat> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 20),
-                      child: Image.asset('assets/images/logo.png', scale: 6.5),
+                      child: Image.asset('assets/images/logo.webp', scale: 6.5),
                     ),
                     Expanded(
                       child: LayoutBuilder(

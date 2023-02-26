@@ -148,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 70),
-            Image.asset('assets/images/logo.png', scale: 6.5),
+            Image.asset('assets/images/logo.webp', scale: 6.5),
             const SizedBox(height: 40),
             Opacity(
               opacity: 0.7,
@@ -180,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 70),
-            Image.asset('assets/images/logo.png', scale: 6.5),
+            Image.asset('assets/images/logo.webp', scale: 6.5),
             const SizedBox(height: 25),
             Text(
               error == null
@@ -217,7 +217,7 @@ class _LoginScreenState extends State<LoginScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 70),
-            Image.asset('assets/images/logo.png', scale: 6.5),
+            Image.asset('assets/images/logo.webp', scale: 6.5),
             const SizedBox(height: 25),
             Text(
               AppLocalizations.of(context)!.welcome_comma,
@@ -302,7 +302,7 @@ class _LoginScreenState extends State<LoginScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 70),
-            Image.asset('assets/images/logo.png', scale: 6.5),
+            Image.asset('assets/images/logo.webp', scale: 6.5),
             const SizedBox(height: 25),
             Text(
               _loginMode == LoginMode.register

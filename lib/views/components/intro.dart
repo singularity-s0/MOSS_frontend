@@ -46,7 +46,7 @@ class MossIntroWidget extends StatelessWidget {
                       constraints: const BoxConstraints(maxWidth: 256),
                       child: LocalHero(
                           tag: heroTag,
-                          child: Image.asset("assets/images/logo.png")),
+                          child: Image.asset("assets/images/logo.webp")),
                     ),
                   ),
                 ),

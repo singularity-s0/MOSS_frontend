@@ -416,6 +416,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     inviteCodeController.text,
                                     resetPassword:
                                         _loginMode == LoginMode.reset));
+                            await AccountProvider.getInstance()
+                                .ensureUserInfo();
                           } catch (e) {
                             await showAlert(context, parseError(e),
                                 AppLocalizations.of(context)!.error);

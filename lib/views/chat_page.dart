@@ -324,7 +324,7 @@ class _ChatViewState extends State<ChatView> {
             children: [
               // New Topic Button
               DelayShowWidget(
-                delay: const Duration(seconds: 10),
+                delay: const Duration(seconds: 5),
                 enabled: interacted,
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 12),

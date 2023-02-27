@@ -202,6 +202,13 @@ class Repository {
     final String? notice = data['notice'];
     return RepositoryConfig(region, inviteRequired, notice);
   }
+
+  Future<String?> getScreenshotForChat(int chatId) async {
+    final Response response =
+        await dio.get("$baseUrl/chats/$chatId/screenshots");
+    final Map<String, dynamic> data = response.data!;
+    return data['url'];
+  }
 }
 
 class RepositoryConfig {

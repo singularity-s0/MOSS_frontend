@@ -19,6 +19,7 @@ import 'package:openchat_frontend/views/components/typing_indicator.dart';
 import 'package:openchat_frontend/views/components/widgets.dart';
 import 'package:openchat_frontend/views/history_page.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 const user = types.User(id: 'user');
 const reply = types.User(id: 'moss');
@@ -468,17 +469,20 @@ class _ChatViewState extends State<ChatView> {
                                                 .copied_to_clipboard)));
                               },
                               icon: const Icon(Icons.copy_all)),
-                          /*IconButton(
-                          onPressed: () {
-                            _chatKey.currentState!
-                                .takeScreenshot()
-                                .then((bytes) {
-                              WebImageDownloader.downloadImageFromUInt8List(
-                                  uInt8List: bytes,
-                                  name: "moss-${widget.topic.id}.png");
-                            });
-                          },
-                          icon: const Icon(Icons.share)),*/
+                          IconButton(
+                              onPressed: () async {
+                                try {
+                                  final String url =
+                                      (await Repository.getInstance()
+                                          .getScreenshotForChat(
+                                              widget.topic.id))!;
+                                  await launchUrlString(url);
+                                } catch (e) {
+                                  await showAlert(context, parseError(e),
+                                      AppLocalizations.of(context)!.error);
+                                }
+                              },
+                              icon: const Icon(Icons.share)),
                         ],
                       ),
                     ),

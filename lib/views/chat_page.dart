@@ -13,6 +13,7 @@ import 'package:openchat_frontend/utils/dialog.dart';
 import 'package:openchat_frontend/views/components/animated_text.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:openchat_frontend/views/components/chat_ui/flutter_chat_ui.dart';
+import 'package:openchat_frontend/views/components/delay_show_button.dart';
 import 'package:openchat_frontend/views/components/intro.dart';
 import 'package:openchat_frontend/views/components/typing_indicator.dart';
 import 'package:openchat_frontend/views/components/widgets.dart';
@@ -43,6 +44,9 @@ class _ChatViewState extends State<ChatView> {
   final List<types.Message> _messages = [];
 
   late final WebSocketChatManager chatManager;
+
+  bool interacted =
+      false; // Whether user has interacted with the chat in this session
 
   bool isFirstResponse = true;
   bool isStreamingResponse = false;
@@ -273,6 +277,7 @@ class _ChatViewState extends State<ChatView> {
         onSendPressed:
             (types.PartialText message, VoidCallback clearInput) async {
           if (isWaitingForResponse || widget.topic.records == null) return;
+          interacted = true;
           final topic = widget.topic;
           final provider = Provider.of<AccountProvider>(context, listen: false);
           clearInput();
@@ -318,16 +323,25 @@ class _ChatViewState extends State<ChatView> {
             mainAxisSize: MainAxisSize.min,
             children: [
               // New Topic Button
-              OutlinedButton.icon(
-                  onPressed: () {
-                    HistoryPageState.addNewTopic(null);
-                  },
-                  icon: Icon(Icons.add,
-                      color: Theme.of(context).colorScheme.secondary),
-                  label: Text(AppLocalizations.of(context)!.new_topic,
+              DelayShowWidget(
+                delay: const Duration(seconds: 10),
+                enabled: interacted,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      HistoryPageState.addNewTopic(null);
+                    },
+                    icon: Icon(Icons.add,
+                        color: Theme.of(context).colorScheme.secondary),
+                    label: Text(
+                      AppLocalizations.of(context)!.new_topic,
                       style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary))),
-              const SizedBox(height: 12),
+                          color: Theme.of(context).colorScheme.secondary),
+                    ),
+                  ),
+                ),
+              ),
               // Reaction Bar
               (_messages.firstOrNull?.author.id != user.id &&
                       _messages.firstOrNull?.author.id != reply.id)

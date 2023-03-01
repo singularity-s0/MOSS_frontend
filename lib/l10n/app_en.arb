@@ -45,5 +45,6 @@
     "join_waitlist": "Join the waitlist",
     "copy_all": "Copy All",
     "export_image": "Share Image",
-    "copied_to_clipboard": "Copied to clipboard"
+    "copied_to_clipboard": "Copied to clipboard",
+    "sensitive_check": "Sensitive Content Check"
 }

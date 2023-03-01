@@ -39,6 +39,8 @@ class User {
   String nickname;
   String phone;
   bool share_consent;
+  bool? is_admin;
+  bool? disable_sensitive_check;
   List<ChatThread>? chats;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

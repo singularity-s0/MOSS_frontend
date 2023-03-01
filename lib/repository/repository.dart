@@ -184,6 +184,12 @@ class Repository {
         data: {"share_consent": value});
   }
 
+  Future<void> setDisableSensitiveCheck(bool value) async {
+    await dio.put("$baseUrl/users/me",
+        options: Options(headers: _tokenHeader),
+        data: {"disable_sensitive_check": value});
+  }
+
   Future<RepositoryConfig?> getConfiguration() async {
     final Response response = await dio.get("$baseUrl/config");
     final Map<String, dynamic> data = response.data!;

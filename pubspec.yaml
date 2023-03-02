@@ -23,7 +23,6 @@ dependencies:
   json_annotation: ^4.8.0
   shared_preferences: ^2.0.17
   local_hero: ^0.2.0
-  image_downloader_web: ^2.0.2
   web_socket_channel: ^2.3.0
   google_fonts: ^2.1.0
 

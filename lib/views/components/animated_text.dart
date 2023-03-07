@@ -131,8 +131,10 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
                       strong: boldTextStyle,
                       blockquote: bodyTextStyle,
                     ),
+                    inlineSyntaxes: [SimpleHtmlSyntax()],
                     builders: {
                       'code': CodeElementBuilder(),
+                      'html': SimpleHtmlBuilder(bodyTextStyle),
                     },
                     selectionColor:
                         Theme.of(context).textSelectionTheme.selectionColor,
@@ -159,8 +161,10 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
               strong: boldTextStyle,
               blockquote: bodyTextStyle,
             ),
+            inlineSyntaxes: [SimpleHtmlSyntax()],
             builders: {
               'code': CodeElementBuilder(),
+              'html': SimpleHtmlBuilder(bodyTextStyle),
             },
             selectionColor: Theme.of(context).textSelectionTheme.selectionColor,
           ),

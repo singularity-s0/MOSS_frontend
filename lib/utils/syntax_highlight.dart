@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -49,6 +52,49 @@ class CodeElementBuilder extends MarkdownElementBuilder {
         ),
       );
     });
+  }
+}
+
+class SimpleHtmlSyntax extends md.InlineSyntax {
+  SimpleHtmlSyntax() : super(r'<([a-z]+)>(.*?)<\/\1>', caseSensitive: false);
+
+  @override
+  bool onMatch(md.InlineParser parser, Match match) {
+    final String tag = match.group(1)!;
+    final String text = match.group(2)!;
+    final Map json = {"tag": tag, "text": text};
+    parser.addNode(md.Element.text("html", jsonEncode(json)));
+    return true;
+  }
+}
+
+class SimpleHtmlBuilder extends MarkdownElementBuilder {
+  final TextStyle style;
+
+  SimpleHtmlBuilder(this.style);
+
+  @override
+  Widget? visitElementAfter(md.Element element, TextStyle? preferredStyle) {
+    final Map json = jsonDecode(element.textContent);
+    final String tag = json["tag"];
+    final String text = json["text"];
+    switch (tag) {
+      case "sup":
+        // Transform the text into a superscript
+        return Text(
+          text,
+          style:
+              style.copyWith(fontFeatures: const [FontFeature.superscripts()]),
+        );
+      case "sub":
+        // Transform the text into a subscript
+        return Text(
+          text,
+          style: style.copyWith(fontFeatures: const [FontFeature.subscripts()]),
+        );
+      default:
+        return null;
+    }
   }
 }
 

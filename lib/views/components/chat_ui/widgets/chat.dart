@@ -1,8 +1,10 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:intl/intl.dart';
 import 'package:openchat_frontend/utils/screenshot.dart';
@@ -328,6 +330,8 @@ class ChatState extends State<Chat> {
   final Map<String, int> _autoScrollIndexById = {};
   late final AutoScrollController _scrollController;
 
+  String selectedText = '';
+
   @override
   void initState() {
     super.initState();
@@ -368,6 +372,7 @@ class ChatState extends State<Chat> {
   void dispose() {
     _galleryPageController?.dispose();
     _scrollController.dispose();
+    _chatFocusNode.dispose();
     super.dispose();
   }
 
@@ -441,6 +446,18 @@ class ChatState extends State<Chat> {
                 70));
   }
 
+  late final _chatFocusNode = FocusNode(
+    onKeyEvent: (node, event) {
+      // Capture Ctrl+C
+      if (event.logicalKey == LogicalKeyboardKey.keyC) {
+        FlutterClipboard.copy(selectedText);
+        print("Copied to clipboard: $selectedText");
+        return KeyEventResult.handled;
+      }
+      return KeyEventResult.ignored;
+    },
+  );
+
   @override
   Widget build(BuildContext context) => InheritedUser(
         user: widget.user,
@@ -467,6 +484,10 @@ class ChatState extends State<Chat> {
                                   MaterialTextSelectionControls(),
                               magnifierConfiguration:
                                   TextMagnifier.adaptiveMagnifierConfiguration,
+                              focusNode: _chatFocusNode,
+                              onSelectionChanged: (value) {
+                                selectedText = value?.plainText ?? "";
+                              },
                               child: LayoutBuilder(
                                 builder: (
                                   BuildContext context,

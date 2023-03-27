@@ -136,8 +136,7 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
                       'code': CodeElementBuilder(),
                       'html': SimpleHtmlBuilder(bodyTextStyle),
                     },
-                    selectionColor:
-                        Theme.of(context).textSelectionTheme.selectionColor,
+                    selectable: true,
                   ),
                 ));
           });
@@ -152,6 +151,7 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: MarkdownBody(
+            selectable: true,
             softLineBreak: true,
             data:
                 widget.message.metadata!['currentText'] ?? widget.message.text,
@@ -166,7 +166,6 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
               'code': CodeElementBuilder(),
               'html': SimpleHtmlBuilder(bodyTextStyle),
             },
-            selectionColor: Theme.of(context).textSelectionTheme.selectionColor,
           ),
         ),
       );

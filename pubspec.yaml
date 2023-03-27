@@ -13,9 +13,9 @@ dependencies:
     sdk: flutter
   intl: any
   
-  flutter_markdown: ^0.6.14
-    # git:
-    #   url: https://github.com/singularity-s0/flutter_markdown_selectable.git
+  flutter_markdown:
+    git:
+      url: https://github.com/singularity-s0/flutter_markdown_selectable.git
   provider: ^6.0.5
   clipboard: ^0.1.3
   dio: ^4.0.6

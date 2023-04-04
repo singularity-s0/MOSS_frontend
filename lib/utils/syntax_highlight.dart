@@ -100,9 +100,10 @@ class SimpleHtmlBuilder extends MarkdownElementBuilder {
     switch (tag) {
       case "sup":
         // Transform the text into a superscript
-        return Text.rich(
-          TextSpan(text: "${numToSuperscript(text)} ", style: style),
-        );
+        return const Text.rich(TextSpan(text: "")); // Temporarily disabled
+      // return Text.rich(
+      //   TextSpan(text: "${numToSuperscript(text)} ", style: style),
+      // );
       case "tooltip":
         // Transform the text into a tooltip
         return Tooltip(

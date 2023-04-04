@@ -73,6 +73,15 @@ class _ChatViewState extends State<ChatView> {
               record.request.substring(0, min(30, record.request.length));
         }
         widget.topic.records!.add(record);
+        if (record.extra_data != null) {
+          String ref = "**References:**\n";
+          // Add search reference
+          for (var key in record.extra_data!.keys) {
+            ref +=
+                "\n- [$key: ${record.extra_data![key]['title']}](${record.extra_data![key]['url']})";
+          }
+          _messages.first.metadata!['ref'] = ref;
+        }
         if (mounted) {
           setState(() {
             _messages.first.metadata!['currentText'] = record.response;
@@ -583,7 +592,7 @@ class _ChatViewState extends State<ChatView> {
                                 animate: msg.author.id == reply.id),
                           ),
                         ),
-                      MarkdownBody(data: msg.metadata?["results"] ?? "")
+                      MarkdownBody(data: msg.metadata?["ref"] ?? "")
                     ],
           );
         },

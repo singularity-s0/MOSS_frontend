@@ -37,6 +37,7 @@ ChatRecord _$ChatRecordFromJson(Map<String, dynamic> json) => ChatRecord(
       created_at: json['created_at'] as String,
       request: json['request'] as String,
       response: json['response'] as String,
+      extra_data: json['extra_data'] as Map<String, dynamic>?,
     );
 
 Map<String, dynamic> _$ChatRecordToJson(ChatRecord instance) =>
@@ -48,6 +49,7 @@ Map<String, dynamic> _$ChatRecordToJson(ChatRecord instance) =>
       'created_at': instance.created_at,
       'request': instance.request,
       'response': instance.response,
+      'extra_data': instance.extra_data,
     };
 
 WSInferResponse _$WSInferResponseFromJson(Map<String, dynamic> json) =>

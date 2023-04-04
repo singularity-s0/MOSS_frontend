@@ -99,7 +99,6 @@ class SimpleHtmlBuilder extends MarkdownElementBuilder {
     switch (tag) {
       case "sup":
         // Transform the text into a superscript
-        // FIXME: this only works with html renderer, not canvaskit
         return Text.rich(
           TextSpan(text: "${numToSuperscript(text)} ", style: style),
         );

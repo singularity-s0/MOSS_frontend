@@ -38,6 +38,7 @@ class ChatRecord {
   String created_at;
   String request;
   String response;
+  Map<String, dynamic>? extra_data;
 
   factory ChatRecord.fromJson(Map<String, dynamic> json) =>
       _$ChatRecordFromJson(json);
@@ -51,7 +52,8 @@ class ChatRecord {
       required this.like_data,
       required this.created_at,
       required this.request,
-      required this.response});
+      required this.response,
+      this.extra_data});
 }
 
 @JsonSerializable()

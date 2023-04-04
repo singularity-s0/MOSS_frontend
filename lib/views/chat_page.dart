@@ -105,7 +105,7 @@ class _ChatViewState extends State<ChatView> {
         }
       },
       onReceive: (event) {
-        final String? innerThoughts =
+        String? innerThoughts =
             RegExp(r"<\|Inner Thoughts\|>: (.*?)<(eot|eom)>")
                 .firstMatch(event)
                 ?.group(1);
@@ -113,13 +113,17 @@ class _ChatViewState extends State<ChatView> {
             .firstMatch(event)
             ?.group(1)
             ?.split(', ');
-        if (commands?[0] == "None") {
+        if (innerThoughts?.toLowerCase() == "none") {
+          innerThoughts = null;
+        }
+        if (commands?[0].toLowerCase() == "none") {
           commands?.clear();
         }
         final String? results =
             RegExp(r"<\|Results\|>: (.*?)<eor>").firstMatch(event)?.group(1);
         int mossIndex = event.indexOf("<|MOSS|>: ");
-        int mossEndIndex = event.indexOf("<eom>");
+        int mossEndIndex =
+            mossIndex == -1 ? -1 : event.indexOf("<eom>", mossIndex);
         if (mossEndIndex == -1) {
           mossEndIndex = event.length;
         }

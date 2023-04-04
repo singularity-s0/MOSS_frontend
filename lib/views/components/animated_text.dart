@@ -140,24 +140,22 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
                         inlineSyntaxes: [SimpleSTXHtmlSyntax()],
                         builders: {
                           'code': CodeElementBuilder(),
-                          'html': SimpleHtmlBuilder(bodyTextStyle),
+                          'html': SimpleHtmlBuilder(bodyTextStyle.copyWith(
+                              color: theme.primaryColor)),
                         },
                         selectionColor:
                             Theme.of(context).textSelectionTheme.selectionColor,
                       ),
                       if (widget.message.metadata?["innerThoughts"] != null)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Tooltip(
+                        Align(
+                            alignment: Alignment.bottomRight,
+                            child: Tooltip(
                               message:
                                   widget.message.metadata!["innerThoughts"],
                               child: Icon(Icons.lightbulb_outlined,
                                   size: 16,
                                   color: Theme.of(context).primaryColor),
-                            )
-                          ],
-                        )
+                            ))
                     ],
                   ),
                 ));
@@ -195,16 +193,13 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
                     Theme.of(context).textSelectionTheme.selectionColor,
               ),
               if (widget.message.metadata?["innerThoughts"] != null)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Tooltip(
+                Align(
+                    alignment: Alignment.bottomRight,
+                    child: Tooltip(
                       message: widget.message.metadata!["innerThoughts"],
                       child: Icon(Icons.lightbulb_outlined,
                           size: 16, color: Theme.of(context).primaryColor),
-                    )
-                  ],
-                )
+                    ))
             ],
           ),
         ),

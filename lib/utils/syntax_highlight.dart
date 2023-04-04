@@ -69,6 +69,23 @@ class SimpleSTXHtmlSyntax extends md.InlineSyntax {
   }
 }
 
+String numToSuperscript(String num) {
+  // Use unicode superscript characters
+  final superscript = {
+    '0': '\u2070',
+    '1': '\u00B9',
+    '2': '\u00B2',
+    '3': '\u00B3',
+    '4': '\u2074',
+    '5': '\u2075',
+    '6': '\u2076',
+    '7': '\u2077',
+    '8': '\u2078',
+    '9': '\u2079',
+  };
+  return num.split('').map((e) => superscript[e] ?? e).join();
+}
+
 class SimpleHtmlBuilder extends MarkdownElementBuilder {
   final TextStyle style;
 
@@ -84,20 +101,7 @@ class SimpleHtmlBuilder extends MarkdownElementBuilder {
         // Transform the text into a superscript
         // FIXME: this only works with html renderer, not canvaskit
         return Text.rich(
-          TextSpan(
-            text: text,
-            style: style
-                .copyWith(fontFeatures: const [FontFeature.superscripts()]),
-          ),
-        );
-      case "sub":
-        // Transform the text into a subscript
-        return Text.rich(
-          TextSpan(
-            text: text,
-            style: style
-                .copyWith(fontFeatures: const [FontFeature.superscripts()]),
-          ),
+          TextSpan(text: "${numToSuperscript(text)} ", style: style),
         );
       case "tooltip":
         // Transform the text into a tooltip

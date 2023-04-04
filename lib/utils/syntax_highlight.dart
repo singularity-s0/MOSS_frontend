@@ -73,9 +73,21 @@ class CodeElementBuilder extends MarkdownElementBuilder {
   }
 }
 
-class SimpleSTXHtmlSyntax extends md.InlineSyntax {
-  SimpleSTXHtmlSyntax()
-      : super(r'<([a-z]+)><\|(.*?)\|><\/\1>', caseSensitive: false);
+class STXHtmlSyntax extends md.InlineSyntax {
+  STXHtmlSyntax() : super(r'<([a-z]+)><\|(.*?)\|><\/\1>', caseSensitive: false);
+
+  @override
+  bool onMatch(md.InlineParser parser, Match match) {
+    final String tag = match.group(1)!;
+    final String text = match.group(2)!;
+    final Map json = {"tag": tag, "text": text};
+    parser.addNode(md.Element.text("html", jsonEncode(json)));
+    return true;
+  }
+}
+
+class SimpleHtmlSyntax extends md.InlineSyntax {
+  SimpleHtmlSyntax() : super(r'<([a-z]+)>(.*?)<\/\1>', caseSensitive: false);
 
   @override
   bool onMatch(md.InlineParser parser, Match match) {
@@ -104,6 +116,11 @@ String numToSuperscript(String num) {
   return num.split('').map((e) => superscript[e] ?? e).join();
 }
 
+Map<String, String> commandToIcon = {
+  "Search": "<search></search>",
+  "搜索": "<search></search>",
+};
+
 class SimpleHtmlBuilder extends MarkdownElementBuilder {
   final TextStyle style;
 
@@ -127,6 +144,8 @@ class SimpleHtmlBuilder extends MarkdownElementBuilder {
           message: text,
           child: const Icon(Icons.info_outline),
         );
+      case "search":
+        return const Icon(Icons.search, size: 16);
       default:
         return null;
     }

@@ -11,6 +11,7 @@ import 'package:local_hero/local_hero.dart';
 import 'package:openchat_frontend/model/chat.dart';
 import 'package:openchat_frontend/repository/repository.dart';
 import 'package:openchat_frontend/utils/dialog.dart';
+import 'package:openchat_frontend/utils/syntax_highlight.dart';
 import 'package:openchat_frontend/views/components/animated_text.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:openchat_frontend/views/components/chat_ui/flutter_chat_ui.dart';
@@ -590,7 +591,15 @@ class _ChatViewState extends State<ChatView> {
                       if (match == null) return MarkdownBody(data: "- $e");
                       final command = match.group(1);
                       final args = match.group(2);
-                      return MarkdownBody(data: "- $command **$args**");
+                      final prefix = commandToIcon[command] ?? "-";
+                      return MarkdownBody(
+                        data: "$prefix $command **$args**",
+                        inlineSyntaxes: [SimpleHtmlSyntax()],
+                        builders: {
+                          "html": SimpleHtmlBuilder(
+                              DefaultTextStyle.of(context).style),
+                        },
+                      );
                     }).toList() ??
                     <Widget>[]) +
                 <Widget>[

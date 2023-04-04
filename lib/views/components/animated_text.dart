@@ -140,7 +140,7 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
                         ),
                         onTapLink: (text, href, title) =>
                             launchUrlString(href!),
-                        inlineSyntaxes: [SimpleSTXHtmlSyntax()],
+                        inlineSyntaxes: [STXHtmlSyntax()],
                         builders: {
                           'code': CodeElementBuilder(),
                           'html': SimpleHtmlBuilder(bodyTextStyle.copyWith(
@@ -187,7 +187,7 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
                   strong: boldTextStyle,
                   blockquote: bodyTextStyle,
                 ),
-                inlineSyntaxes: [SimpleSTXHtmlSyntax()],
+                inlineSyntaxes: [STXHtmlSyntax()],
                 onTapLink: (text, href, title) => launchUrlString(href!),
                 builders: {
                   'code': CodeElementBuilder(),

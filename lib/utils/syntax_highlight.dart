@@ -18,15 +18,15 @@ class CodeElementBuilder extends MarkdownElementBuilder {
     }
 
     const codeTheme = githubTheme;
+    final multiline = element.textContent.contains('\n');
 
     return LayoutBuilder(builder: (context, constraints) {
-      return SizedBox(
-        width: constraints.maxWidth,
-        child: ColoredBox(
-          color: codeTheme['root']!.backgroundColor!,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+      return ColoredBox(
+        color: codeTheme['root']!.backgroundColor!,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (multiline)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: TextButton.icon(
@@ -38,17 +38,18 @@ class CodeElementBuilder extends MarkdownElementBuilder {
                     icon: const Icon(Icons.copy, size: 12),
                     label: const Text('Copy', style: TextStyle(fontSize: 12))),
               ),
-              SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: HighlightView(element.textContent.trim(),
-                      language: language,
-                      // All available themes are listed in `themes` folder
-                      theme: codeTheme,
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                      textStyle: GoogleFonts.sourceCodePro(
-                          fontSize: 14, color: codeTheme['root']!.color!))),
-            ],
-          ),
+            SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: HighlightView(element.textContent,
+                    language: language,
+                    // All available themes are listed in `themes` folder
+                    theme: codeTheme,
+                    padding: multiline
+                        ? const EdgeInsets.fromLTRB(16, 0, 16, 12)
+                        : const EdgeInsets.symmetric(horizontal: 4),
+                    textStyle: GoogleFonts.sourceCodePro(
+                        fontSize: 14, color: codeTheme['root']!.color!))),
+          ],
         ),
       );
     });

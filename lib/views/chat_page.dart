@@ -160,7 +160,7 @@ class _ChatViewState extends State<ChatView> {
         }
         final String? moss = mossIndex == -1
             ? null
-            : event.substring(mossIndex + 10, mossEndIndex);
+            : event.substring(mossIndex + 10, mossEndIndex).trim();
 
         if (isFirstResponse) {
           isFirstResponse = false;

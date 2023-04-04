@@ -46,11 +46,20 @@ class WebSocketChatManager {
         wsTimer = Timer(wsTimeout, onTimeout);
         try {
           if (expectRecord) {
-            ChatRecord record = ChatRecord.fromJson(json.decode(message));
-            onAddRecord?.call(record);
-            expectRecord = false;
-            wsTimer?.cancel();
-            ended = true;
+            try {
+              ChatRecord record = ChatRecord.fromJson(json.decode(message));
+              onAddRecord?.call(record);
+              expectRecord = false;
+              wsTimer?.cancel();
+              ended = true;
+              try {
+                await channel!.sink.close();
+              } catch (_) {}
+              channel = null;
+            } catch (_) {
+              onError
+                  ?.call("An unexpected response was received from the server");
+            }
             try {
               await channel!.sink.close();
             } catch (_) {}

@@ -37,7 +37,7 @@ ChatRecord _$ChatRecordFromJson(Map<String, dynamic> json) => ChatRecord(
       created_at: json['created_at'] as String,
       request: json['request'] as String,
       response: json['response'] as String,
-      extra_data: json['extra_data'] as Map<String, dynamic>?,
+      extra_data: json['extra_data'] as List<dynamic>?,
     );
 
 Map<String, dynamic> _$ChatRecordToJson(ChatRecord instance) =>

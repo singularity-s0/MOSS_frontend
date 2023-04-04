@@ -38,7 +38,7 @@ class ChatRecord {
   String created_at;
   String request;
   String response;
-  Map<String, dynamic>? extra_data;
+  List<dynamic>? extra_data;
 
   factory ChatRecord.fromJson(Map<String, dynamic> json) =>
       _$ChatRecordFromJson(json);

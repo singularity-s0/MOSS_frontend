@@ -76,11 +76,34 @@ class _ChatViewState extends State<ChatView> {
         if (record.extra_data != null) {
           String ref = "**References:**\n";
           // Add search reference
-          for (var key in record.extra_data!.keys) {
-            ref +=
-                "\n- [$key: ${record.extra_data![key]['title']}](${record.extra_data![key]['url']})";
+          for (var entry in record.extra_data!) {
+            // There are 3 types of extra_data. We need to detect and process respectively.
+            try {
+              var title, url;
+              if (entry is Map && entry.containsKey('data')) {
+                if (entry['data'] is Map && entry['data'].containsKey('summ')) {
+                  title = entry['data']['summ']['title'];
+                  url = entry['data']['url'];
+                  ref += "\n- [$title]($url)";
+                } else {
+                  for (var key in entry['data'].keys) {
+                    title = entry['data'][key]['title'];
+                    url = entry['data'][key]['url'];
+                    ref += "\n- [$title]($url)";
+                  }
+                }
+              } else {
+                for (var key in entry.keys) {
+                  title = entry[key]['title'];
+                  url = entry[key]['url'];
+                  ref += "\n- [$title]($url)";
+                }
+              }
+            } catch (_) {}
           }
-          _messages.first.metadata!['ref'] = ref;
+          if (ref != "**References:**\n") {
+            _messages.first.metadata!['ref'] = ref;
+          }
         }
         if (mounted) {
           setState(() {
@@ -121,12 +144,11 @@ class _ChatViewState extends State<ChatView> {
         final List<String>? commands = RegExp(r"<\|Commands\|>: (.*?)<eoc>")
             .firstMatch(event)
             ?.group(1)
-            ?.split(', ');
-        if (innerThoughts?.toLowerCase() == "none") {
+            ?.split(', ')
+            .where((element) => element.toLowerCase().trim() != 'none')
+            .toList();
+        if (innerThoughts?.toLowerCase().trim() == "none") {
           innerThoughts = null;
-        }
-        if (commands?[0].toLowerCase() == "none") {
-          commands?.clear();
         }
         final String? results =
             RegExp(r"<\|Results\|>: (.*?)<eor>").firstMatch(event)?.group(1);
@@ -562,38 +584,40 @@ class _ChatViewState extends State<ChatView> {
           return Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children:
-                ((msg.metadata?["commands"] as List<String>?)?.map<Widget>((e) {
-                          final match =
-                              RegExp(r'(.*?)\("(.*?)"\)').firstMatch(e);
-                          if (match == null) return MarkdownBody(data: "- $e");
-                          final command = match.group(1);
-                          final args = match.group(2);
-                          return MarkdownBody(data: "- $command **$args**");
-                        }).toList() ??
-                        <Widget>[]) +
-                    <Widget>[
-                      if (msg.text.isNotEmpty ||
-                          msg.metadata?["currentText"]?.isNotEmpty == true)
-                        Container(
-                          margin: const EdgeInsets.only(top: 8, bottom: 8),
-                          decoration: BoxDecoration(
-                            borderRadius: borderRadius,
-                            color: !currentUserIsAuthor ||
-                                    msg.type == types.MessageType.image
-                                ? chatTheme.secondaryColor
-                                : chatTheme.primaryColor,
-                          ),
-                          child: ClipRRect(
-                            borderRadius: borderRadius,
-                            child: AnimatedTextMessage(
-                                message: msg,
-                                speed: 20,
-                                animate: msg.author.id == reply.id),
-                          ),
-                        ),
-                      MarkdownBody(data: msg.metadata?["ref"] ?? "")
-                    ],
+            children: ((msg.metadata?["commands"] as List<String>?)
+                        ?.map<Widget>((e) {
+                      final match = RegExp(r'(.*?)\("(.*?)"\)').firstMatch(e);
+                      if (match == null) return MarkdownBody(data: "- $e");
+                      final command = match.group(1);
+                      final args = match.group(2);
+                      return MarkdownBody(data: "- $command **$args**");
+                    }).toList() ??
+                    <Widget>[]) +
+                <Widget>[
+                  if (msg.text.isNotEmpty ||
+                      msg.metadata?["currentText"]?.isNotEmpty == true)
+                    Container(
+                      margin: const EdgeInsets.only(top: 8, bottom: 8),
+                      decoration: BoxDecoration(
+                        borderRadius: borderRadius,
+                        color: !currentUserIsAuthor ||
+                                msg.type == types.MessageType.image
+                            ? chatTheme.secondaryColor
+                            : chatTheme.primaryColor,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: borderRadius,
+                        child: AnimatedTextMessage(
+                            message: msg,
+                            speed: 20,
+                            animate: msg.author.id == reply.id),
+                      ),
+                    ),
+                  MarkdownBody(
+                    data: msg.metadata?["ref"] ?? "",
+                    onTapLink: (text, href, title) => launchUrlString(href!),
+                  )
+                ],
           );
         },
       ),

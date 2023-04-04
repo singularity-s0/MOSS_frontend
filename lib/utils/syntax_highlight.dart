@@ -55,8 +55,9 @@ class CodeElementBuilder extends MarkdownElementBuilder {
   }
 }
 
-class SimpleHtmlSyntax extends md.InlineSyntax {
-  SimpleHtmlSyntax() : super(r'<([a-z]+)>(.*?)<\/\1>', caseSensitive: false);
+class SimpleSTXHtmlSyntax extends md.InlineSyntax {
+  SimpleSTXHtmlSyntax()
+      : super(r'<([a-z]+)><\|(.*?)\|><\/\1>', caseSensitive: false);
 
   @override
   bool onMatch(md.InlineParser parser, Match match) {
@@ -82,16 +83,27 @@ class SimpleHtmlBuilder extends MarkdownElementBuilder {
       case "sup":
         // Transform the text into a superscript
         // FIXME: this only works with html renderer, not canvaskit
-        return Text(
-          text,
-          style:
-              style.copyWith(fontFeatures: const [FontFeature.superscripts()]),
+        return Text.rich(
+          TextSpan(
+            text: text,
+            style: style
+                .copyWith(fontFeatures: const [FontFeature.superscripts()]),
+          ),
         );
       case "sub":
         // Transform the text into a subscript
-        return Text(
-          text,
-          style: style.copyWith(fontFeatures: const [FontFeature.subscripts()]),
+        return Text.rich(
+          TextSpan(
+            text: text,
+            style: style
+                .copyWith(fontFeatures: const [FontFeature.superscripts()]),
+          ),
+        );
+      case "tooltip":
+        // Transform the text into a tooltip
+        return Tooltip(
+          message: text,
+          child: const Icon(Icons.info_outline),
         );
       default:
         return null;

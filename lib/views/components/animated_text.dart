@@ -102,15 +102,17 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
       return AnimatedBuilder(
           animation: _characterLocation,
           builder: (context, child) {
-            var submessage =
-                (widget.message.metadata!['currentText'] ?? widget.message.text)
-                    .substring(
-                        0,
-                        min<int>(
-                            _characterLocation.value,
-                            (widget.message.metadata!['currentText'] ??
-                                    widget.message.text)
-                                .length));
+            var submessage = (widget.message.metadata!['currentText'] ??
+                    widget.message.text ??
+                    "")
+                .substring(
+                    0,
+                    min<int>(
+                        _characterLocation.value,
+                        (widget.message.metadata!['currentText'] ??
+                                widget.message.text ??
+                                "")
+                            .length));
             widget.message.metadata!['animatedIndex'] =
                 _characterLocation.value;
             return Theme(
@@ -122,22 +124,41 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
                 )),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: MarkdownBody(
-                    softLineBreak: true,
-                    data: submessage,
-                    styleSheet: MarkdownStyleSheet(
-                      p: bodyTextStyle,
-                      a: bodyLinkTextStyle,
-                      strong: boldTextStyle,
-                      blockquote: bodyTextStyle,
-                    ),
-                    inlineSyntaxes: [SimpleHtmlSyntax()],
-                    builders: {
-                      'code': CodeElementBuilder(),
-                      'html': SimpleHtmlBuilder(bodyTextStyle),
-                    },
-                    selectionColor:
-                        Theme.of(context).textSelectionTheme.selectionColor,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      MarkdownBody(
+                        softLineBreak: true,
+                        data: submessage,
+                        styleSheet: MarkdownStyleSheet(
+                          p: bodyTextStyle,
+                          a: bodyLinkTextStyle,
+                          strong: boldTextStyle,
+                          blockquote: bodyTextStyle,
+                        ),
+                        inlineSyntaxes: [SimpleSTXHtmlSyntax()],
+                        builders: {
+                          'code': CodeElementBuilder(),
+                          'html': SimpleHtmlBuilder(bodyTextStyle),
+                        },
+                        selectionColor:
+                            Theme.of(context).textSelectionTheme.selectionColor,
+                      ),
+                      if (widget.message.metadata?["innerThoughts"] != null)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Tooltip(
+                              message:
+                                  widget.message.metadata!["innerThoughts"],
+                              child: Icon(Icons.lightbulb_outlined,
+                                  size: 16,
+                                  color: Theme.of(context).primaryColor),
+                            )
+                          ],
+                        )
+                    ],
                   ),
                 ));
           });
@@ -151,22 +172,40 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
         )),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: MarkdownBody(
-            softLineBreak: true,
-            data:
-                widget.message.metadata!['currentText'] ?? widget.message.text,
-            styleSheet: MarkdownStyleSheet(
-              p: bodyTextStyle,
-              a: bodyLinkTextStyle,
-              strong: boldTextStyle,
-              blockquote: bodyTextStyle,
-            ),
-            inlineSyntaxes: [SimpleHtmlSyntax()],
-            builders: {
-              'code': CodeElementBuilder(),
-              'html': SimpleHtmlBuilder(bodyTextStyle),
-            },
-            selectionColor: Theme.of(context).textSelectionTheme.selectionColor,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              MarkdownBody(
+                softLineBreak: true,
+                data: widget.message.metadata!['currentText'] ??
+                    widget.message.text,
+                styleSheet: MarkdownStyleSheet(
+                  p: bodyTextStyle,
+                  a: bodyLinkTextStyle,
+                  strong: boldTextStyle,
+                  blockquote: bodyTextStyle,
+                ),
+                inlineSyntaxes: [SimpleSTXHtmlSyntax()],
+                builders: {
+                  'code': CodeElementBuilder(),
+                  'html': SimpleHtmlBuilder(bodyTextStyle),
+                },
+                selectionColor:
+                    Theme.of(context).textSelectionTheme.selectionColor,
+              ),
+              if (widget.message.metadata?["innerThoughts"] != null)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Tooltip(
+                      message: widget.message.metadata!["innerThoughts"],
+                      child: Icon(Icons.lightbulb_outlined,
+                          size: 16, color: Theme.of(context).primaryColor),
+                    )
+                  ],
+                )
+            ],
           ),
         ),
       );

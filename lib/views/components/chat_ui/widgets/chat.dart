@@ -7,7 +7,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:intl/intl.dart';
-import 'package:openchat_frontend/utils/screenshot.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../chat_l10n.dart';
@@ -394,64 +393,11 @@ class ChatState extends State<Chat> {
         duration: duration ?? scrollAnimationDuration,
       );
 
-  Future<Uint8List> takeScreenshot() {
-    ScreenshotController _c = ScreenshotController();
-    return _c.captureFromWidget(
-        InheritedUser(
-          user: widget.user,
-          child: InheritedChatTheme(
-            theme: widget.theme,
-            child: InheritedL10n(
-              l10n: widget.l10n,
-              child: Container(
-                color: widget.theme.backgroundColor,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      child: Image.asset('assets/images/logo.webp', scale: 6.5),
-                    ),
-                    Expanded(
-                      child: LayoutBuilder(
-                        builder: (
-                          BuildContext context,
-                          BoxConstraints constraints,
-                        ) =>
-                            ChatList(
-                                itemBuilder: (Object item, int? index) =>
-                                    _messageBuilder(
-                                      item,
-                                      constraints,
-                                      index,
-                                    ),
-                                items: _chatMessages,
-                                scrollController: ScrollController(),
-                                scrollPhysics:
-                                    const NeverScrollableScrollPhysics(),
-                                useTopSafeAreaInset: false),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-        context: context,
-        pixelRatio: 2,
-        targetSize: Size(
-            800,
-            _scrollController.position.maxScrollExtent +
-                _scrollController.position.viewportDimension +
-                70));
-  }
-
   late final _chatFocusNode = FocusNode(
     onKeyEvent: (node, event) {
       // Capture Ctrl+C
       if (event.logicalKey == LogicalKeyboardKey.keyC) {
         FlutterClipboard.copy(selectedText);
-        print("Copied to clipboard: $selectedText");
         return KeyEventResult.handled;
       }
       return KeyEventResult.ignored;

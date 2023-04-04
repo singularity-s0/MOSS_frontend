@@ -11,7 +11,7 @@ class WebSocketChatManager {
   final JWToken token;
   WebSocketChannel? channel;
 
-  static const Duration wsTimeout = Duration(seconds: 32);
+  static const Duration wsTimeout = Duration(seconds: 64);
   Timer? wsTimer;
   void onTimeout() async {
     onError?.call("Connection Timeout");

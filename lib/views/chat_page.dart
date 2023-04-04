@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:openchat_frontend/main.dart';
 import 'package:openchat_frontend/repository/ws_chat_manager.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
@@ -13,6 +14,7 @@ import 'package:openchat_frontend/utils/dialog.dart';
 import 'package:openchat_frontend/views/components/animated_text.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:openchat_frontend/views/components/chat_ui/flutter_chat_ui.dart';
+import 'package:openchat_frontend/views/components/chat_ui/widgets/state/inherited_chat_theme.dart';
 import 'package:openchat_frontend/views/components/delay_show_button.dart';
 import 'package:openchat_frontend/views/components/intro.dart';
 import 'package:openchat_frontend/views/components/typing_indicator.dart';
@@ -71,6 +73,11 @@ class _ChatViewState extends State<ChatView> {
               record.request.substring(0, min(30, record.request.length));
         }
         widget.topic.records!.add(record);
+        if (mounted) {
+          setState(() {
+            _messages.first.metadata!['currentText'] = record.response;
+          });
+        }
       },
       onDone: () {
         if (mounted) {
@@ -98,6 +105,28 @@ class _ChatViewState extends State<ChatView> {
         }
       },
       onReceive: (event) {
+        final String? innerThoughts =
+            RegExp(r"<\|Inner Thoughts\|>: (.*?)<(eot|eom)>")
+                .firstMatch(event)
+                ?.group(1);
+        final List<String>? commands = RegExp(r"<\|Commands\|>: (.*?)<eoc>")
+            .firstMatch(event)
+            ?.group(1)
+            ?.split(', ');
+        if (commands?[0] == "None") {
+          commands?.clear();
+        }
+        final String? results =
+            RegExp(r"<\|Results\|>: (.*?)<eor>").firstMatch(event)?.group(1);
+        int mossIndex = event.indexOf("<|MOSS|>: ");
+        int mossEndIndex = event.indexOf("<eom>");
+        if (mossEndIndex == -1) {
+          mossEndIndex = event.length;
+        }
+        final String? moss = mossIndex == -1
+            ? null
+            : event.substring(mossIndex + 10, mossEndIndex);
+
         if (isFirstResponse) {
           isFirstResponse = false;
           if (mounted) {
@@ -106,9 +135,15 @@ class _ChatViewState extends State<ChatView> {
                   0,
                   types.TextMessage(
                       author: reply,
-                      text: event,
+                      text: moss ?? "",
                       // ignore: prefer_const_literals_to_create_immutables
-                      metadata: {'animatedIndex': 0, 'currentText': event},
+                      metadata: {
+                        'animatedIndex': 0,
+                        'currentText': moss ?? "",
+                        'innerThoughts': innerThoughts,
+                        'commands': commands,
+                        'results': results
+                      },
                       id: _messages.length.toString(),
                       type: types.MessageType.text));
             });
@@ -116,7 +151,13 @@ class _ChatViewState extends State<ChatView> {
         } else {
           if (mounted) {
             setState(() {
-              _messages.first.metadata!['currentText'] = event;
+              _messages.first.metadata!['currentText'] = moss;
+              _messages.first.metadata!['innerThoughts'] =
+                  innerThoughts ?? _messages.first.metadata!['innerThoughts'];
+              _messages.first.metadata!['commands'] =
+                  commands ?? _messages.first.metadata!['commands'];
+              _messages.first.metadata!['results'] =
+                  results ?? _messages.first.metadata!['results'];
             });
           }
         }
@@ -216,6 +257,20 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   Widget build(BuildContext context) {
+    final chatTheme = DefaultChatTheme(
+      primaryColor: themeColor,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      inputBackgroundColor: Theme.of(context).colorScheme.secondary,
+      inputTextCursorColor: Theme.of(context).colorScheme.onSecondary,
+      inputTextColor: Theme.of(context).colorScheme.onSecondary,
+      inputBorderRadius: const BorderRadius.all(Radius.circular(8)),
+      inputMargin: EdgeInsets.only(
+          left: 16,
+          right: 16,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 16),
+      sentMessageSelectionColor: const Color(0x7fdda0dd),
+      receivedMessageSelectionColor: null,
+    );
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -252,20 +307,7 @@ class _ChatViewState extends State<ChatView> {
         inputOptions: const InputOptions(
             inputClearMode: InputClearMode.never,
             sendButtonVisibilityMode: SendButtonVisibilityMode.always),
-        theme: DefaultChatTheme(
-          primaryColor: themeColor,
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          inputBackgroundColor: Theme.of(context).colorScheme.secondary,
-          inputTextCursorColor: Theme.of(context).colorScheme.onSecondary,
-          inputTextColor: Theme.of(context).colorScheme.onSecondary,
-          inputBorderRadius: const BorderRadius.all(Radius.circular(8)),
-          inputMargin: EdgeInsets.only(
-              left: 16,
-              right: 16,
-              bottom: MediaQuery.of(context).viewInsets.bottom + 16),
-          sentMessageSelectionColor: const Color(0x7fdda0dd),
-          receivedMessageSelectionColor: null,
-        ),
+        theme: chatTheme,
         emptyState: shouldUseLargeLogo
             ? MossIntroWidget(
                 heroTag:
@@ -325,7 +367,7 @@ class _ChatViewState extends State<ChatView> {
             children: [
               // New Topic Button
               DelayShowWidget(
-                delay: const Duration(seconds: 5),
+                delay: const Duration(seconds: 15),
                 enabled: interacted,
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 12),
@@ -489,9 +531,57 @@ class _ChatViewState extends State<ChatView> {
             ],
           ),
         ),
+        bubbleBuilder:
+            (child, {required message, required nextMessageInGroup}) => child,
         textMessageBuilder: (msg, {required messageWidth, required showName}) {
-          return AnimatedTextMessage(
-              message: msg, speed: 20, animate: msg.author.id == reply.id);
+          final messageBorderRadius = chatTheme.messageBorderRadius;
+          final currentUserIsAuthor = user.id == msg.author.id;
+          final borderRadius = BorderRadiusDirectional.only(
+            bottomEnd: Radius.circular(
+              !currentUserIsAuthor ? messageBorderRadius : 0,
+            ),
+            bottomStart: Radius.circular(
+              currentUserIsAuthor ? messageBorderRadius : 0,
+            ),
+            topEnd: Radius.circular(messageBorderRadius),
+            topStart: Radius.circular(messageBorderRadius),
+          );
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children:
+                ((msg.metadata?["commands"] as List<String>?)?.map<Widget>((e) {
+                          final match =
+                              RegExp(r'(.*?)\("(.*?)"\)').firstMatch(e);
+                          if (match == null) return MarkdownBody(data: "- $e");
+                          final command = match.group(1);
+                          final args = match.group(2);
+                          return MarkdownBody(data: "- $command **$args**");
+                        }).toList() ??
+                        <Widget>[]) +
+                    <Widget>[
+                      if (msg.text.isNotEmpty ||
+                          msg.metadata?["currentText"]?.isNotEmpty == true)
+                        Container(
+                          margin: const EdgeInsets.only(top: 8, bottom: 8),
+                          decoration: BoxDecoration(
+                            borderRadius: borderRadius,
+                            color: !currentUserIsAuthor ||
+                                    msg.type == types.MessageType.image
+                                ? chatTheme.secondaryColor
+                                : chatTheme.primaryColor,
+                          ),
+                          child: ClipRRect(
+                            borderRadius: borderRadius,
+                            child: AnimatedTextMessage(
+                                message: msg,
+                                speed: 20,
+                                animate: msg.author.id == reply.id),
+                          ),
+                        ),
+                      MarkdownBody(data: msg.metadata?["results"] ?? "")
+                    ],
+          );
         },
       ),
     );

@@ -368,7 +368,7 @@ class _ChatViewState extends State<ChatView> {
               // New Topic Button
               DelayShowWidget(
                 delay: const Duration(seconds: 15),
-                enabled: interacted,
+                enabled: interacted && !isStreamingResponse,
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: OutlinedButton.icon(

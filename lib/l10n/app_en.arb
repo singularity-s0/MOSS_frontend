@@ -46,5 +46,6 @@
     "copy_all": "Copy All",
     "export_image": "Share Image",
     "copied_to_clipboard": "Copied to clipboard",
-    "sensitive_check": "Sensitive Content Check"
+    "sensitive_check": "Sensitive Content Check",
+    "references": "References"
 }

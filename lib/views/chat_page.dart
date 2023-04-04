@@ -74,7 +74,7 @@ class _ChatViewState extends State<ChatView> {
         }
         widget.topic.records!.add(record);
         if (record.extra_data != null) {
-          String ref = "**References:**\n";
+          String ref = "**${AppLocalizations.of(context)!.references}:**\n";
           // Add search reference
           for (var entry in record.extra_data!) {
             // There are 3 types of extra_data. We need to detect and process respectively.
@@ -101,7 +101,7 @@ class _ChatViewState extends State<ChatView> {
               }
             } catch (_) {}
           }
-          if (ref != "**References:**\n") {
+          if (ref != "**${AppLocalizations.of(context)!.references}:**\n") {
             _messages.first.metadata!['ref'] = ref;
           }
         }
@@ -609,7 +609,7 @@ class _ChatViewState extends State<ChatView> {
                         borderRadius: borderRadius,
                         child: AnimatedTextMessage(
                             message: msg,
-                            speed: 20,
+                            speed: 10,
                             animate: msg.author.id == reply.id),
                       ),
                     ),

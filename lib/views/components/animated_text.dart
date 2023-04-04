@@ -7,6 +7,7 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:openchat_frontend/utils/syntax_highlight.dart';
 import 'package:openchat_frontend/views/chat_page.dart';
 import 'package:openchat_frontend/views/components/chat_ui/widgets/state/inherited_chat_theme.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class AnimatedTextMessage extends StatefulWidget {
   final types.TextMessage message;
@@ -137,6 +138,8 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
                           strong: boldTextStyle,
                           blockquote: bodyTextStyle,
                         ),
+                        onTapLink: (text, href, title) =>
+                            launchUrlString(href!),
                         inlineSyntaxes: [SimpleSTXHtmlSyntax()],
                         builders: {
                           'code': CodeElementBuilder(),
@@ -185,6 +188,7 @@ class AnimatedTextMessageState extends State<AnimatedTextMessage>
                   blockquote: bodyTextStyle,
                 ),
                 inlineSyntaxes: [SimpleSTXHtmlSyntax()],
+                onTapLink: (text, href, title) => launchUrlString(href!),
                 builders: {
                   'code': CodeElementBuilder(),
                   'html': SimpleHtmlBuilder(bodyTextStyle),

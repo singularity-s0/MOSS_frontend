@@ -402,25 +402,25 @@ class _ChatViewState extends State<ChatView> {
             mainAxisSize: MainAxisSize.min,
             children: [
               // New Topic Button
-              DelayShowWidget(
-                delay: const Duration(seconds: 15),
-                enabled: interacted && !isStreamingResponse,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      HistoryPageState.addNewTopic(null);
-                    },
-                    icon: Icon(Icons.add,
-                        color: Theme.of(context).colorScheme.secondary),
-                    label: Text(
-                      AppLocalizations.of(context)!.new_topic,
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary),
-                    ),
-                  ),
-                ),
-              ),
+              // DelayShowWidget(
+              //   delay: const Duration(seconds: 15),
+              //   enabled: interacted && !isStreamingResponse,
+              //   child: Padding(
+              //     padding: const EdgeInsets.only(bottom: 12),
+              //     child: OutlinedButton.icon(
+              //       onPressed: () {
+              //         HistoryPageState.addNewTopic(null);
+              //       },
+              //       icon: Icon(Icons.add,
+              //           color: Theme.of(context).colorScheme.secondary),
+              //       label: Text(
+              //         AppLocalizations.of(context)!.new_topic,
+              //         style: TextStyle(
+              //             color: Theme.of(context).colorScheme.secondary),
+              //       ),
+              //     ),
+              //   ),
+              // ),
               // Reaction Bar
               (_messages.firstOrNull?.author.id != user.id &&
                       _messages.firstOrNull?.author.id != reply.id)

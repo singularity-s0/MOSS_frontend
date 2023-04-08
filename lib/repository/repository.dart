@@ -11,13 +11,11 @@ class Repository {
   factory Repository.getInstance() => _instance;
 
   static String get baseUrl {
-    return "https://fudan.moss.fastnlp.top/api";
     final uri = Uri.base;
     return "${uri.scheme}://${uri.host}:${uri.port}/api";
   }
 
   static String get wsBaseUrl {
-    return "wss://fudan.moss.fastnlp.top/api/ws";
     final uri = Uri.base;
     return "${uri.scheme == "https" ? "wss" : "ws"}://${uri.host}:${uri.port}/api/ws";
   }

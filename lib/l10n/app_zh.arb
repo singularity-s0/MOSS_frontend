@@ -1,6 +1,6 @@
 {
     "app_name": "MOSS",
-    "aigc_warning_message": "MOSS 的回答均由语言模型生成，可能包含不完整、误导性的，或者错误的信息。(MOSS 版本: 0.0.3 vortex)",
+    "aigc_warning_message": "MOSS 的回答均由语言模型生成，可能包含不完整、误导性的，或者错误的信息。(MOSS 版本: 0.0.3)",
     "welcome_comma": "欢迎，",
     "sign_in_to_continue": "登录以继续",
     "sign_in": "登录",

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:openchat_frontend/model/chat.dart';
 import 'package:openchat_frontend/model/user.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
@@ -206,7 +208,7 @@ class Repository {
     }
     final bool inviteRequired = data['invite_required'];
     final String? notice = data['notice'];
-    Map<String, bool> plugin_cfg = data['default_plugin_config'];
+    Map<String, bool> plugin_cfg = Map.from(data['default_plugin_config']);
     return RepositoryConfig(region, inviteRequired, notice, plugin_cfg);
   }
 
@@ -219,7 +221,8 @@ class Repository {
 
   Future<void> setPluginConfig(Map value) async {
     await dio.put("$baseUrl/users/me",
-        options: Options(headers: _tokenHeader), data: value);
+        options: Options(headers: _tokenHeader),
+        data: {"plugin_config": value});
   }
 }
 

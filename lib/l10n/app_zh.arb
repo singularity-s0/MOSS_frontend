@@ -47,5 +47,8 @@
     "export_image": "分享图片",
     "copied_to_clipboard": "已复制到剪切板",
     "sensitive_check": "敏感内容检查",
-    "references": "参考资料"
+    "references": "参考资料",
+    "plugins": "插件",
+    "i_enabled": "{i} 已启用",
+    "model": "模型"
 }

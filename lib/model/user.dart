@@ -42,6 +42,7 @@ class User {
   bool? is_admin;
   bool? disable_sensitive_check;
   List<ChatThread>? chats;
+  Map<String, dynamic> plugin_config;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
@@ -55,5 +56,6 @@ class User {
       required this.nickname,
       required this.phone,
       required this.chats,
-      required this.share_consent});
+      required this.share_consent,
+      required this.plugin_config});
 }

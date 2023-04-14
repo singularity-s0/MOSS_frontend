@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:intl/intl.dart';
+import 'package:openchat_frontend/views/components/delay_show_button.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../chat_l10n.dart';
@@ -61,6 +62,7 @@ class Chat extends StatefulWidget {
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.l10n = const ChatL10nEn(),
     this.listBottomWidget,
+    this.listTopWidget,
     required this.messages,
     this.nameBuilder,
     this.onAttachmentPressed,
@@ -205,6 +207,8 @@ class Chat extends StatefulWidget {
 
   /// Widget below the input
   final Widget? listBottomWidget;
+
+  final Widget? listTopWidget;
 
   /// List of [types.Message] to render in the chat widget.
   final List<types.Message> messages;
@@ -439,26 +443,35 @@ class ChatState extends State<Chat> {
                                   BuildContext context,
                                   BoxConstraints constraints,
                                 ) =>
-                                    ChatList(
-                                  bottomWidget: widget.listBottomWidget,
-                                  isLastPage: widget.isLastPage,
-                                  itemBuilder: (Object item, int? index) =>
-                                      _messageBuilder(
-                                    item,
-                                    constraints,
-                                    index,
+                                    Column(children: [
+                                  if (widget.listTopWidget != null)
+                                    SelectionContainer.disabled(
+                                        child: widget.listTopWidget!),
+                                  Expanded(
+                                    child: ChatList(
+                                      topWidget: widget.listTopWidget,
+                                      bottomWidget: widget.listBottomWidget,
+                                      isLastPage: widget.isLastPage,
+                                      itemBuilder: (Object item, int? index) =>
+                                          _messageBuilder(
+                                        item,
+                                        constraints,
+                                        index,
+                                      ),
+                                      items: _chatMessages,
+                                      keyboardDismissBehavior:
+                                          widget.keyboardDismissBehavior,
+                                      onEndReached: widget.onEndReached,
+                                      onEndReachedThreshold:
+                                          widget.onEndReachedThreshold,
+                                      scrollController: _scrollController,
+                                      scrollPhysics: widget.scrollPhysics,
+                                      useTopSafeAreaInset:
+                                          widget.useTopSafeAreaInset ??
+                                              isMobile,
+                                    ),
                                   ),
-                                  items: _chatMessages,
-                                  keyboardDismissBehavior:
-                                      widget.keyboardDismissBehavior,
-                                  onEndReached: widget.onEndReached,
-                                  onEndReachedThreshold:
-                                      widget.onEndReachedThreshold,
-                                  scrollController: _scrollController,
-                                  scrollPhysics: widget.scrollPhysics,
-                                  useTopSafeAreaInset:
-                                      widget.useTopSafeAreaInset ?? isMobile,
-                                ),
+                                ]),
                               ),
                             ),
                           ),

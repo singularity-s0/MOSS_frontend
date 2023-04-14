@@ -11,6 +11,7 @@ class ChatList extends StatefulWidget {
   /// Creates a chat list widget.
   const ChatList({
     super.key,
+    this.topWidget,
     this.bottomWidget,
     this.isLastPage,
     required this.itemBuilder,
@@ -25,6 +26,8 @@ class ChatList extends StatefulWidget {
 
   /// A custom widget at the bottom of the list.
   final Widget? bottomWidget;
+
+  final Widget? topWidget;
 
   /// Used for pagination (infinite scroll) together with [onEndReached].
   /// When true, indicates that there are no more pages to load and

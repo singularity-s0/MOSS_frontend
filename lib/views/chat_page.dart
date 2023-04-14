@@ -291,6 +291,107 @@ class _ChatViewState extends State<ChatView> {
     return widget.topic.records!.isEmpty;
   }
 
+  Widget _buildOptionsRow(BuildContext context) {
+    return DropdownButtonHideUnderline(
+      child: Wrap(alignment: WrapAlignment.center, children: [
+        Container(
+          width: 210,
+          padding: const EdgeInsets.only(top: 24, bottom: 8),
+          child: IntrinsicHeight(
+            child: DropdownButtonFormField(
+              value: 0,
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.model,
+                contentPadding: const EdgeInsets.all(15),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+              items: [
+                DropdownMenuItem(child: Text("16B"), value: 0),
+                DropdownMenuItem(child: Text("100B"), value: 1),
+              ],
+              onChanged: (value) {},
+            ),
+          ),
+        ),
+        const SizedBox(width: 40),
+        Container(
+          width: 210,
+          padding: const EdgeInsets.only(top: 24, bottom: 8),
+          child: IntrinsicHeight(
+            child: InputDecorator(
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.plugins,
+                contentPadding: const EdgeInsets.all(15),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+              child: DropdownButton(
+                value: "",
+                isDense: true,
+                items: [
+                      DropdownMenuItem(
+                          value: "",
+                          child: Text(AppLocalizations.of(context)!.i_enabled(
+                              AccountProvider.getInstance()
+                                  .user!
+                                  .plugin_config
+                                  .values
+                                  .where((element) => element)
+                                  .length)))
+                    ] +
+                    AccountProvider.getInstance()
+                        .user!
+                        .plugin_config
+                        .keys
+                        .map((e) {
+                      return DropdownMenuItem(
+                          value: e,
+                          child: IgnorePointer(
+                            child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(e),
+                                  Checkbox(
+                                      value: AccountProvider.getInstance()
+                                          .user!
+                                          .plugin_config[e],
+                                      onChanged: (value) {})
+                                ]),
+                          ));
+                    }).toList(),
+                onChanged: (value) async {
+                  if (value == "") {
+                    return;
+                  }
+                  AccountProvider.getInstance().user!.plugin_config[value!] =
+                      !AccountProvider.getInstance()
+                          .user!
+                          .plugin_config[value]!;
+                  try {
+                    Repository.getInstance().setPluginConfig(
+                        AccountProvider.getInstance().user!.plugin_config);
+                    setState(() {});
+                  } catch (e) {
+                    AccountProvider.getInstance().user!.plugin_config[value!] =
+                        !AccountProvider.getInstance()
+                            .user!
+                            .plugin_config[value]!;
+                    await showAlert(context, parseError(e),
+                        AppLocalizations.of(context)!.error);
+                  }
+                },
+              ),
+            ),
+          ),
+        ),
+      ]),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final chatTheme = DefaultChatTheme(
@@ -396,6 +497,7 @@ class _ChatViewState extends State<ChatView> {
             }
           }
         },
+        listTopWidget: _buildOptionsRow(context),
         listBottomWidget: Padding(
           padding: const EdgeInsets.only(left: 16, right: 8, bottom: 8),
           child: Column(

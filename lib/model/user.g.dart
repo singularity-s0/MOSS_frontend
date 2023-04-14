@@ -38,6 +38,7 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
           ?.map((e) => ChatThread.fromJson(e as Map<String, dynamic>))
           .toList(),
       share_consent: json['share_consent'] as bool,
+      plugin_config: json['plugin_config'] as Map<String, dynamic>,
     )
       ..is_admin = json['is_admin'] as bool?
       ..disable_sensitive_check = json['disable_sensitive_check'] as bool?;
@@ -53,4 +54,5 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'is_admin': instance.is_admin,
       'disable_sensitive_check': instance.disable_sensitive_check,
       'chats': instance.chats,
+      'plugin_config': instance.plugin_config,
     };

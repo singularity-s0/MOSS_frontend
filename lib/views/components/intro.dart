@@ -32,57 +32,59 @@ class MossIntroWidget extends StatelessWidget {
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Flexible(
-                flex: 6,
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 48.0),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 256),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 360),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Flexible(
+                  flex: 6,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 48.0),
                       child: LocalHero(
                           tag: heroTag,
                           child: Image.asset("assets/images/logo.webp")),
                     ),
                   ),
                 ),
-              ),
-              const Spacer(flex: 1),
-              Flexible(
-                flex: 10,
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: IntrinsicWidth(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        buildBanner(
-                            context,
-                            AppLocalizations.of(context)!.moss_intro_1a,
-                            AppLocalizations.of(context)!.moss_intro_1b,
-                            Icons.chat),
-                        buildBanner(
-                            context,
-                            AppLocalizations.of(context)!.moss_intro_2a,
-                            AppLocalizations.of(context)!.moss_intro_2b,
-                            Icons.edit),
-                        buildBanner(
-                            context,
-                            AppLocalizations.of(context)!.moss_intro_3a,
-                            AppLocalizations.of(context)!.moss_intro_3b,
-                            Icons.help)
-                      ],
+                const Spacer(flex: 1),
+                const MossOptionsWidget(),
+                const Spacer(flex: 1),
+                Flexible(
+                  flex: 10,
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: IntrinsicWidth(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          buildBanner(
+                              context,
+                              AppLocalizations.of(context)!.moss_intro_1a,
+                              AppLocalizations.of(context)!.moss_intro_1b,
+                              Icons.chat),
+                          buildBanner(
+                              context,
+                              AppLocalizations.of(context)!.moss_intro_2a,
+                              AppLocalizations.of(context)!.moss_intro_2b,
+                              Icons.edit),
+                          buildBanner(
+                              context,
+                              AppLocalizations.of(context)!.moss_intro_3a,
+                              AppLocalizations.of(context)!.moss_intro_3b,
+                              Icons.help)
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -128,5 +130,136 @@ class _NullChatLoaderState extends State<NullChatLoader> {
   @override
   Widget build(BuildContext context) {
     return const SizedBox(); //MossIntroWidget(heroTag: widget.heroTag);
+  }
+}
+
+class MossOptionsWidget extends StatelessWidget {
+  const MossOptionsWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StatefulBuilder(builder: (context, setState) {
+      return Material(
+          child: Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: DropdownButtonHideUnderline(
+          child: Wrap(alignment: WrapAlignment.center, children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              child: LocalHero(
+                tag: "mossoptions1",
+                child: SizedBox(
+                  width: 210,
+                  child: IntrinsicHeight(
+                    child: InputDecorator(
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.plugins,
+                        contentPadding: const EdgeInsets.all(15),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      child: DropdownButton(
+                        isDense: true,
+                        value: 0,
+                        items: [
+                          DropdownMenuItem(child: Text("16B"), value: 0),
+                          DropdownMenuItem(child: Text("100B"), value: 1),
+                        ],
+                        onChanged: (value) {},
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              child: LocalHero(
+                tag: "mossoptions2",
+                child: SizedBox(
+                  width: 210,
+                  child: IntrinsicHeight(
+                    child: InputDecorator(
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.plugins,
+                        contentPadding: const EdgeInsets.all(15),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      child: DropdownButton(
+                        value: "",
+                        isDense: true,
+                        items: [
+                              DropdownMenuItem(
+                                  value: "",
+                                  child: Text(AppLocalizations.of(context)!
+                                      .i_enabled(AccountProvider.getInstance()
+                                          .user!
+                                          .plugin_config
+                                          .values
+                                          .where((element) => element)
+                                          .length)))
+                            ] +
+                            AccountProvider.getInstance()
+                                .user!
+                                .plugin_config
+                                .keys
+                                .map((e) {
+                              return DropdownMenuItem(
+                                  value: e,
+                                  child: IgnorePointer(
+                                    child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(e),
+                                          Checkbox(
+                                              value:
+                                                  AccountProvider.getInstance()
+                                                      .user!
+                                                      .plugin_config[e],
+                                              onChanged: (value) {})
+                                        ]),
+                                  ));
+                            }).toList(),
+                        onChanged: (value) async {
+                          if (value == "") {
+                            return;
+                          }
+                          AccountProvider.getInstance()
+                                  .user!
+                                  .plugin_config[value!] =
+                              !AccountProvider.getInstance()
+                                  .user!
+                                  .plugin_config[value]!;
+                          try {
+                            Repository.getInstance().setPluginConfig(
+                                AccountProvider.getInstance()
+                                    .user!
+                                    .plugin_config);
+                            setState(() {});
+                          } catch (e) {
+                            AccountProvider.getInstance()
+                                    .user!
+                                    .plugin_config[value!] =
+                                !AccountProvider.getInstance()
+                                    .user!
+                                    .plugin_config[value]!;
+                            await showAlert(context, parseError(e),
+                                AppLocalizations.of(context)!.error);
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ]),
+        ),
+      ));
+    });
   }
 }

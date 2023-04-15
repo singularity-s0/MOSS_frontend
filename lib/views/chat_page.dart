@@ -593,6 +593,7 @@ class _ChatViewState extends State<ChatView> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 4, horizontal: 8),
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               if (prefix != null)

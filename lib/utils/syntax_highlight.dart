@@ -116,13 +116,13 @@ String numToSuperscript(String num) {
   return num.split('').map((e) => superscript[e] ?? e).join();
 }
 
-Map<String, String> commandToIcon = {
-  "Search": "<search></search>",
-  "Text2Image": "<image></image>",
-  "Calculate": "<calculator></calculator>",
-  "Solve": "<calculator></calculator>",
-  "start": "<inprogress></inprogress>",
-  "done": "<done></done>",
+Map<String, IconData> commandToIcon = {
+  "Search": Icons.search,
+  "Text2Image": Icons.image,
+  "Calculate": Icons.calculate,
+  "Solve": Icons.calculate,
+  "start": Icons.hourglass_empty,
+  "done": Icons.done,
 };
 
 class SimpleHtmlBuilder extends MarkdownElementBuilder {

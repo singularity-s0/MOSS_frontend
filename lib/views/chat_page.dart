@@ -1,9 +1,11 @@
 import 'dart:math';
 
 import 'package:clipboard/clipboard.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:highlighter/languages/markdown.dart';
 import 'package:openchat_frontend/main.dart';
 import 'package:openchat_frontend/repository/ws_chat_manager.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
@@ -84,7 +86,7 @@ class _ChatViewState extends State<ChatView> {
                 ref += "$key. [${data[key]['title']}](${data[key]['url']})\n";
               }
             } else if (item['type'] == 'Text2Image') {
-              text += "\n![${item['request']}](${item['data']})";
+              text += "![${item['request']}](${item['data']})";
             }
           }
           if (ref != "**${AppLocalizations.of(context)!.references}:**\n") {
@@ -146,7 +148,7 @@ class _ChatViewState extends State<ChatView> {
         } else if (code == 3) {
           // Handle commands
           commands ??= {};
-          var cmdstring = "$type **$event**";
+          var cmdstring = "$type $event";
           commands[cmdstring] = stage;
         }
         if (isFirstResponse) {
@@ -570,18 +572,44 @@ class _ChatViewState extends State<ChatView> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: ((msg.metadata?["commands"]?.keys)?.map<Widget>((e) {
-                      final command = e.split(" ")[0];
-                      final prefix = commandToIcon[command] ?? "-";
+                      final splits = e.split(" ");
+                      final command = splits.first;
+                      final prefix = commandToIcon[command];
                       final status = msg.metadata?["commands"][e];
-                      final suffix = commandToIcon[status] ?? "";
-                      return MarkdownBody(
-                        data: "$prefix $e $suffix",
-                        inlineSyntaxes: [SimpleHtmlSyntax()],
-                        builders: {
-                          "html": SimpleHtmlBuilder(
-                              DefaultTextStyle.of(context).style),
-                        },
-                      );
+                      final suffix = commandToIcon[status];
+                      return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4, horizontal: 8),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (prefix != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8),
+                                  child: Icon(prefix, size: 16),
+                                ),
+                              Text(command),
+                              Text(
+                                  splits.length > 1
+                                      ? " ${splits.sublist(1).join(" ")}"
+                                      : "",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold)),
+                              if (suffix != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 12),
+                                  child: status == "start"
+                                      ? const SizedBox(
+                                          height: 12,
+                                          width: 12,
+                                          child: CircularProgressIndicator(
+                                              strokeWidth: 2),
+                                        )
+                                      : Icon(suffix,
+                                          size: 16, color: Colors.green),
+                                ),
+                            ],
+                          ));
                     }).toList() ??
                     <Widget>[]) +
                 <Widget>[

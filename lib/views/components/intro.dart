@@ -34,56 +34,61 @@ class MossIntroWidget extends StatelessWidget {
           padding: const EdgeInsets.all(12.0),
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 360),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Flexible(
-                  flex: 6,
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 48.0),
-                      child: LocalHero(
-                          tag: heroTag,
-                          child: Image.asset("assets/images/logo.webp")),
-                    ),
-                  ),
-                ),
-                const Spacer(flex: 1),
-                const MossOptionsWidget(),
-                const Spacer(flex: 1),
-                Flexible(
-                  flex: 10,
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: IntrinsicWidth(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          buildBanner(
-                              context,
-                              AppLocalizations.of(context)!.moss_intro_1a,
-                              AppLocalizations.of(context)!.moss_intro_1b,
-                              Icons.chat),
-                          buildBanner(
-                              context,
-                              AppLocalizations.of(context)!.moss_intro_2a,
-                              AppLocalizations.of(context)!.moss_intro_2b,
-                              Icons.edit),
-                          buildBanner(
-                              context,
-                              AppLocalizations.of(context)!.moss_intro_3a,
-                              AppLocalizations.of(context)!.moss_intro_3b,
-                              Icons.help)
-                        ],
+            child: SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 600),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Flexible(
+                      flex: 6,
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 48.0),
+                          child: LocalHero(
+                              tag: heroTag,
+                              child: Image.asset("assets/images/logo.webp")),
+                        ),
                       ),
                     ),
-                  ),
+                    const Spacer(flex: 1),
+                    const MossOptionsWidget(),
+                    const Spacer(flex: 1),
+                    Flexible(
+                      flex: 10,
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: IntrinsicWidth(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              buildBanner(
+                                  context,
+                                  AppLocalizations.of(context)!.moss_intro_1a,
+                                  AppLocalizations.of(context)!.moss_intro_1b,
+                                  Icons.chat),
+                              buildBanner(
+                                  context,
+                                  AppLocalizations.of(context)!.moss_intro_2a,
+                                  AppLocalizations.of(context)!.moss_intro_2b,
+                                  Icons.edit),
+                              buildBanner(
+                                  context,
+                                  AppLocalizations.of(context)!.moss_intro_3a,
+                                  AppLocalizations.of(context)!.moss_intro_3b,
+                                  Icons.help)
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
@@ -138,8 +143,7 @@ class MossOptionsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final modelCfg =
-        AccountProvider.getInstance().repositoryConfig!.model_config;
+    final modelCfg = Repository.getInstance().repositoryConfig!.model_config;
     return StatefulBuilder(builder: (context, setState) {
       return Padding(
           padding: const EdgeInsets.only(top: 8),

@@ -27,6 +27,7 @@ class Repository {
   final Dio dio = Dio();
 
   late AccountProvider provider;
+  RepositoryConfig? repositoryConfig;
 
   static void init(AccountProvider injectProvider) {
     Repository.getInstance().provider = injectProvider;
@@ -210,8 +211,8 @@ class Repository {
     final String? notice = data['notice'];
     Map<String, bool> plugin_cfg = Map.from(data['default_plugin_config']);
     List model_cfg = List.from(data['model_config']);
-    return RepositoryConfig(
-        region, inviteRequired, notice, plugin_cfg, model_cfg);
+    return repositoryConfig =
+        RepositoryConfig(region, inviteRequired, notice, plugin_cfg, model_cfg);
   }
 
   Future<String?> getScreenshotForChat(int chatId) async {

@@ -45,9 +45,16 @@ class _MainAppState extends State<MainApp> {
     super.initState();
   }
 
+  Future<void> _loadApp() async {
+    await ChatPageLib.loadLibrary();
+    if (Repository.getInstance().repositoryConfig == null) {
+      await Repository.getInstance().getConfiguration();
+    }
+  }
+
   Widget _buildChatPageLoader(BuildContext context) {
     return FutureBuilder(
-        future: ChatPageLib.loadLibrary(),
+        future: _loadApp(),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
             return const SizedBox();

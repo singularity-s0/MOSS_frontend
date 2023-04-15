@@ -18,8 +18,6 @@ class AccountProvider with ChangeNotifier {
     user = null;
   }
 
-  RepositoryConfig? repositoryConfig;
-
   // Login info, if this is null, the user is not logged in.
   JWToken? _token;
   JWToken? get token => _token;

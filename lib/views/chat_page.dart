@@ -261,6 +261,8 @@ class _ChatViewState extends State<ChatView> {
           commands["${entry['type']} ${entry['request']}"] = "done";
         }
         _messages.first.metadata!['commands'] = commands;
+        _messages.first.metadata!['animatedIndex'] =
+            _messages.first.metadata!['currentText'].length;
       }
     } catch (e) {
       _messages.insert(

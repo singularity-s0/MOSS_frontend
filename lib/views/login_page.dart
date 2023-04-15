@@ -444,6 +444,7 @@ class _LoginScreenState extends State<LoginScreen> {
           if (snapshot.data!.notice == null || snapshot.data!.notice!.isEmpty) {
             _noticeAccepted = true;
           }
+          AccountProvider.getInstance().repositoryConfig = snapshot.data!;
           return AnimatedCrossFade(
             firstChild: buildNoticePanel(context, snapshot.data!.notice ?? ""),
             secondChild: AnimatedCrossFade(

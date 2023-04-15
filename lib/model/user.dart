@@ -41,6 +41,8 @@ class User {
   bool share_consent;
   bool? is_admin;
   bool? disable_sensitive_check;
+  int model_id;
+  bool? banned;
   List<ChatThread>? chats;
   Map<String, dynamic> plugin_config;
 
@@ -57,5 +59,9 @@ class User {
       required this.phone,
       required this.chats,
       required this.share_consent,
-      required this.plugin_config});
+      required this.plugin_config,
+      required this.model_id,
+      this.banned,
+      this.is_admin,
+      this.disable_sensitive_check});
 }

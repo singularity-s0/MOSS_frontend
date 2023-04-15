@@ -39,9 +39,11 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
           .toList(),
       share_consent: json['share_consent'] as bool,
       plugin_config: json['plugin_config'] as Map<String, dynamic>,
-    )
-      ..is_admin = json['is_admin'] as bool?
-      ..disable_sensitive_check = json['disable_sensitive_check'] as bool?;
+      model_id: json['model_id'] as int,
+      banned: json['banned'] as bool?,
+      is_admin: json['is_admin'] as bool?,
+      disable_sensitive_check: json['disable_sensitive_check'] as bool?,
+    );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'email': instance.email,
@@ -53,6 +55,8 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'share_consent': instance.share_consent,
       'is_admin': instance.is_admin,
       'disable_sensitive_check': instance.disable_sensitive_check,
+      'model_id': instance.model_id,
+      'banned': instance.banned,
       'chats': instance.chats,
       'plugin_config': instance.plugin_config,
     };

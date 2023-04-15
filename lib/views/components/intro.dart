@@ -138,6 +138,8 @@ class MossOptionsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final modelCfg =
+        AccountProvider.getInstance().repositoryConfig!.model_config;
     return StatefulBuilder(builder: (context, setState) {
       return Padding(
           padding: const EdgeInsets.only(top: 8),
@@ -159,14 +161,30 @@ class MossOptionsWidget extends StatelessWidget {
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                          child: DropdownButton(
+                          child: DropdownButton<int>(
                             isDense: true,
-                            value: 0,
-                            items: [
-                              DropdownMenuItem(child: Text("16B"), value: 0),
-                              DropdownMenuItem(child: Text("100B"), value: 1),
-                            ],
-                            onChanged: (value) {},
+                            value: AccountProvider.getInstance().user!.model_id,
+                            items: modelCfg
+                                .map((e) => DropdownMenuItem(
+                                      value: e['id']! as int,
+                                      child: Text(e['description']),
+                                    ))
+                                .toList(),
+                            onChanged: (value) async {
+                              final original =
+                                  AccountProvider.getInstance().user!.model_id;
+                              AccountProvider.getInstance().user!.model_id =
+                                  value!;
+                              try {
+                                Repository.getInstance().setModelConfig(value);
+                                setState(() {});
+                              } catch (e) {
+                                AccountProvider.getInstance().user!.model_id =
+                                    original;
+                                await showAlert(context, parseError(e),
+                                    AppLocalizations.of(context)!.error);
+                              }
+                            },
                           ),
                         ),
                       ),

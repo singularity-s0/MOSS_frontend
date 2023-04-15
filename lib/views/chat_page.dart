@@ -45,6 +45,28 @@ class ChatView extends StatefulWidget {
   State<ChatView> createState() => _ChatViewState();
 }
 
+void processExtraData(
+    ChatRecord record, types.Message message, BuildContext context) {
+  String text = record.response;
+  if (record.processed_extra_data != null) {
+    String ref = "**${AppLocalizations.of(context)!.references}:**\n";
+    for (var item in record.processed_extra_data!) {
+      if (item['type'] == 'Search') {
+        Map<String, dynamic> data = item['data'];
+        for (var key in data.keys) {
+          ref += "$key. [${data[key]['title']}](${data[key]['url']})\n";
+        }
+      } else if (item['type'] == 'Text2Image') {
+        text += "![${item['request']}](${item['data']})";
+      }
+    }
+    if (ref != "**${AppLocalizations.of(context)!.references}:**\n") {
+      message.metadata!['ref'] = ref;
+    }
+  }
+  message.metadata!['currentText'] = text;
+}
+
 class _ChatViewState extends State<ChatView> {
   final GlobalKey<ChatState> _chatKey = GlobalKey();
   final List<types.Message> _messages = [];
@@ -76,27 +98,9 @@ class _ChatViewState extends State<ChatView> {
               record.request.substring(0, min(30, record.request.length));
         }
         widget.topic.records!.add(record);
-        String text = record.response;
-        if (record.processed_extra_data != null) {
-          String ref = "**${AppLocalizations.of(context)!.references}:**\n";
-          for (var item in record.processed_extra_data!) {
-            if (item['type'] == 'Search') {
-              Map<String, dynamic> data = item['data'];
-              for (var key in data.keys) {
-                ref += "$key. [${data[key]['title']}](${data[key]['url']})\n";
-              }
-            } else if (item['type'] == 'Text2Image') {
-              text += "![${item['request']}](${item['data']})";
-            }
-          }
-          if (ref != "**${AppLocalizations.of(context)!.references}:**\n") {
-            _messages.first.metadata!['ref'] = ref;
-          }
-        }
+        processExtraData(record, _messages.first, context);
         if (mounted) {
-          setState(() {
-            _messages.first.metadata!['currentText'] = text;
-          });
+          setState(() {});
         }
       },
       onDone: () {
@@ -249,6 +253,14 @@ class _ChatViewState extends State<ChatView> {
               // ignore: prefer_const_literals_to_create_immutables
               metadata: {'animatedIndex': record.response.length},
             ));
+        // ignore: use_build_context_synchronously
+        processExtraData(record, _messages.first, context);
+        // Also append commands
+        Map<String, String> commands = {};
+        for (var entry in record.processed_extra_data ?? []) {
+          commands["${entry['type']} ${entry['request']}"] = "done";
+        }
+        _messages.first.metadata!['commands'] = commands;
       }
     } catch (e) {
       _messages.insert(

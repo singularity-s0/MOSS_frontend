@@ -118,7 +118,11 @@ String numToSuperscript(String num) {
 
 Map<String, String> commandToIcon = {
   "Search": "<search></search>",
-  "搜索": "<search></search>",
+  "Text2Image": "<image></image>",
+  "Calculate": "<calculator></calculator>",
+  "Solve": "<calculator></calculator>",
+  "start": "<inprogress></inprogress>",
+  "done": "<done></done>",
 };
 
 class SimpleHtmlBuilder extends MarkdownElementBuilder {
@@ -146,6 +150,14 @@ class SimpleHtmlBuilder extends MarkdownElementBuilder {
         );
       case "search":
         return const Icon(Icons.search, size: 16);
+      case "image":
+        return const Icon(Icons.image, size: 16);
+      case "calculator":
+        return const Icon(Icons.calculate, size: 16);
+      case "inprogress":
+        return const Icon(Icons.hourglass_empty, size: 16);
+      case "done":
+        return const Icon(Icons.done, size: 16);
       default:
         return null;
     }

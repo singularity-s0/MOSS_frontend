@@ -38,6 +38,7 @@ ChatRecord _$ChatRecordFromJson(Map<String, dynamic> json) => ChatRecord(
       request: json['request'] as String,
       response: json['response'] as String,
       extra_data: json['extra_data'] as List<dynamic>?,
+      processed_extra_data: json['processed_extra_data'] as List<dynamic>?,
     );
 
 Map<String, dynamic> _$ChatRecordToJson(ChatRecord instance) =>
@@ -50,6 +51,7 @@ Map<String, dynamic> _$ChatRecordToJson(ChatRecord instance) =>
       'request': instance.request,
       'response': instance.response,
       'extra_data': instance.extra_data,
+      'processed_extra_data': instance.processed_extra_data,
     };
 
 WSInferResponse _$WSInferResponseFromJson(Map<String, dynamic> json) =>
@@ -59,6 +61,8 @@ WSInferResponse _$WSInferResponseFromJson(Map<String, dynamic> json) =>
       json['uuid'] as String?,
       json['offset'] as int?,
       json['output'] as String?,
+      json['type'] as String?,
+      json['stage'] as String?,
     );
 
 Map<String, dynamic> _$WSInferResponseToJson(WSInferResponse instance) =>
@@ -68,4 +72,6 @@ Map<String, dynamic> _$WSInferResponseToJson(WSInferResponse instance) =>
       'uuid': instance.uuid,
       'offset': instance.offset,
       'output': instance.output,
+      'type': instance.type,
+      'stage': instance.stage,
     };

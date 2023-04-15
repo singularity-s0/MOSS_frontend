@@ -74,33 +74,18 @@ class _ChatViewState extends State<ChatView> {
               record.request.substring(0, min(30, record.request.length));
         }
         widget.topic.records!.add(record);
-        if (record.extra_data != null) {
+        String text = record.response;
+        if (record.processed_extra_data != null) {
           String ref = "**${AppLocalizations.of(context)!.references}:**\n";
-          // Add search reference
-          for (var entry in record.extra_data!) {
-            // There are 3 types of extra_data. We need to detect and process respectively.
-            try {
-              var title, url;
-              if (entry is Map && entry.containsKey('data')) {
-                if (entry['data'] is Map && entry['data'].containsKey('summ')) {
-                  title = entry['data']['summ']['title'];
-                  url = entry['data']['url'];
-                  ref += "\n- [$title]($url)";
-                } else {
-                  for (var key in entry['data'].keys) {
-                    title = entry['data'][key]['title'];
-                    url = entry['data'][key]['url'];
-                    ref += "\n- [$title]($url)";
-                  }
-                }
-              } else {
-                for (var key in entry.keys) {
-                  title = entry[key]['title'];
-                  url = entry[key]['url'];
-                  ref += "\n- [$title]($url)";
-                }
+          for (var item in record.processed_extra_data!) {
+            if (item['type'] == 'Search') {
+              Map<String, dynamic> data = item['data'];
+              for (var key in data.keys) {
+                ref += "$key. [${data[key]['title']}](${data[key]['url']})\n";
               }
-            } catch (_) {}
+            } else if (item['type'] == 'Text2Image') {
+              text += "\n![${item['request']}](${item['data']})";
+            }
           }
           if (ref != "**${AppLocalizations.of(context)!.references}:**\n") {
             _messages.first.metadata!['ref'] = ref;
@@ -108,7 +93,7 @@ class _ChatViewState extends State<ChatView> {
         }
         if (mounted) {
           setState(() {
-            _messages.first.metadata!['currentText'] = record.response;
+            _messages.first.metadata!['currentText'] = text;
           });
         }
       },
@@ -137,32 +122,33 @@ class _ChatViewState extends State<ChatView> {
           });
         }
       },
-      onReceive: (event) {
-        String? innerThoughts =
-            RegExp(r"<\|Inner Thoughts\|>: (.*?)<(eot|eom)>")
-                .firstMatch(event)
-                ?.group(1);
-        final List<String>? commands = RegExp(r"<\|Commands\|>: (.*?)<eoc>")
-            .firstMatch(event)
-            ?.group(1)
-            ?.split(', ')
-            .where((element) => element.toLowerCase().trim() != 'none')
-            .toList();
-        if (innerThoughts?.toLowerCase().trim() == "none") {
-          innerThoughts = null;
-        }
-        final String? results =
-            RegExp(r"<\|Results\|>: (.*?)<eor>").firstMatch(event)?.group(1);
-        int mossIndex = event.indexOf("<|MOSS|>: ");
-        int mossEndIndex =
-            mossIndex == -1 ? -1 : event.indexOf("<eom>", mossIndex);
-        if (mossEndIndex == -1) {
-          mossEndIndex = event.length;
-        }
-        final String? moss = mossIndex == -1
-            ? null
-            : event.substring(mossIndex + 10, mossEndIndex).trim();
+      onReceive: (event, code, type, stage) {
+        Map<String, String?>? commands = _messages.first.metadata?['commands'];
+        String? innerThoughts = null;
+        String? moss = null;
+        if (code == 1) {
+          innerThoughts = RegExp(r"<\|Inner Thoughts\|>: (.*?)<(eot|eom)>")
+              .firstMatch(event)
+              ?.group(1);
 
+          if (innerThoughts?.toLowerCase().trim() == "none") {
+            innerThoughts = null;
+          }
+          int mossIndex = event.indexOf("<|MOSS|>: ");
+          int mossEndIndex =
+              mossIndex == -1 ? -1 : event.indexOf("<eom>", mossIndex);
+          if (mossEndIndex == -1) {
+            mossEndIndex = event.length;
+          }
+          moss = mossIndex == -1
+              ? null
+              : event.substring(mossIndex + 10, mossEndIndex).trim();
+        } else if (code == 3) {
+          // Handle commands
+          commands ??= {};
+          var cmdstring = "$type **$event**";
+          commands[cmdstring] = stage;
+        }
         if (isFirstResponse) {
           isFirstResponse = false;
           if (mounted) {
@@ -178,7 +164,6 @@ class _ChatViewState extends State<ChatView> {
                         'currentText': moss ?? "",
                         'innerThoughts': innerThoughts,
                         'commands': commands,
-                        'results': results
                       },
                       id: _messages.length.toString(),
                       type: types.MessageType.text));
@@ -192,8 +177,6 @@ class _ChatViewState extends State<ChatView> {
                   innerThoughts ?? _messages.first.metadata!['innerThoughts'];
               _messages.first.metadata!['commands'] =
                   commands ?? _messages.first.metadata!['commands'];
-              _messages.first.metadata!['results'] =
-                  results ?? _messages.first.metadata!['results'];
             });
           }
         }
@@ -687,15 +670,13 @@ class _ChatViewState extends State<ChatView> {
           return Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: ((msg.metadata?["commands"] as List<String>?)
-                        ?.map<Widget>((e) {
-                      final match = RegExp(r'(.*?)\("(.*?)"\)').firstMatch(e);
-                      if (match == null) return MarkdownBody(data: "- $e");
-                      final command = match.group(1);
-                      final args = match.group(2);
+            children: ((msg.metadata?["commands"]?.keys)?.map<Widget>((e) {
+                      final command = e.split(" ")[0];
                       final prefix = commandToIcon[command] ?? "-";
+                      final status = msg.metadata?["commands"][e];
+                      final suffix = commandToIcon[status] ?? "";
                       return MarkdownBody(
-                        data: "$prefix $command **$args**",
+                        data: "$prefix $e $suffix",
                         inlineSyntaxes: [SimpleHtmlSyntax()],
                         builders: {
                           "html": SimpleHtmlBuilder(

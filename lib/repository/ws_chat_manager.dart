@@ -21,7 +21,8 @@ class WebSocketChatManager {
     channel = null;
   }
 
-  final void Function(String text)? onReceive;
+  final void Function(String text, int code, String? type, String? stage)?
+      onReceive;
   final void Function()? onDone;
   final void Function(Object error)? onError;
   final void Function(ChatRecord record)? onAddRecord;
@@ -67,8 +68,9 @@ class WebSocketChatManager {
           } else {
             WSInferResponse response =
                 WSInferResponse.fromJson(json.decode(message));
-            if (response.status == 1) {
-              onReceive?.call(response.output!);
+            if (response.status == 1 || response.status == 3) {
+              onReceive?.call(response.output!, response.status!, response.type,
+                  response.stage);
             } else if (response.status == 0) {
               onDone?.call();
               expectRecord = true;
@@ -147,7 +149,8 @@ class WebSocketChatManager {
             WSInferResponse response =
                 WSInferResponse.fromJson(json.decode(message));
             if (response.status == 1) {
-              onReceive?.call(response.output!);
+              onReceive?.call(response.output!, response.status!, response.type,
+                  response.stage);
             } else if (response.status == 0) {
               onDone?.call();
               expectRecord = true;

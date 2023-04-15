@@ -39,6 +39,7 @@ class ChatRecord {
   String request;
   String response;
   List<dynamic>? extra_data;
+  List<dynamic>? processed_extra_data;
 
   factory ChatRecord.fromJson(Map<String, dynamic> json) =>
       _$ChatRecordFromJson(json);
@@ -53,7 +54,8 @@ class ChatRecord {
       required this.created_at,
       required this.request,
       required this.response,
-      this.extra_data});
+      this.extra_data,
+      this.processed_extra_data});
 }
 
 @JsonSerializable()
@@ -63,9 +65,11 @@ class WSInferResponse {
   final String? uuid;
   final int? offset;
   final String? output;
+  final String? type;
+  final String? stage;
 
-  WSInferResponse(
-      this.status, this.status_code, this.uuid, this.offset, this.output);
+  WSInferResponse(this.status, this.status_code, this.uuid, this.offset,
+      this.output, this.type, this.stage);
 
   factory WSInferResponse.fromJson(Map<String, dynamic> json) =>
       _$WSInferResponseFromJson(json);

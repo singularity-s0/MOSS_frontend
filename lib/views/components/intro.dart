@@ -139,10 +139,8 @@ class MossOptionsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StatefulBuilder(builder: (context, setState) {
-      return Material(
-          child: Padding(
-        padding: const EdgeInsets.only(top: 8),
-        child: DropdownButtonHideUnderline(
+      return Padding(
+          padding: const EdgeInsets.only(top: 8),
           child: Wrap(alignment: WrapAlignment.center, children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -150,23 +148,27 @@ class MossOptionsWidget extends StatelessWidget {
                 tag: "mossoptions1",
                 child: SizedBox(
                   width: 210,
-                  child: IntrinsicHeight(
-                    child: InputDecorator(
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.plugins,
-                        contentPadding: const EdgeInsets.all(15),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
+                  child: Material(
+                    child: DropdownButtonHideUnderline(
+                      child: IntrinsicHeight(
+                        child: InputDecorator(
+                          decoration: InputDecoration(
+                            labelText: AppLocalizations.of(context)!.model,
+                            contentPadding: const EdgeInsets.all(15),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                          child: DropdownButton(
+                            isDense: true,
+                            value: 0,
+                            items: [
+                              DropdownMenuItem(child: Text("16B"), value: 0),
+                              DropdownMenuItem(child: Text("100B"), value: 1),
+                            ],
+                            onChanged: (value) {},
+                          ),
                         ),
-                      ),
-                      child: DropdownButton(
-                        isDense: true,
-                        value: 0,
-                        items: [
-                          DropdownMenuItem(child: Text("16B"), value: 0),
-                          DropdownMenuItem(child: Text("100B"), value: 1),
-                        ],
-                        onChanged: (value) {},
                       ),
                     ),
                   ),
@@ -179,87 +181,90 @@ class MossOptionsWidget extends StatelessWidget {
                 tag: "mossoptions2",
                 child: SizedBox(
                   width: 210,
-                  child: IntrinsicHeight(
-                    child: InputDecorator(
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.plugins,
-                        contentPadding: const EdgeInsets.all(15),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      child: DropdownButton(
-                        value: "",
-                        isDense: true,
-                        items: [
-                              DropdownMenuItem(
-                                  value: "",
-                                  child: Text(AppLocalizations.of(context)!
-                                      .i_enabled(AccountProvider.getInstance()
-                                          .user!
-                                          .plugin_config
-                                          .values
-                                          .where((element) => element)
-                                          .length)))
-                            ] +
-                            AccountProvider.getInstance()
-                                .user!
-                                .plugin_config
-                                .keys
-                                .map((e) {
-                              return DropdownMenuItem(
-                                  value: e,
-                                  child: IgnorePointer(
-                                    child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(e),
-                                          Checkbox(
-                                              value:
-                                                  AccountProvider.getInstance()
-                                                      .user!
-                                                      .plugin_config[e],
-                                              onChanged: (value) {})
-                                        ]),
-                                  ));
-                            }).toList(),
-                        onChanged: (value) async {
-                          if (value == "") {
-                            return;
-                          }
-                          AccountProvider.getInstance()
-                                  .user!
-                                  .plugin_config[value!] =
-                              !AccountProvider.getInstance()
-                                  .user!
-                                  .plugin_config[value]!;
-                          try {
-                            Repository.getInstance().setPluginConfig(
+                  child: Material(
+                    child: DropdownButtonHideUnderline(
+                      child: IntrinsicHeight(
+                        child: InputDecorator(
+                          decoration: InputDecoration(
+                            labelText: AppLocalizations.of(context)!.plugins,
+                            contentPadding: const EdgeInsets.all(15),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                          child: DropdownButton(
+                            value: "",
+                            isDense: true,
+                            items: [
+                                  DropdownMenuItem(
+                                      value: "",
+                                      child: Text(AppLocalizations.of(context)!
+                                          .i_enabled(
+                                              AccountProvider.getInstance()
+                                                  .user!
+                                                  .plugin_config
+                                                  .values
+                                                  .where((element) => element)
+                                                  .length)))
+                                ] +
                                 AccountProvider.getInstance()
                                     .user!
-                                    .plugin_config);
-                            setState(() {});
-                          } catch (e) {
-                            AccountProvider.getInstance()
-                                    .user!
-                                    .plugin_config[value!] =
-                                !AccountProvider.getInstance()
-                                    .user!
-                                    .plugin_config[value]!;
-                            await showAlert(context, parseError(e),
-                                AppLocalizations.of(context)!.error);
-                          }
-                        },
+                                    .plugin_config
+                                    .keys
+                                    .map((e) {
+                                  return DropdownMenuItem(
+                                      value: e,
+                                      child: IgnorePointer(
+                                        child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(e),
+                                              Checkbox(
+                                                  value: AccountProvider
+                                                          .getInstance()
+                                                      .user!
+                                                      .plugin_config[e],
+                                                  onChanged: (value) {})
+                                            ]),
+                                      ));
+                                }).toList(),
+                            onChanged: (value) async {
+                              if (value == "") {
+                                return;
+                              }
+                              AccountProvider.getInstance()
+                                      .user!
+                                      .plugin_config[value!] =
+                                  !AccountProvider.getInstance()
+                                      .user!
+                                      .plugin_config[value]!;
+                              try {
+                                Repository.getInstance().setPluginConfig(
+                                    AccountProvider.getInstance()
+                                        .user!
+                                        .plugin_config);
+                                setState(() {});
+                              } catch (e) {
+                                AccountProvider.getInstance()
+                                        .user!
+                                        .plugin_config[value!] =
+                                    !AccountProvider.getInstance()
+                                        .user!
+                                        .plugin_config[value]!;
+                                await showAlert(context, parseError(e),
+                                    AppLocalizations.of(context)!.error);
+                              }
+                            },
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
             ),
-          ]),
-        ),
-      ));
+          ]));
     });
   }
 }

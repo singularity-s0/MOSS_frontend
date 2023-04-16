@@ -57,7 +57,7 @@ void processExtraData(
           ref += "$key. [${data[key]['title']}](${data[key]['url']})\n";
         }
       } else if (item['type'] == 'Text2Image') {
-        text += "![${item['request']}](${item['data']})";
+        text += "\n![${item['request']}](${item['data']})";
       }
     }
     if (ref != "**${AppLocalizations.of(context)!.references}:**\n") {

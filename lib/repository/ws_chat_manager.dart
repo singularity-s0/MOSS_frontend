@@ -148,7 +148,7 @@ class WebSocketChatManager {
           } else {
             WSInferResponse response =
                 WSInferResponse.fromJson(json.decode(message));
-            if (response.status == 1) {
+            if (response.status == 1 || response.status == 3) {
               onReceive?.call(response.output!, response.status!, response.type,
                   response.stage);
             } else if (response.status == 0) {

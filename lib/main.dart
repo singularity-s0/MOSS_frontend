@@ -61,7 +61,8 @@ class _MainAppState extends State<MainApp> {
           }
           if (snapshot.hasError) {
             return const Center(
-              child: Text("Error loading program, please refresh page"),
+              child: Text(
+                  "Error loading program, please clear browser cache and refresh."),
             );
           }
           return ChatPageLib.ChatPage();

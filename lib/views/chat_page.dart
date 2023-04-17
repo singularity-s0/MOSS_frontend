@@ -470,11 +470,7 @@ class _ChatViewState extends State<ChatView> {
                                             ?.like_data ==
                                         1
                                     ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context)
-                                        .buttonTheme
-                                        .colorScheme
-                                        ?.onSurface
-                                        .withAlpha(130)),
+                                    : null),
                             padding: EdgeInsets.zero,
                             onPressed: () async {
                               if (widget.topic.records?.isEmpty != false)
@@ -504,11 +500,7 @@ class _ChatViewState extends State<ChatView> {
                                             ?.like_data ==
                                         -1
                                     ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context)
-                                        .buttonTheme
-                                        .colorScheme
-                                        ?.onSurface
-                                        .withAlpha(130)),
+                                    : null),
                             padding: EdgeInsets.zero,
                             onPressed: () async {
                               if (widget.topic.records?.isEmpty != false)
@@ -531,6 +523,18 @@ class _ChatViewState extends State<ChatView> {
                               }
                             },
                           ),
+                          IconButton(
+                              icon: const Icon(Icons.copy, size: 16),
+                              padding: EdgeInsets.zero,
+                              onPressed: () async {
+                                FlutterClipboard.copy(
+                                    widget.topic.records!.last.response);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            AppLocalizations.of(context)!
+                                                .copied_to_clipboard)));
+                              }),
                           const Spacer(),
                           IconButton(
                               onPressed: () {

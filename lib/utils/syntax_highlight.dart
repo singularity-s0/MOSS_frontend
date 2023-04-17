@@ -120,9 +120,16 @@ Map<String, IconData> commandToIcon = {
   "Search": Icons.search,
   "Text2Image": Icons.image,
   "Calculate": Icons.calculate,
-  "Solve": Icons.calculate,
+  "Solve": Icons.calculate_outlined,
   "start": Icons.hourglass_empty,
   "done": Icons.done,
+};
+
+Map<String, IconData> pluginToIcon = {
+  "Web search": Icons.search,
+  "Text-to-image": Icons.image,
+  "Calculator": Icons.calculate,
+  "Equation solver": Icons.calculate_outlined,
 };
 
 class SimpleHtmlBuilder extends MarkdownElementBuilder {

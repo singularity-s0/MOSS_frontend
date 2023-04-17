@@ -50,5 +50,7 @@
     "references": "References",
     "plugins": "Plugins",
     "i_enabled": "{i} enabled",
-    "model": "Model"
+    "model": "Model",
+    "enabled": "Enabled",
+    "none": "None"
 }

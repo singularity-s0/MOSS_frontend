@@ -50,5 +50,7 @@
     "references": "参考资料",
     "plugins": "插件",
     "i_enabled": "已启用{i}个",
-    "model": "模型"
+    "model": "模型",
+    "enabled": "已启用",
+    "none": "无"
 }

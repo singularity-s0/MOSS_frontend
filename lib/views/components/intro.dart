@@ -6,6 +6,7 @@ import 'package:openchat_frontend/model/chat.dart';
 import 'package:openchat_frontend/repository/repository.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:openchat_frontend/utils/dialog.dart';
+import 'package:openchat_frontend/utils/syntax_highlight.dart';
 import 'package:openchat_frontend/views/history_page.dart';
 import 'package:provider/provider.dart';
 
@@ -144,6 +145,7 @@ class MossOptionsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final modelCfg = Repository.getInstance().repositoryConfig!.model_config;
+    final pluginCfg = AccountProvider.getInstance().user!.plugin_config;
     return StatefulBuilder(builder: (context, setState) {
       return Padding(
           padding: const EdgeInsets.only(top: 8),
@@ -220,14 +222,35 @@ class MossOptionsWidget extends StatelessWidget {
                             items: [
                                   DropdownMenuItem(
                                       value: "",
-                                      child: Text(AppLocalizations.of(context)!
-                                          .i_enabled(
-                                              AccountProvider.getInstance()
-                                                  .user!
-                                                  .plugin_config
-                                                  .values
-                                                  .where((element) => element)
-                                                  .length)))
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: pluginCfg.values
+                                                .contains(true)
+                                            ? pluginCfg.keys
+                                                    .where((element) =>
+                                                        pluginCfg[element] ==
+                                                        true)
+                                                    .map<Widget>((e) => Icon(
+                                                          pluginToIcon[e],
+                                                          size: 16,
+                                                        ))
+                                                    .toList() +
+                                                [
+                                                  const SizedBox(width: 8),
+                                                  Text(
+                                                      AppLocalizations.of(
+                                                              context)!
+                                                          .enabled,
+                                                      textScaleFactor: 0.9)
+                                                ]
+                                            : [
+                                                Text(AppLocalizations.of(
+                                                        context)!
+                                                    .none)
+                                              ],
+                                      ))
                                 ] +
                                 AccountProvider.getInstance()
                                     .user!
@@ -238,16 +261,31 @@ class MossOptionsWidget extends StatelessWidget {
                                       value: e,
                                       child: IgnorePointer(
                                         child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text(e),
-                                              Checkbox(
-                                                  value: AccountProvider
-                                                          .getInstance()
-                                                      .user!
-                                                      .plugin_config[e],
-                                                  onChanged: (value) {})
+                                              Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Icon(pluginToIcon[e],
+                                                      size: 16),
+                                                  const SizedBox(width: 8),
+                                                  Text(e, textScaleFactor: 0.9),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                width: 16,
+                                                child: Checkbox(
+                                                    value: AccountProvider
+                                                            .getInstance()
+                                                        .user!
+                                                        .plugin_config[e],
+                                                    onChanged: (value) {}),
+                                              ),
                                             ]),
                                       ));
                                 }).toList(),

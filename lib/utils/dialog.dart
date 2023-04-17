@@ -65,7 +65,8 @@ showImageAlert(BuildContext context, String? message, String title,
                               const CircularProgressIndicator(),
                           errorBuilder: (context, error, st) =>
                               ErrorRetryWidget(
-                                  error: error,
+                                  error: AppLocalizations.of(context)!
+                                      .failed_to_load,
                                   onRetry: () => setState(() {}))),
                     ),
                   ),

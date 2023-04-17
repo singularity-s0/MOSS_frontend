@@ -53,5 +53,6 @@
     "model": "模型",
     "enabled": "已启用",
     "none": "无",
-    "join_user_group": "加入我们的用户群"
+    "join_user_group": "加入我们的用户群",
+    "failed_to_load": "载入失败"
 }

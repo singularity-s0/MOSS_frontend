@@ -53,5 +53,6 @@
     "model": "Model",
     "enabled": "Enabled",
     "none": "None",
-    "join_user_group": "Join our user group"
+    "join_user_group": "Join our user group",
+    "failed_to_load": "Failed to load"
 }

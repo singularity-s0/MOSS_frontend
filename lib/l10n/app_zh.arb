@@ -52,5 +52,6 @@
     "i_enabled": "已启用{i}个",
     "model": "模型",
     "enabled": "已启用",
-    "none": "无"
+    "none": "无",
+    "join_user_group": "加入我们的用户群"
 }

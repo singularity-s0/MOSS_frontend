@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:openchat_frontend/repository/repository.dart';
@@ -33,8 +34,26 @@ class _ShareInfoConsentWidgetState extends State<ShareInfoConsentWidget> {
           },
         ),
         Expanded(
-          child: Text(AppLocalizations.of(context)!.share_consent_msg,
-              softWrap: true),
+          child: Text.rich(TextSpan(children: [
+            TextSpan(
+              text: AppLocalizations.of(context)!.share_consent_msg,
+            ),
+            const TextSpan(text: " "),
+            TextSpan(
+                text: AppLocalizations.of(context)!.join_user_group,
+                style: const TextStyle(
+                    decoration: TextDecoration.underline,
+                    color: Colors.blue,
+                    decorationColor: Colors.blue),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    final uri = Uri.base;
+                    showImageAlert(context, null,
+                        AppLocalizations.of(context)!.join_user_group,
+                        imageUrl:
+                            "${uri.scheme}://${uri.host}:${uri.port}/static/user_group.png");
+                  }),
+          ])),
         ),
       ],
     );

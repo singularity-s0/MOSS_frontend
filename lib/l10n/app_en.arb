@@ -52,5 +52,6 @@
     "i_enabled": "{i} enabled",
     "model": "Model",
     "enabled": "Enabled",
-    "none": "None"
+    "none": "None",
+    "join_user_group": "Join our user group"
 }

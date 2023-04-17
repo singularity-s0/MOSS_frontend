@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:openchat_frontend/model/user.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 Future<T> showLoadingDialogUntilFutureCompletes<T>(
     BuildContext context, Future<T> future) async {
@@ -35,6 +36,42 @@ showAlert(BuildContext context, String message, String title) {
             scrollable: true,
             title: Text(title),
             content: Text(message),
+            actions: <Widget>[
+              TextButton(
+                  child: Text(AppLocalizations.of(context)!.ok),
+                  onPressed: () => Navigator.pop(context)),
+            ],
+          ));
+}
+
+showImageAlert(BuildContext context, String? message, String title,
+    {String? imageUrl}) {
+  return showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+            scrollable: true,
+            title: Text(title),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (imageUrl != null)
+                  GestureDetector(
+                    onTap: () => launchUrlString(imageUrl),
+                    child: StatefulBuilder(
+                      builder: (context, setState) => Image.network(imageUrl,
+                          key: UniqueKey(),
+                          width: 400,
+                          loadingBuilder: (context, child, loadingProgress) =>
+                              const CircularProgressIndicator(),
+                          errorBuilder: (context, error, st) =>
+                              ErrorRetryWidget(
+                                  error: error,
+                                  onRetry: () => setState(() {}))),
+                    ),
+                  ),
+                if (message != null) Text(message),
+              ],
+            ),
             actions: <Widget>[
               TextButton(
                   child: Text(AppLocalizations.of(context)!.ok),

@@ -24,7 +24,7 @@ WORKDIR /app/
 RUN flutter pub get
 
 # Build the app
-RUN flutter build web --release --web-renderer html --dart-define=FLUTTER_WEB_CANVASKIT_URL=https://npm.elemecdn.com/canvaskit-wasm@0.37.1/bin/
+RUN flutter build web --release --web-renderer html --dart-define=FLUTTER_WEB_CANVASKIT_URL=https://npm.elemecdn.com/canvaskit-wasm@0.37.1/bin/ --base-href "/moss/"
 
 # Copy assets to build/web
 RUN cp -r assets build/web/assets/
@@ -35,7 +35,8 @@ RUN cp -r assets build/web/assets/
 # Built web root is at /app/build/web
 # Create the run-time image
 FROM nginx:1.23.3-alpine
-COPY --from=build-env /app/build/web /usr/share/nginx/html
+COPY --from=build-env /app/build/web /usr/share/nginx/html/moss
+COPY --from=build-env /app/intro_page /usr/share/nginx/html
 
 # Copy nginx config
 COPY --from=build-env /app/nginx.conf /etc/nginx/nginx.conf

@@ -54,6 +54,19 @@ Map<String, dynamic> _$ChatRecordToJson(ChatRecord instance) =>
       'processed_extra_data': instance.processed_extra_data,
     };
 
+ModelConfig _$ModelConfigFromJson(Map<String, dynamic> json) => ModelConfig(
+      json['id'] as int,
+      json['description'] as String,
+      Map<String, bool>.from(json['default_plugin_config'] as Map),
+    );
+
+Map<String, dynamic> _$ModelConfigToJson(ModelConfig instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'description': instance.description,
+      'default_plugin_config': instance.default_plugin_config,
+    };
+
 WSInferResponse _$WSInferResponseFromJson(Map<String, dynamic> json) =>
     WSInferResponse(
       json['status'] as int?,

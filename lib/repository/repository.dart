@@ -209,10 +209,11 @@ class Repository {
     }
     final bool inviteRequired = data['invite_required'];
     final String? notice = data['notice'];
-    Map<String, bool> plugin_cfg = Map.from(data['default_plugin_config']);
-    List model_cfg = List.from(data['model_config']);
+    List<ModelConfig> model_cfg = data['model_config']
+        .map<ModelConfig>((e) => ModelConfig.fromJson(e))
+        .toList();
     return repositoryConfig =
-        RepositoryConfig(region, inviteRequired, notice, plugin_cfg, model_cfg);
+        RepositoryConfig(region, inviteRequired, notice, model_cfg);
   }
 
   Future<String?> getScreenshotForChat(int chatId) async {
@@ -222,15 +223,17 @@ class Repository {
     return data['url'];
   }
 
-  Future<void> setPluginConfig(Map value) async {
-    await dio.put("$baseUrl/users/me",
+  Future<User> setPluginConfig(Map value) async {
+    final Response response = await dio.put("$baseUrl/users/me",
         options: Options(headers: _tokenHeader),
         data: {"plugin_config": value});
+    return User.fromJson(response.data!);
   }
 
-  Future<void> setModelConfig(int value) async {
-    await dio.put("$baseUrl/users/me",
+  Future<User> setModelConfig(int value) async {
+    final Response response = await dio.put("$baseUrl/users/me",
         options: Options(headers: _tokenHeader), data: {"model_id": value});
+    return User.fromJson(response.data!);
   }
 }
 
@@ -238,11 +241,10 @@ class RepositoryConfig {
   final Region region;
   final bool inviteRequired;
   final String? notice;
-  final Map<String, bool> default_plugin_config;
-  final List model_config;
+  final List<ModelConfig> model_config;
 
-  const RepositoryConfig(this.region, this.inviteRequired, this.notice,
-      this.default_plugin_config, this.model_config);
+  const RepositoryConfig(
+      this.region, this.inviteRequired, this.notice, this.model_config);
 }
 
 class JWTInterceptor extends QueuedInterceptor {

@@ -59,6 +59,20 @@ class ChatRecord {
 }
 
 @JsonSerializable()
+class ModelConfig {
+  final int id;
+  final String description;
+  final Map<String, bool> default_plugin_config;
+
+  ModelConfig(this.id, this.description, this.default_plugin_config);
+
+  factory ModelConfig.fromJson(Map<String, dynamic> json) =>
+      _$ModelConfigFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ModelConfigToJson(this);
+}
+
+@JsonSerializable()
 class WSInferResponse {
   final int? status;
   final int? status_code;

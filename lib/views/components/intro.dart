@@ -144,9 +144,14 @@ class MossOptionsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final modelCfg = Repository.getInstance().repositoryConfig!.model_config;
-    final pluginCfg = AccountProvider.getInstance().user!.plugin_config;
     return StatefulBuilder(builder: (context, setState) {
+      final modelCfg = Repository.getInstance().repositoryConfig!.model_config;
+      final currentModel = modelCfg.firstWhere((element) =>
+          element.id == AccountProvider.getInstance().user!.model_id);
+      final availablePlugins = currentModel.default_plugin_config.keys
+          .where((element) => currentModel.default_plugin_config[element]!)
+          .toList();
+      final pluginCfg = AccountProvider.getInstance().user!.plugin_config;
       return Padding(
           padding: const EdgeInsets.only(top: 8),
           child: Wrap(alignment: WrapAlignment.center, children: [
@@ -155,7 +160,7 @@ class MossOptionsWidget extends StatelessWidget {
               child: LocalHero(
                 tag: "mossoptions1",
                 child: SizedBox(
-                  width: 210,
+                  width: 225,
                   child: Material(
                     child: DropdownButtonHideUnderline(
                       child: IntrinsicHeight(
@@ -172,21 +177,18 @@ class MossOptionsWidget extends StatelessWidget {
                             value: AccountProvider.getInstance().user!.model_id,
                             items: modelCfg
                                 .map((e) => DropdownMenuItem(
-                                      value: e['id']! as int,
-                                      child: Text(e['description']),
+                                      value: e.id,
+                                      child: Text(e.description),
                                     ))
                                 .toList(),
                             onChanged: (value) async {
-                              final original =
-                                  AccountProvider.getInstance().user!.model_id;
-                              AccountProvider.getInstance().user!.model_id =
-                                  value!;
                               try {
-                                Repository.getInstance().setModelConfig(value);
+                                AccountProvider.getInstance().user?.model_id =
+                                    (await Repository.getInstance()
+                                            .setModelConfig(value!))
+                                        .model_id;
                                 setState(() {});
                               } catch (e) {
-                                AccountProvider.getInstance().user!.model_id =
-                                    original;
                                 await showAlert(context, parseError(e),
                                     AppLocalizations.of(context)!.error);
                               }
@@ -204,7 +206,7 @@ class MossOptionsWidget extends StatelessWidget {
               child: LocalHero(
                 tag: "mossoptions2",
                 child: SizedBox(
-                  width: 210,
+                  width: 225,
                   child: Material(
                     child: DropdownButtonHideUnderline(
                       child: IntrinsicHeight(
@@ -252,11 +254,7 @@ class MossOptionsWidget extends StatelessWidget {
                                               ],
                                       ))
                                 ] +
-                                AccountProvider.getInstance()
-                                    .user!
-                                    .plugin_config
-                                    .keys
-                                    .map((e) {
+                                availablePlugins.map((e) {
                                   return DropdownMenuItem(
                                       value: e,
                                       child: IgnorePointer(
@@ -277,15 +275,14 @@ class MossOptionsWidget extends StatelessWidget {
                                                   Text(e, textScaleFactor: 0.9),
                                                 ],
                                               ),
-                                              SizedBox(
-                                                width: 16,
-                                                child: Checkbox(
-                                                    value: AccountProvider
-                                                            .getInstance()
-                                                        .user!
-                                                        .plugin_config[e],
-                                                    onChanged: (value) {}),
-                                              ),
+                                              Checkbox(
+                                                  visualDensity:
+                                                      VisualDensity.compact,
+                                                  value: AccountProvider
+                                                          .getInstance()
+                                                      .user!
+                                                      .plugin_config[e],
+                                                  onChanged: (value) {}),
                                             ]),
                                       ));
                                 }).toList(),
@@ -300,18 +297,17 @@ class MossOptionsWidget extends StatelessWidget {
                                       .user!
                                       .plugin_config[value]!;
                               try {
-                                Repository.getInstance().setPluginConfig(
-                                    AccountProvider.getInstance()
-                                        .user!
-                                        .plugin_config);
+                                AccountProvider.getInstance()
+                                        .user
+                                        ?.plugin_config =
+                                    (await Repository.getInstance()
+                                            .setPluginConfig(
+                                                AccountProvider.getInstance()
+                                                    .user!
+                                                    .plugin_config))
+                                        .plugin_config;
                                 setState(() {});
                               } catch (e) {
-                                AccountProvider.getInstance()
-                                        .user!
-                                        .plugin_config[value!] =
-                                    !AccountProvider.getInstance()
-                                        .user!
-                                        .plugin_config[value]!;
                                 await showAlert(context, parseError(e),
                                     AppLocalizations.of(context)!.error);
                               }

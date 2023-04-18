@@ -142,6 +142,21 @@ class _NullChatLoaderState extends State<NullChatLoader> {
 class MossOptionsWidget extends StatelessWidget {
   const MossOptionsWidget({super.key});
 
+  static const colors = [
+    Colors.red,
+    Colors.green,
+    Colors.blue,
+    Colors.yellow,
+    Colors.purple,
+    Colors.orange,
+    Colors.pink,
+    Colors.teal,
+    Colors.cyan,
+    Colors.amber,
+    Colors.lightBlue,
+    Colors.lightGreen,
+  ];
+
   @override
   Widget build(BuildContext context) {
     return StatefulBuilder(builder: (context, setState) {
@@ -235,9 +250,11 @@ class MossOptionsWidget extends StatelessWidget {
                                                         pluginCfg[element] ==
                                                         true)
                                                     .map<Widget>((e) => Icon(
-                                                          pluginToIcon[e],
-                                                          size: 16,
-                                                        ))
+                                                        pluginToIcon[e],
+                                                        size: 16,
+                                                        color: colors[
+                                                            e.hashCode %
+                                                                colors.length]))
                                                     .toList() +
                                                 [
                                                   const SizedBox(width: 8),
@@ -270,7 +287,9 @@ class MossOptionsWidget extends StatelessWidget {
                                                     CrossAxisAlignment.center,
                                                 children: [
                                                   Icon(pluginToIcon[e],
-                                                      size: 16),
+                                                      size: 16,
+                                                      color: colors[e.hashCode %
+                                                          colors.length]),
                                                   const SizedBox(width: 8),
                                                   Text(e, textScaleFactor: 0.9),
                                                 ],

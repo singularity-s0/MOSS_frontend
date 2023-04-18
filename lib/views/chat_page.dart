@@ -133,22 +133,17 @@ class _ChatViewState extends State<ChatView> {
         String? innerThoughts = null;
         String? moss = null;
         if (code == 1) {
-          innerThoughts = RegExp(r"<\|Inner Thoughts\|>: (.*?)<(eot|eom)>")
-              .firstMatch(event)
-              ?.group(1);
+          if (stage == "Inner Thoughts") {
+            innerThoughts = RegExp(r"<\|Inner Thoughts\|>: (.*?)<(eot|eom)>")
+                .firstMatch(event)
+                ?.group(1);
 
-          if (innerThoughts?.toLowerCase().trim() == "none") {
-            innerThoughts = null;
+            if (innerThoughts?.toLowerCase().trim() == "none") {
+              innerThoughts = null;
+            }
+          } else if (stage == "MOSS") {
+            moss = event;
           }
-          int mossIndex = event.indexOf("<|MOSS|>: ");
-          int mossEndIndex =
-              mossIndex == -1 ? -1 : event.indexOf("<eom>", mossIndex);
-          if (mossEndIndex == -1) {
-            mossEndIndex = event.length;
-          }
-          moss = mossIndex == -1
-              ? null
-              : event.substring(mossIndex + 10, mossEndIndex).trim();
         } else if (code == 3) {
           // Handle commands
           commands ??= {};

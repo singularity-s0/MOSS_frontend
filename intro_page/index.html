@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+<meta charset="utf-8">
 
 <head>
     <title>MOSS</title>
@@ -8,6 +9,7 @@
             background-image: url("bg.webp");
             background-repeat: no-repeat;
             background-size: cover;
+            background-position: center;
             margin: 0;
             padding: 0;
             display: flex;
@@ -22,36 +24,55 @@
             align-items: center;
             justify-content: center;
             flex-grow: 20;
+            padding-top: 40vh;
         }
 
-        .logo,
-        .intro {
-            margin-bottom: 20px;
-        }
-
-        .buttons {
-            flex-grow: 12;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .buttons img {
+        .btn.btn-primary {
+            transition: .4s;
+            background: #3864B8;
+            color: #fff;
+            border-radius: 6px;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.26);
+            border: 1px solid #3864B8;
             margin: 10px;
+        }
+
+        .btn.btn-primary:hover {
+            transition: .4s;
+            background: #3864B8;
+            box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.26);
+            border: 1px solid #3864B8;
+        }
+
+        .btn.btn-primary:active {
+            transition: .2s;
+            background: #3864B8;
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+            border: 1px solid #3864B8;
+        }
+
+        .btn {
+            height: 36px;
+            display: inline-block;
+            font: 14px/36px "Roboto", sans-serif !important;
+            padding: 0 16px;
+            border-radius: 2px;
+            min-width: 120px;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <img class="logo" src="logo.webp" alt="Logo">
-        <img class="intro" src="moss.webp" alt="Welcome to MOSS">
-    </div>
-    <div class="buttons">
-        <a href="moss"><img src="login.webp" alt="Login or Register"></a>
-        <a href="https://survey.moss.fastnlp.top/s/Ntd4eG"><img src="getinv.webp" alt="Get Invite Code"></a>
+        <a href="moss">
+            <div class="btn btn-primary"><i class="icon icon-cart"></i>登录注册</div>
+        </a>
+        <a href="https://survey.moss.fastnlp.top/s/Ntd4eG">
+            <div class="btn btn-primary"><i class="icon icon-cart"></i>申请问卷</div>
+        </a>
     </div>
 </body>
 

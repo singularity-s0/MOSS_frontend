@@ -146,15 +146,7 @@ class MossOptionsWidget extends StatelessWidget {
     Colors.red,
     Colors.green,
     Colors.blue,
-    Colors.yellow,
     Colors.purple,
-    Colors.orange,
-    Colors.pink,
-    Colors.teal,
-    Colors.cyan,
-    Colors.amber,
-    Colors.lightBlue,
-    Colors.lightGreen,
   ];
 
   @override

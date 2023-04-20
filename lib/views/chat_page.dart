@@ -65,6 +65,9 @@ void processExtraData(
     }
   }
   message.metadata!['currentText'] = text;
+  if (record.inner_thoughts != null) {
+    message.metadata!['innerThoughts'] = record.inner_thoughts;
+  }
 }
 
 class _ChatViewState extends State<ChatView> {
@@ -133,15 +136,7 @@ class _ChatViewState extends State<ChatView> {
         String? innerThoughts = null;
         String? moss = null;
         if (code == 1) {
-          if (stage == "Inner Thoughts") {
-            innerThoughts = RegExp(r"<\|Inner Thoughts\|>: (.*?)<(eot|eom)>")
-                .firstMatch(event)
-                ?.group(1);
-
-            if (innerThoughts?.toLowerCase().trim() == "none") {
-              innerThoughts = null;
-            }
-          } else if (stage == "MOSS") {
+          if (stage == "MOSS") {
             moss = event;
           }
         } else if (code == 3) {
@@ -163,7 +158,6 @@ class _ChatViewState extends State<ChatView> {
                       metadata: {
                         'animatedIndex': 0,
                         'currentText': moss ?? "",
-                        'innerThoughts': innerThoughts,
                         'commands': commands,
                       },
                       id: _messages.length.toString(),
@@ -174,8 +168,6 @@ class _ChatViewState extends State<ChatView> {
           if (mounted) {
             setState(() {
               _messages.first.metadata!['currentText'] = moss;
-              _messages.first.metadata!['innerThoughts'] =
-                  innerThoughts ?? _messages.first.metadata!['innerThoughts'];
               _messages.first.metadata!['commands'] =
                   commands ?? _messages.first.metadata!['commands'];
             });

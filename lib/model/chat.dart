@@ -38,6 +38,7 @@ class ChatRecord {
   String created_at;
   String request;
   String response;
+  String? inner_thoughts;
   List<dynamic>? extra_data;
   List<dynamic>? processed_extra_data;
 
@@ -54,6 +55,7 @@ class ChatRecord {
       required this.created_at,
       required this.request,
       required this.response,
+      this.inner_thoughts,
       this.extra_data,
       this.processed_extra_data});
 }

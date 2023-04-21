@@ -59,10 +59,7 @@ showImageAlert(BuildContext context, String? message, String title,
                     onTap: () => launchUrlString(imageUrl),
                     child: StatefulBuilder(
                       builder: (context, setState) => Image.network(imageUrl,
-                          key: UniqueKey(),
                           width: 400,
-                          loadingBuilder: (context, child, loadingProgress) =>
-                              const CircularProgressIndicator(),
                           errorBuilder: (context, error, st) =>
                               ErrorRetryWidget(
                                   error: AppLocalizations.of(context)!

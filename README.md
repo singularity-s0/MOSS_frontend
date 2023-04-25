@@ -1,4 +1,4 @@
-# openchat_frontend
+# MOSS_Frontend
 
 Frontend for the MOSS chatbot
 

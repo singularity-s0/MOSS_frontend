@@ -336,13 +336,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           autocorrect: false,
                           decoration: InputDecoration(
                               labelText:
-                                  AppLocalizations.of(context)!.invitecode,
-                              suffixIcon: TextButton(
-                                child: Text(AppLocalizations.of(context)!
-                                    .join_waitlist),
-                                onPressed: () =>
-                                    launchUrlString(Repository.waitlistUrl),
-                              )),
+                                  AppLocalizations.of(context)!.invitecode),
                           controller: inviteCodeController,
                           validator: (value) => (value!.isNotEmpty)
                               ? null

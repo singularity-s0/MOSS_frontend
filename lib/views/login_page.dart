@@ -339,7 +339,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   AppLocalizations.of(context)!.invitecode,
                               hintText: "使用复旦邮箱注册无须邀请码"),
                           controller: inviteCodeController,
-                          validator: (value) => null,
+                          validator: (value) => null),
                     const SizedBox(height: 20),
                     TextFormField(
                         textCapitalization: TextCapitalization.none,

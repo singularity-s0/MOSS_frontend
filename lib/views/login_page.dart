@@ -336,12 +336,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           autocorrect: false,
                           decoration: InputDecoration(
                               labelText:
-                                  AppLocalizations.of(context)!.invitecode),
+                                  AppLocalizations.of(context)!.invitecode,
+                              hintText: "使用复旦邮箱注册无须邀请码"),
                           controller: inviteCodeController,
-                          validator: (value) => (value!.isNotEmpty)
-                              ? null
-                              : AppLocalizations.of(context)!
-                                  .please_enter_valid_invite_code),
+                          validator: (value) => null,
                     const SizedBox(height: 20),
                     TextFormField(
                         textCapitalization: TextCapitalization.none,

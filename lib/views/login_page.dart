@@ -18,6 +18,10 @@ bool isValidEmail(String email) {
       .hasMatch(email);
 }
 
+bool isFudanEmail(String email) {
+  return isValidEmail(email) && email.endsWith("fudan.edu.cn");
+}
+
 bool isValidCNPhoneNumber(String phone) {
   return RegExp(r'^[0-9]{11}$').hasMatch(phone);
 }
@@ -75,8 +79,8 @@ class _LoginScreenState extends State<LoginScreen> {
       keyboard = TextInputType.emailAddress;
       labelText = AppLocalizations.of(context)!.account;
     } else if (region == Region.CN) {
-      keyboard = TextInputType.phone;
-      labelText = AppLocalizations.of(context)!.phone_number;
+      keyboard = TextInputType.url;
+      labelText = AppLocalizations.of(context)!.phone_number_or_fudan;
     } else {
       keyboard = TextInputType.emailAddress;
       labelText = AppLocalizations.of(context)!.email;
@@ -97,9 +101,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 : AppLocalizations.of(context)!.please_enter_valid_account;
           }
           if (region == Region.CN) {
-            return isValidCNPhoneNumber(value!)
+            return isValidCNPhoneNumber(value!) || isFudanEmail(value)
                 ? null
-                : AppLocalizations.of(context)!.please_enter_valid_phone;
+                : AppLocalizations.of(context)!
+                    .please_enter_valid_phone_or_fudan;
           } else {
             return isValidEmail(value!)
                 ? null
@@ -307,6 +312,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   : AppLocalizations.of(context)!.resetpassword,
               style: const TextStyle(fontSize: 35),
             ),
+            if (_loginMode == LoginMode.register && inviteRequired)
+              Opacity(
+                opacity: 0.7,
+                child: Text(
+                  AppLocalizations.of(context)!.fudan_no_invite,
+                  style: const TextStyle(fontSize: 15),
+                ),
+              ),
             const SizedBox(height: 30),
             Form(
               key: suformKey,
@@ -333,10 +346,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           autocorrect: false,
                           decoration: InputDecoration(
                               labelText:
-                                  AppLocalizations.of(context)!.invitecode,
-                              hintText: "使用复旦邮箱注册无须邀请码"),
+                                  AppLocalizations.of(context)!.invitecode),
                           controller: inviteCodeController,
-                          validator: (value) => null),
+                          validator: (value) => value!.isEmpty &&
+                                  !isFudanEmail(accountController.text)
+                              ? AppLocalizations.of(context)!
+                                  .please_enter_valid_invite_code
+                              : null),
                     const SizedBox(height: 20),
                     TextFormField(
                         textCapitalization: TextCapitalization.none,

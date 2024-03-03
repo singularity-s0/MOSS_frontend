@@ -365,6 +365,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               onTap: () async {
                                 if (inviteRequired &&
                                     inviteCodeController.text.isEmpty &&
+                                    !isFudanEmail(accountController.text) &&
                                     _loginMode == LoginMode.register) {
                                   await showAlert(
                                       context,

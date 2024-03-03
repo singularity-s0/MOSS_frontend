@@ -4,7 +4,6 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 import '../../models/input_clear_mode.dart';
 import '../../models/send_button_visibility_mode.dart';
-import '../../util.dart';
 import '../state/inherited_chat_theme.dart';
 import '../state/inherited_l10n.dart';
 import 'attachment_button.dart';

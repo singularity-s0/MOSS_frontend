@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:openchat_frontend/model/chat.dart';
 import 'package:openchat_frontend/model/user.dart';
@@ -209,11 +208,11 @@ class Repository {
     }
     final bool inviteRequired = data['invite_required'];
     final String? notice = data['notice'];
-    List<ModelConfig> model_cfg = data['model_config']
+    List<ModelConfig> modelCfg = data['model_config']
         .map<ModelConfig>((e) => ModelConfig.fromJson(e))
         .toList();
     return repositoryConfig =
-        RepositoryConfig(region, inviteRequired, notice, model_cfg);
+        RepositoryConfig(region, inviteRequired, notice, modelCfg);
   }
 
   Future<String?> getScreenshotForChat(int chatId) async {

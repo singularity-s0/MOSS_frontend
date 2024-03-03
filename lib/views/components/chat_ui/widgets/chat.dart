@@ -1,13 +1,9 @@
-import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:intl/intl.dart';
-import 'package:openchat_frontend/views/components/delay_show_button.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../chat_l10n.dart';

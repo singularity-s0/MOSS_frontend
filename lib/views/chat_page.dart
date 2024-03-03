@@ -1,11 +1,9 @@
 import 'dart:math';
 
 import 'package:clipboard/clipboard.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:highlighter/languages/markdown.dart';
 import 'package:openchat_frontend/main.dart';
 import 'package:openchat_frontend/repository/ws_chat_manager.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
@@ -17,8 +15,6 @@ import 'package:openchat_frontend/utils/syntax_highlight.dart';
 import 'package:openchat_frontend/views/components/animated_text.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:openchat_frontend/views/components/chat_ui/flutter_chat_ui.dart';
-import 'package:openchat_frontend/views/components/chat_ui/widgets/state/inherited_chat_theme.dart';
-import 'package:openchat_frontend/views/components/delay_show_button.dart';
 import 'package:openchat_frontend/views/components/intro.dart';
 import 'package:openchat_frontend/views/components/typing_indicator.dart';
 import 'package:openchat_frontend/views/components/widgets.dart';
@@ -133,8 +129,8 @@ class _ChatViewState extends State<ChatView> {
       },
       onReceive: (event, code, type, stage) {
         Map<String, String?>? commands = _messages.first.metadata?['commands'];
-        String? innerThoughts = null;
-        String? moss = null;
+        String? innerThoughts;
+        String? moss;
         if (code == 1) {
           if (stage == "MOSS") {
             moss = event;
@@ -417,9 +413,9 @@ class _ChatViewState extends State<ChatView> {
                           ? CrossFadeState.showFirst
                           : CrossFadeState.showSecond,
                       duration: const Duration(milliseconds: 200),
-                      firstChild: Row(
+                      firstChild: const Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          children: const [TypingIndicator()]),
+                          children: [TypingIndicator()]),
                       secondChild: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -460,8 +456,9 @@ class _ChatViewState extends State<ChatView> {
                                     : null),
                             padding: EdgeInsets.zero,
                             onPressed: () async {
-                              if (widget.topic.records?.isEmpty != false)
+                              if (widget.topic.records?.isEmpty != false) {
                                 return;
+                              }
                               int newLike = 1;
                               if (widget.topic.records!.last.like_data ==
                                   newLike) {
@@ -490,8 +487,9 @@ class _ChatViewState extends State<ChatView> {
                                     : null),
                             padding: EdgeInsets.zero,
                             onPressed: () async {
-                              if (widget.topic.records?.isEmpty != false)
+                              if (widget.topic.records?.isEmpty != false) {
                                 return;
+                              }
                               int newLike = -1;
                               if (widget.topic.records!.last.like_data ==
                                   newLike) {

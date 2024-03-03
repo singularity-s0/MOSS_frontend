@@ -88,7 +88,7 @@ String parseError(Object? error) {
           ErrorMessage.fromJson(error.response!.data as Map<String, dynamic>);
       return "Code ${error.response!.statusCode}: ${em.message}";
     } else {
-      return error.message;
+      return error.message.toString();
     }
   } else if (error is Exception) {
     return error.toString();

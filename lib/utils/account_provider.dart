@@ -37,9 +37,9 @@ class AccountProvider with ChangeNotifier {
   }
 
   set user(User? value) {
-    User? previous_user = _user;
+    User? previousUser = _user;
     _user = value;
-    if (previous_user != _user) {
+    if (previousUser != _user) {
       notifyListeners();
     }
   }

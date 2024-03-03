@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:openchat_frontend/main.dart';
 import 'package:openchat_frontend/model/chat.dart';
 import 'package:openchat_frontend/repository/repository.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:openchat_frontend/utils/dialog.dart';
-import 'package:openchat_frontend/views/chat_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:openchat_frontend/views/components/account_card.dart';
 import 'package:provider/provider.dart';

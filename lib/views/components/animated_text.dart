@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:openchat_frontend/views/components/chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:openchat_frontend/utils/syntax_highlight.dart';
 import 'package:openchat_frontend/views/chat_page.dart';
@@ -19,12 +18,12 @@ class AnimatedTextMessage extends StatefulWidget {
   final Widget? bottomWidget;
 
   const AnimatedTextMessage({
-    Key? key,
+    super.key,
     required this.message,
     this.speed = 100,
     this.animate = true,
     this.bottomWidget,
-  }) : super(key: key);
+  });
 
   @override
   AnimatedTextMessageState createState() => AnimatedTextMessageState();

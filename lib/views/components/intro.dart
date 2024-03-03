@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:local_hero/local_hero.dart';
-import 'package:openchat_frontend/main.dart';
-import 'package:openchat_frontend/model/chat.dart';
 import 'package:openchat_frontend/repository/repository.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:openchat_frontend/utils/dialog.dart';
 import 'package:openchat_frontend/utils/syntax_highlight.dart';
 import 'package:openchat_frontend/views/history_page.dart';
-import 'package:provider/provider.dart';
 
 class MossIntroWidget extends StatelessWidget {
   final Object heroTag;
 
-  const MossIntroWidget({Key? key, required this.heroTag}) : super(key: key);
+  const MossIntroWidget({super.key, required this.heroTag});
 
   Widget buildBanner(
       BuildContext context, String title, String subtitle, IconData icon) {
@@ -100,7 +97,7 @@ class MossIntroWidget extends StatelessWidget {
 
 class NullChatLoader extends StatefulWidget {
   final Object heroTag;
-  const NullChatLoader({Key? key, required this.heroTag}) : super(key: key);
+  const NullChatLoader({super.key, required this.heroTag});
 
   @override
   State<NullChatLoader> createState() => _NullChatLoaderState();

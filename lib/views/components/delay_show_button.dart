@@ -8,11 +8,11 @@ class DelayShowWidget extends StatefulWidget {
   final Duration delay;
 
   const DelayShowWidget({
-    Key? key,
+    super.key,
     required this.child,
     this.enabled = true,
     this.delay = const Duration(seconds: 2),
-  }) : super(key: key);
+  });
 
   @override
   State<DelayShowWidget> createState() => _DelayShowWidgetState();

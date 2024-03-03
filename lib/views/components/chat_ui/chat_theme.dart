@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:openchat_frontend/main.dart';
 
 import 'widgets/message/system_message.dart';
 import 'widgets/unread_header.dart';

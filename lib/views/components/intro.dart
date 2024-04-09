@@ -124,7 +124,7 @@ class _NullChatLoaderState extends State<NullChatLoader> {
       }
       await HistoryPageState.addNewTopic(null);
     } catch (e) {
-      if (context.mounted) {
+      if (mounted) {
         showAlert(context, parseError(e), AppLocalizations.of(context)!.error);
       }
     }

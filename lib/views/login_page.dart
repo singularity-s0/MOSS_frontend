@@ -124,21 +124,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<JWToken?> Function(String, String, String, String,
       {required bool resetPassword}) autoSignupFunc(Region region) {
-    switch (region) {
-      case Region.Global:
-        return Repository.getInstance().registerWithEmailPassword;
-      case Region.CN:
-        return Repository.getInstance().registerWithPhonePassword;
+    if (region == Region.Global || isFudanEmail(accountController.text)) {
+      return Repository.getInstance().registerWithEmailPassword;
+    } else {
+      return Repository.getInstance().registerWithPhonePassword;
     }
   }
 
   Future<void> Function(String, String, String) autoRequestVerifyFunc(
       Region region) {
-    switch (region) {
-      case Region.Global:
-        return Repository.getInstance().requestEmailVerifyCode;
-      case Region.CN:
-        return Repository.getInstance().requestPhoneVerifyCode;
+    if (region == Region.Global || isFudanEmail(accountController.text)) {
+      return Repository.getInstance().requestEmailVerifyCode;
+    } else {
+      return Repository.getInstance().requestPhoneVerifyCode;
     }
   }
 

@@ -52,8 +52,6 @@ class MossIntroWidget extends StatelessWidget {
                       ),
                     ),
                     const Spacer(flex: 1),
-                    const MossOptionsWidget(),
-                    const Spacer(flex: 1),
                     Flexible(
                       flex: 10,
                       child: Align(

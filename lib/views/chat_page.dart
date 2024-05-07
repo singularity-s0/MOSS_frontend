@@ -378,7 +378,6 @@ class _ChatViewState extends State<ChatView> {
             }
           }
         },
-        listTopWidget: const MossOptionsWidget(),
         listBottomWidget: Padding(
           padding: const EdgeInsets.only(left: 16, right: 8, bottom: 8),
           child: Column(

@@ -1,10 +1,8 @@
-
 import 'package:openchat_frontend/model/chat.dart';
 import 'package:openchat_frontend/model/user.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:openchat_frontend/utils/settings_provider.dart';
-import 'package:openchat_frontend/views/login_page.dart';
 
 class Repository {
   static final _instance = Repository._();
@@ -40,12 +38,6 @@ class Repository {
         return status != null && status >= 200 && status < 300;
       },
     );
-
-    dio.interceptors.add(JWTInterceptor(
-        "$baseUrl/refresh",
-        () => provider.token,
-        (token) =>
-            provider.token = SettingsProvider.getInstance().token = token));
   }
 
   Future<void> requestEmailVerifyCode(
@@ -130,8 +122,7 @@ class Repository {
   }
 
   Map<String, String> get _tokenHeader {
-    assert(provider.token != null);
-    return {"Authorization": "Bearer ${provider.token!.access}"};
+    return {};
   }
 
   Future<List<ChatThread>?> getChatThreads() async {
@@ -195,24 +186,13 @@ class Repository {
   Future<RepositoryConfig?> getConfiguration() async {
     final Response response = await dio.get("$baseUrl/config");
     final Map<String, dynamic> data = response.data!;
-    Region region;
-    switch (data['region']) {
-      case "cn":
-        region = Region.CN;
-        break;
-      case "global":
-        region = Region.Global;
-        break;
-      default:
-        throw Exception("Unknown region");
-    }
     final bool inviteRequired = data['invite_required'];
     final String? notice = data['notice'];
     List<ModelConfig> modelCfg = data['model_config']
         .map<ModelConfig>((e) => ModelConfig.fromJson(e))
         .toList();
     return repositoryConfig =
-        RepositoryConfig(region, inviteRequired, notice, modelCfg);
+        RepositoryConfig(inviteRequired, notice, modelCfg);
   }
 
   Future<String?> getScreenshotForChat(int chatId) async {
@@ -237,13 +217,11 @@ class Repository {
 }
 
 class RepositoryConfig {
-  final Region region;
   final bool inviteRequired;
   final String? notice;
   final List<ModelConfig> model_config;
 
-  const RepositoryConfig(
-      this.region, this.inviteRequired, this.notice, this.model_config);
+  const RepositoryConfig(this.inviteRequired, this.notice, this.model_config);
 }
 
 class JWTInterceptor extends QueuedInterceptor {

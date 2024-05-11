@@ -18,7 +18,6 @@ import 'package:openchat_frontend/views/components/chat_ui/flutter_chat_ui.dart'
 import 'package:openchat_frontend/views/components/intro.dart';
 import 'package:openchat_frontend/views/components/typing_indicator.dart';
 import 'package:openchat_frontend/views/components/widgets.dart';
-import 'package:openchat_frontend/views/history_page.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -294,21 +293,6 @@ class _ChatViewState extends State<ChatView> {
       appBar: AppBar(
         centerTitle: true,
         automaticallyImplyLeading: false,
-        leading: (widget.showMenu)
-            ? IconButton(
-                icon: const Icon(Icons.menu),
-                onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => HistoryPage(
-                          selectedTopic: widget.topic,
-                          onTopicSelected: (p0) {
-                            TopicStateProvider.getInstance().currentTopic = p0;
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ),
-                    ))
-            : null,
         title: shouldUseLargeLogo
             ? const SizedBox()
             : LocalHero(
@@ -332,9 +316,6 @@ class _ChatViewState extends State<ChatView> {
                     "MossLogo${isDesktop(context) ? "Desktop" : widget.topic.id}}",
               )
             : const SizedBox(),
-        customBottomWidget: const Padding(
-            padding: EdgeInsets.only(left: 12, bottom: 12, right: 12),
-            child: ShareInfoConsentWidget()),
         onSendPressed:
             (types.PartialText message, VoidCallback clearInput) async {
           if (isWaitingForResponse || widget.topic.records == null) return;
@@ -654,12 +635,8 @@ class ChatPage extends StatelessWidget {
   Widget buildMobile(BuildContext context) =>
       Selector<TopicStateProvider, ChatThread?>(
           selector: (_, model) => model.currentTopic,
-          builder: (context, value, child) => value == null
-              ? NullChatLoader(
-                  heroTag:
-                      "MossLogo${isDesktop(context) ? "Desktop" : value?.id}}",
-                )
-              : ChatView(key: ValueKey(value), topic: value, showMenu: true));
+          builder: (context, value, child) =>
+              ChatView(key: ValueKey(value), topic: value!, showMenu: true));
 
   // Desktop UI
   Widget buildDesktop(BuildContext context) {
@@ -668,23 +645,6 @@ class ChatPage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Left View
-          SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: kTabletMasterContainerWidth,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0)),
-                clipBehavior: Clip.antiAlias,
-                child: Selector<TopicStateProvider, ChatThread?>(
-                    selector: (_, model) => model.currentTopic,
-                    builder: (context, value, child) =>
-                        HistoryPage(selectedTopic: value)),
-              ),
-            ),
-          ),
           // Right View
           ScaffoldMessenger(
             child: SizedBox(
@@ -707,12 +667,8 @@ class ChatPage extends StatelessWidget {
                               kTabletMasterContainerWidth),
                       child: Selector<TopicStateProvider, ChatThread?>(
                           selector: (_, model) => model.currentTopic,
-                          builder: (context, value, child) => value == null
-                              ? NullChatLoader(
-                                  heroTag:
-                                      "MossLogo${isDesktop(context) ? "Desktop" : value?.id}}",
-                                )
-                              : ChatView(key: ValueKey(value), topic: value)),
+                          builder: (context, value, child) =>
+                              ChatView(key: ValueKey(value), topic: value!)),
                     ),
                   ),
                 ),

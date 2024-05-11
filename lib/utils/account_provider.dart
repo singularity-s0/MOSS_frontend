@@ -3,6 +3,7 @@ import 'package:openchat_frontend/model/chat.dart';
 import 'package:openchat_frontend/model/user.dart';
 import 'package:openchat_frontend/repository/repository.dart';
 import 'package:openchat_frontend/utils/settings_provider.dart';
+import 'package:openchat_frontend/views/components/account_card.dart';
 
 class AccountProvider with ChangeNotifier {
   // Single instance class
@@ -19,19 +20,33 @@ class AccountProvider with ChangeNotifier {
   }
 
   // Login info, if this is null, the user is not logged in.
-  JWToken? _token;
+  JWToken? _token = JWToken("", "");
   JWToken? get token => _token;
   set token(JWToken? value) {
-    bool isPreviousNull = _token == null;
-    bool isNewNull = value == null;
-    _token = value;
-    if (isPreviousNull != isNewNull) {
-      notifyListeners();
-    }
+    // Ignored
   }
 
   // User info, if this is null, the user is not logged in.
-  User? _user;
+  User? _user = User(
+      email: "YOCSEF",
+      id: 0,
+      joined_time: "",
+      last_login: "",
+      nickname: "",
+      phone: "",
+      chats: [
+        ChatThread(
+            count: 0,
+            name: "YOCSEF",
+            created_at: "",
+            updated_at: "",
+            id: 0,
+            user_id: 0,
+            records: [])
+      ],
+      share_consent: false,
+      plugin_config: {},
+      model_id: 0);
   User? get user {
     return _user;
   }
@@ -66,9 +81,15 @@ class TopicStateProvider with ChangeNotifier {
 
   // Current chat topic
   ChatThread? _currentTopic;
-  ChatThread? get currentTopic => _currentTopic;
+  ChatThread? get currentTopic => ChatThread(
+      count: 0,
+      name: "",
+      created_at: "",
+      updated_at: "",
+      id: 0,
+      user_id: 0,
+      records: []);
   set currentTopic(ChatThread? value) {
-    _currentTopic = value;
-    notifyListeners();
+    // Ignored
   }
 }

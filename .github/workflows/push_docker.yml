@@ -33,4 +33,4 @@ jobs:
           push: true
           file: Dockerfile
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:dev
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:yocsef

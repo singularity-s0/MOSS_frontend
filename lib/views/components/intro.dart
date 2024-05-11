@@ -5,7 +5,6 @@ import 'package:openchat_frontend/repository/repository.dart';
 import 'package:openchat_frontend/utils/account_provider.dart';
 import 'package:openchat_frontend/utils/dialog.dart';
 import 'package:openchat_frontend/utils/syntax_highlight.dart';
-import 'package:openchat_frontend/views/history_page.dart';
 
 class MossIntroWidget extends StatelessWidget {
   final Object heroTag;
@@ -90,47 +89,6 @@ class MossIntroWidget extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class NullChatLoader extends StatefulWidget {
-  final Object heroTag;
-  const NullChatLoader({super.key, required this.heroTag});
-
-  @override
-  State<NullChatLoader> createState() => _NullChatLoaderState();
-}
-
-class _NullChatLoaderState extends State<NullChatLoader> {
-  bool lateInitDone = false;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!lateInitDone) {
-      lateInit();
-    }
-  }
-
-  void lateInit() async {
-    lateInitDone = true;
-    final provider = AccountProvider.getInstance();
-    try {
-      if (provider.user!.chats == null) {
-        final t = (await Repository.getInstance().getChatThreads())!;
-        provider.user!.chats = t;
-      }
-      await HistoryPageState.addNewTopic(null);
-    } catch (e) {
-      if (mounted) {
-        showAlert(context, parseError(e), AppLocalizations.of(context)!.error);
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return const SizedBox(); //MossIntroWidget(heroTag: widget.heroTag);
   }
 }
 

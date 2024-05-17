@@ -56,6 +56,18 @@ Map<String, dynamic> _$ChatRecordToJson(ChatRecord instance) =>
       'processed_extra_data': instance.processed_extra_data,
     };
 
+SimpleChatRecord _$SimpleChatRecordFromJson(Map<String, dynamic> json) =>
+    SimpleChatRecord(
+      request: json['request'] as String,
+      response: json['response'] as String,
+    );
+
+Map<String, dynamic> _$SimpleChatRecordToJson(SimpleChatRecord instance) =>
+    <String, dynamic>{
+      'request': instance.request,
+      'response': instance.response,
+    };
+
 ModelConfig _$ModelConfigFromJson(Map<String, dynamic> json) => ModelConfig(
       json['id'] as int,
       json['description'] as String,

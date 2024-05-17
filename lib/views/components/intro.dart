@@ -50,7 +50,7 @@ class MossIntroWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const Spacer(flex: 1),
+                    const Spacer(flex: 2),
                     Flexible(
                       flex: 10,
                       child: Align(
@@ -61,21 +61,18 @@ class MossIntroWidget extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              buildBanner(
-                                  context,
-                                  AppLocalizations.of(context)!.moss_intro_1a,
-                                  AppLocalizations.of(context)!.moss_intro_1b,
+                              buildBanner(context, "欢迎使用YOCSEF大模型", "在下方输入你的问题",
                                   Icons.chat),
-                              buildBanner(
-                                  context,
-                                  AppLocalizations.of(context)!.moss_intro_2a,
-                                  AppLocalizations.of(context)!.moss_intro_2b,
-                                  Icons.edit),
-                              buildBanner(
-                                  context,
-                                  AppLocalizations.of(context)!.moss_intro_3a,
-                                  AppLocalizations.of(context)!.moss_intro_3b,
-                                  Icons.help)
+                              // buildBanner(
+                              //     context,
+                              //     AppLocalizations.of(context)!.moss_intro_2a,
+                              //     AppLocalizations.of(context)!.moss_intro_2b,
+                              //     Icons.edit),
+                              // buildBanner(
+                              //     context,
+                              //     AppLocalizations.of(context)!.moss_intro_3a,
+                              //     AppLocalizations.of(context)!.moss_intro_3b,
+                              //     Icons.help)
                             ],
                           ),
                         ),

@@ -68,6 +68,7 @@ void processExtraData(
 class _ChatViewState extends State<ChatView> {
   final GlobalKey<ChatState> _chatKey = GlobalKey();
   final List<types.Message> _messages = [];
+  final List<SimpleChatRecord> _records = [];
 
   late final WebSocketChatManager chatManager;
 
@@ -95,8 +96,8 @@ class _ChatViewState extends State<ChatView> {
                   .name =
               record.request.substring(0, min(30, record.request.length));
         }
-        widget.topic.records!.add(record);
-        processExtraData(record, _messages.first, context);
+        _records.add(record);
+        // processExtraData(record, _messages.first, context);
         if (mounted) {
           setState(() {});
         }
@@ -212,7 +213,7 @@ class _ChatViewState extends State<ChatView> {
         _messages.insert(
             0,
             types.SystemMessage(
-              text: AppLocalizations.of(context)!.aigc_warning_message,
+              text: "回答均由语言模型生成，可能包含不完整、误导性的，或者错误的信息。",
               id: "${widget.topic.id}ai-alert",
             ));
       }
@@ -296,9 +297,8 @@ class _ChatViewState extends State<ChatView> {
         title: shouldUseLargeLogo
             ? const SizedBox()
             : LocalHero(
-                tag:
-                    "MossLogo${isDesktop(context) ? "Desktop" : widget.topic.id}}",
-                child: Image.asset('assets/images/logo.webp', scale: 7)),
+                tag: "MossLogo",
+                child: Image.asset('assets/images/logo.webp', height: 56)),
         surfaceTintColor: Colors.transparent,
       ),
       body: Chat(
@@ -311,9 +311,8 @@ class _ChatViewState extends State<ChatView> {
             sendButtonVisibilityMode: SendButtonVisibilityMode.always),
         theme: chatTheme,
         emptyState: shouldUseLargeLogo
-            ? MossIntroWidget(
-                heroTag:
-                    "MossLogo${isDesktop(context) ? "Desktop" : widget.topic.id}}",
+            ? const MossIntroWidget(
+                heroTag: "MossLogo",
               )
             : const SizedBox(),
         onSendPressed:
@@ -328,7 +327,7 @@ class _ChatViewState extends State<ChatView> {
               _messages.insert(
                   0,
                   types.SystemMessage(
-                    text: AppLocalizations.of(context)!.aigc_warning_message,
+                    text: "回答均由语言模型生成，可能包含不完整、误导性的，或者错误的信息。",
                     id: "${widget.topic.id}ai-alert",
                   ));
             }
@@ -345,7 +344,7 @@ class _ChatViewState extends State<ChatView> {
           try {
             isFirstResponse = true;
             isStreamingResponse = true;
-            chatManager.sendMessage(message.text);
+            chatManager.sendMessage(message.text, _records);
           } catch (e) {
             if (mounted) {
               setState(() {
@@ -404,15 +403,16 @@ class _ChatViewState extends State<ChatView> {
                               label: Text(
                                   AppLocalizations.of(context)!.regenerate),
                               onPressed: () async {
-                                final topic = widget.topic;
+                                final lastMessage = _records.last.request;
                                 setState(() {
                                   _messages.removeAt(0);
-                                  topic.records!.removeLast();
+                                  _records.removeLast();
                                 });
                                 try {
                                   isFirstResponse = true;
                                   isStreamingResponse = true;
-                                  chatManager.regenerate();
+                                  chatManager.sendMessage(
+                                      lastMessage, _records);
                                 } catch (e) {
                                   if (mounted) {
                                     setState(() {
@@ -426,68 +426,68 @@ class _ChatViewState extends State<ChatView> {
                                   }
                                 }
                               }),
-                          IconButton(
-                            icon: Icon(Icons.thumb_up,
-                                size: 16,
-                                color: widget.topic.records!.lastOrNull
-                                            ?.like_data ==
-                                        1
-                                    ? Theme.of(context).colorScheme.primary
-                                    : null),
-                            padding: EdgeInsets.zero,
-                            onPressed: () async {
-                              if (widget.topic.records?.isEmpty != false) {
-                                return;
-                              }
-                              int newLike = 1;
-                              if (widget.topic.records!.last.like_data ==
-                                  newLike) {
-                                newLike = 0;
-                              }
-                              try {
-                                await Repository.getInstance().modifyRecord(
-                                    widget.topic.records!.last.id, newLike);
-                                setState(() {
-                                  widget.topic.records!.last.like_data =
-                                      newLike;
-                                });
-                              } catch (e) {
-                                await showAlert(context, parseError(e),
-                                    AppLocalizations.of(context)!.error);
-                              }
-                            },
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.thumb_down,
-                                size: 16,
-                                color: widget.topic.records!.lastOrNull
-                                            ?.like_data ==
-                                        -1
-                                    ? Theme.of(context).colorScheme.primary
-                                    : null),
-                            padding: EdgeInsets.zero,
-                            onPressed: () async {
-                              if (widget.topic.records?.isEmpty != false) {
-                                return;
-                              }
-                              int newLike = -1;
-                              if (widget.topic.records!.last.like_data ==
-                                  newLike) {
-                                newLike = 0;
-                              }
-                              try {
-                                await Repository.getInstance().modifyRecord(
-                                    widget.topic.records!.last.id, newLike);
-                                setState(() {
-                                  widget.topic.records!.last.like_data =
-                                      newLike;
-                                });
-                              } catch (e) {
-                                await showAlert(context, parseError(e),
-                                    AppLocalizations.of(context)!.error);
-                              }
-                            },
-                          ),
+                          // IconButton(
+                          //   icon: Icon(Icons.thumb_up,
+                          //       size: 16,
+                          //       color: widget.topic.records!.lastOrNull
+                          //                   ?.like_data ==
+                          //               1
+                          //           ? Theme.of(context).colorScheme.primary
+                          //           : null),
+                          //   padding: EdgeInsets.zero,
+                          //   onPressed: () async {
+                          //     if (widget.topic.records?.isEmpty != false) {
+                          //       return;
+                          //     }
+                          //     int newLike = 1;
+                          //     if (widget.topic.records!.last.like_data ==
+                          //         newLike) {
+                          //       newLike = 0;
+                          //     }
+                          //     try {
+                          //       await Repository.getInstance().modifyRecord(
+                          //           widget.topic.records!.last.id, newLike);
+                          //       setState(() {
+                          //         widget.topic.records!.last.like_data =
+                          //             newLike;
+                          //       });
+                          //     } catch (e) {
+                          //       await showAlert(context, parseError(e),
+                          //           AppLocalizations.of(context)!.error);
+                          //     }
+                          //   },
+                          // ),
+                          // IconButton(
+                          //   icon: Icon(Icons.thumb_down,
+                          //       size: 16,
+                          //       color: widget.topic.records!.lastOrNull
+                          //                   ?.like_data ==
+                          //               -1
+                          //           ? Theme.of(context).colorScheme.primary
+                          //           : null),
+                          //   padding: EdgeInsets.zero,
+                          //   onPressed: () async {
+                          //     if (widget.topic.records?.isEmpty != false) {
+                          //       return;
+                          //     }
+                          //     int newLike = -1;
+                          //     if (widget.topic.records!.last.like_data ==
+                          //         newLike) {
+                          //       newLike = 0;
+                          //     }
+                          //     try {
+                          //       await Repository.getInstance().modifyRecord(
+                          //           widget.topic.records!.last.id, newLike);
+                          //       setState(() {
+                          //         widget.topic.records!.last.like_data =
+                          //             newLike;
+                          //       });
+                          //     } catch (e) {
+                          //       await showAlert(context, parseError(e),
+                          //           AppLocalizations.of(context)!.error);
+                          //     }
+                          //   },
+                          // ),
                           IconButton(
                               icon: const Icon(Icons.copy, size: 16),
                               padding: EdgeInsets.zero,
@@ -506,7 +506,8 @@ class _ChatViewState extends State<ChatView> {
                                 String content = "";
                                 for (final record in widget.topic.records!) {
                                   content += "[User]\n${record.request}\n\n";
-                                  content += "[MOSS]\n${record.response}\n\n";
+                                  content +=
+                                      "[Assistant]\n${record.response}\n\n";
                                 }
                                 FlutterClipboard.copy(content);
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -516,20 +517,20 @@ class _ChatViewState extends State<ChatView> {
                                                 .copied_to_clipboard)));
                               },
                               icon: const Icon(Icons.copy_all)),
-                          IconButton(
-                              onPressed: () async {
-                                try {
-                                  final String url =
-                                      (await Repository.getInstance()
-                                          .getScreenshotForChat(
-                                              widget.topic.id))!;
-                                  await launchUrlString(url);
-                                } catch (e) {
-                                  await showAlert(context, parseError(e),
-                                      AppLocalizations.of(context)!.error);
-                                }
-                              },
-                              icon: const Icon(Icons.share)),
+                          // IconButton(
+                          //     onPressed: () async {
+                          //       try {
+                          //         final String url =
+                          //             (await Repository.getInstance()
+                          //                 .getScreenshotForChat(
+                          //                     widget.topic.id))!;
+                          //         await launchUrlString(url);
+                          //       } catch (e) {
+                          //         await showAlert(context, parseError(e),
+                          //             AppLocalizations.of(context)!.error);
+                          //       }
+                          //     },
+                          //     icon: const Icon(Icons.share)),
                         ],
                       ),
                     ),

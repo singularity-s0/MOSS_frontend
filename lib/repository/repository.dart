@@ -15,6 +15,7 @@ class Repository {
   }
 
   static String get wsBaseUrl {
+    return "wss://chat.open-moss.com/api/ws";
     final uri = Uri.base;
     return "${uri.scheme == "https" ? "wss" : "ws"}://${uri.host}:${uri.port}/api/ws";
   }

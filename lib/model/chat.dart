@@ -61,6 +61,19 @@ class ChatRecord {
 }
 
 @JsonSerializable()
+class SimpleChatRecord {
+  String request;
+  String response;
+
+  factory SimpleChatRecord.fromJson(Map<String, dynamic> json) =>
+      _$SimpleChatRecordFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SimpleChatRecordToJson(this);
+
+  SimpleChatRecord({required this.request, required this.response});
+}
+
+@JsonSerializable()
 class ModelConfig {
   final int id;
   final String description;

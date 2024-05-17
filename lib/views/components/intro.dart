@@ -61,8 +61,8 @@ class MossIntroWidget extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              buildBanner(context, "欢迎使用YOCSEF大模型", "在下方输入你的问题",
-                                  Icons.chat),
+                              buildBanner(
+                                  context, "欢迎使用申申", "YOCSEF大模型", Icons.chat),
                               // buildBanner(
                               //     context,
                               //     AppLocalizations.of(context)!.moss_intro_2a,

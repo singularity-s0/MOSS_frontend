@@ -400,8 +400,7 @@ class _ChatViewState extends State<ChatView> {
                         children: [
                           TextButton.icon(
                               icon: const Icon(Icons.refresh, size: 16),
-                              label: Text(
-                                  AppLocalizations.of(context)!.regenerate),
+                              label: const Text("重新生成"),
                               onPressed: () async {
                                 final lastMessage = _records.last.request;
                                 setState(() {
@@ -500,7 +499,6 @@ class _ChatViewState extends State<ChatView> {
                                             AppLocalizations.of(context)!
                                                 .copied_to_clipboard)));
                               }),
-                          const Spacer(),
                           IconButton(
                               onPressed: () {
                                 String content = "";
@@ -517,6 +515,16 @@ class _ChatViewState extends State<ChatView> {
                                                 .copied_to_clipboard)));
                               },
                               icon: const Icon(Icons.copy_all)),
+                          const Spacer(),
+                          TextButton.icon(
+                              icon: const Icon(Icons.add, size: 16),
+                              label: const Text("新对话"),
+                              onPressed: () {
+                                setState(() {
+                                  _messages.clear();
+                                  _records.clear();
+                                });
+                              }),
                           // IconButton(
                           //     onPressed: () async {
                           //       try {

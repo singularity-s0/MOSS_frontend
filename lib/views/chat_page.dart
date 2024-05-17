@@ -633,11 +633,16 @@ class ChatPage extends StatelessWidget {
   const ChatPage({super.key});
 
   // Mobile UI
-  Widget buildMobile(BuildContext context) =>
-      Selector<TopicStateProvider, ChatThread?>(
-          selector: (_, model) => model.currentTopic,
-          builder: (context, value, child) =>
-              ChatView(key: ValueKey(value), topic: value!, showMenu: true));
+  Widget buildMobile(BuildContext context) => ChatView(
+      topic: ChatThread(
+          count: 0,
+          name: "",
+          created_at: "",
+          updated_at: "",
+          id: 0,
+          user_id: 0,
+          records: []),
+      showMenu: false);
 
   // Desktop UI
   Widget buildDesktop(BuildContext context) {
@@ -662,15 +667,20 @@ class ChatPage extends StatelessWidget {
                   clipBehavior: Clip.antiAlias,
                   child: Center(
                     child: SizedBox(
-                      width: min(
-                          MediaQuery.of(context).size.height,
-                          MediaQuery.of(context).size.width -
-                              kTabletMasterContainerWidth),
-                      child: Selector<TopicStateProvider, ChatThread?>(
-                          selector: (_, model) => model.currentTopic,
-                          builder: (context, value, child) =>
-                              ChatView(key: ValueKey(value), topic: value!)),
-                    ),
+                        width: min(
+                            MediaQuery.of(context).size.height,
+                            MediaQuery.of(context).size.width -
+                                kTabletMasterContainerWidth),
+                        child: ChatView(
+                            topic: ChatThread(
+                                count: 0,
+                                name: "",
+                                created_at: "",
+                                updated_at: "",
+                                id: 0,
+                                user_id: 0,
+                                records: []),
+                            showMenu: false)),
                   ),
                 ),
               ),

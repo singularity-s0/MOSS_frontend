@@ -132,7 +132,6 @@ class _InputState extends State<Input> {
   }
 
   Widget _inputBuilder() {
-    final query = MediaQuery.of(context);
     final buttonPadding = InheritedChatTheme.of(context)
         .theme
         .inputPadding
@@ -198,7 +197,6 @@ class _InputState extends State<Input> {
                       focusNode: _inputFocusNode,
                       keyboardType: TextInputType.multiline,
                       maxLines: 5,
-                      minLines: 2,
                       onChanged: widget.options.onTextChanged,
                       onTap: widget.options.onTextFieldTap,
                       style: InheritedChatTheme.of(context)

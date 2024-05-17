@@ -37,3 +37,35 @@ class SendButton extends StatelessWidget {
         ),
       );
 }
+
+class ExpandButton extends StatelessWidget {
+  /// Creates send button widget.
+  const ExpandButton({
+    super.key,
+    required this.onPressed,
+    this.padding = EdgeInsets.zero,
+  });
+
+  /// Callback for send button tap event.
+  final VoidCallback onPressed;
+
+  /// Padding around the button.
+  final EdgeInsets padding;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        margin: InheritedChatTheme.of(context).theme.sendButtonMargin ??
+            const EdgeInsetsDirectional.fromSTEB(0, 0, 8, 0),
+        child: IconButton(
+          constraints: const BoxConstraints(
+            minHeight: 24,
+            minWidth: 24,
+          ),
+          icon: Icon(Icons.fullscreen,
+              color: InheritedChatTheme.of(context).theme.inputTextColor),
+          onPressed: onPressed,
+          padding: padding,
+          splashRadius: 24,
+        ),
+      );
+}

@@ -54,7 +54,8 @@ class _InputState extends State<Input> {
               PhysicalKeyboardKey.shiftLeft,
               PhysicalKeyboardKey.shiftRight,
             }.contains(el),
-          )) {
+          ) &&
+          !expanded) {
         if (event is KeyDownEvent && !_textController.value.composing.isValid) {
           _handleSendPressed();
         }
@@ -65,6 +66,7 @@ class _InputState extends State<Input> {
     },
   );
 
+  bool expanded = false;
   bool _sendButtonVisible = false;
   late TextEditingController _textController;
 
@@ -123,6 +125,9 @@ class _InputState extends State<Input> {
         _textController.clear();
       }
     }
+    setState(() {
+      expanded = false;
+    });
   }
 
   void _handleTextControllerChange() {
@@ -196,8 +201,8 @@ class _InputState extends State<Input> {
                           ),
                       focusNode: _inputFocusNode,
                       keyboardType: TextInputType.multiline,
-                      maxLines: 5,
-                      minLines: 2,
+                      maxLines: expanded ? 10 : 1,
+                      minLines: expanded ? 10 : 1,
                       onChanged: widget.options.onTextChanged,
                       onTap: widget.options.onTextFieldTap,
                       style: InheritedChatTheme.of(context)
@@ -218,9 +223,18 @@ class _InputState extends State<Input> {
                   ),
                   child: Visibility(
                     visible: _sendButtonVisible,
-                    child: SendButton(
-                      onPressed: _handleSendPressed,
-                      padding: buttonPadding,
+                    child: Row(
+                      children: [
+                        ExpandButton(onPressed: () {
+                          setState(() {
+                            expanded = !expanded;
+                          });
+                        }),
+                        SendButton(
+                          onPressed: _handleSendPressed,
+                          padding: buttonPadding,
+                        ),
+                      ],
                     ),
                   ),
                 ),

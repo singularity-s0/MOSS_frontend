@@ -41,7 +41,7 @@ class WebSocketChatManager {
     ended = false;
     try {
       channel = WebSocketChannel.connect(
-          Uri.parse(Uri.encodeFull("${Repository.wsBaseUrl}/inference")));
+          Uri.parse(Uri.encodeFull("${Repository.wsBaseUrl}/yocsef/inference")));
       channel!.stream.listen((responseMsg) async {
         wsTimer?.cancel();
         wsTimer = Timer(wsTimeout, onTimeout);

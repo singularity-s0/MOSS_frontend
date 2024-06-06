@@ -294,11 +294,7 @@ class _ChatViewState extends State<ChatView> {
       appBar: AppBar(
         centerTitle: true,
         automaticallyImplyLeading: false,
-        title: shouldUseLargeLogo
-            ? const SizedBox()
-            : LocalHero(
-                tag: "MossLogo",
-                child: Image.asset('assets/images/logo.webp', height: 56)),
+        title: const SizedBox(),
         surfaceTintColor: Colors.transparent,
       ),
       body: Chat(
@@ -310,6 +306,11 @@ class _ChatViewState extends State<ChatView> {
             inputClearMode: InputClearMode.never,
             sendButtonVisibilityMode: SendButtonVisibilityMode.always),
         theme: chatTheme,
+        listTopWidget: LocalHero(
+          tag: "MossLogo",
+          child: Image.asset('assets/images/moscot.gif',
+              height: MediaQuery.of(context).size.height / 4),
+        ),
         emptyState: shouldUseLargeLogo
             ? const MossIntroWidget(
                 heroTag: "MossLogo",
@@ -491,8 +492,7 @@ class _ChatViewState extends State<ChatView> {
                               icon: const Icon(Icons.copy, size: 16),
                               padding: EdgeInsets.zero,
                               onPressed: () async {
-                                FlutterClipboard.copy(
-                                    _records.last.response);
+                                FlutterClipboard.copy(_records.last.response);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                         content: Text(

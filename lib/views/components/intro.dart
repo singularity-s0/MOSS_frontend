@@ -46,7 +46,7 @@ class MossIntroWidget extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 48.0),
                           child: LocalHero(
                               tag: heroTag,
-                              child: Image.asset("assets/images/logo.webp")),
+                              child: Image.asset('assets/images/moscot.gif')),
                         ),
                       ),
                     ),

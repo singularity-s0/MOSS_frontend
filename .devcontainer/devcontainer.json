@@ -1,0 +1,12 @@
+{
+  "image": "singularitys0/flutter_dev_container",
+  "portsAttributes": {
+    "3000": {
+      "label": "Application",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "forwardPorts": [
+    3000
+  ]
+}

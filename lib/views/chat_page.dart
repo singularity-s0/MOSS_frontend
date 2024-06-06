@@ -492,7 +492,7 @@ class _ChatViewState extends State<ChatView> {
                               padding: EdgeInsets.zero,
                               onPressed: () async {
                                 FlutterClipboard.copy(
-                                    widget.topic.records!.last.response);
+                                    _records.last.response);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                         content: Text(
@@ -502,7 +502,7 @@ class _ChatViewState extends State<ChatView> {
                           IconButton(
                               onPressed: () {
                                 String content = "";
-                                for (final record in widget.topic.records!) {
+                                for (final record in _records) {
                                   content += "[User]\n${record.request}\n\n";
                                   content +=
                                       "[Assistant]\n${record.response}\n\n";

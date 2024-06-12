@@ -34,3 +34,17 @@ jobs:
           file: Dockerfile
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:yocsef
+
+      - name: Login to Aliyun ACR
+        uses: aliyun/acr-login@master
+        with:
+          login-server: https://registry.cn-shanghai.aliyuncs.com
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Build and push Aliyun ACR
+        uses: docker/build-push-action@master
+        with:
+          push: true
+          tags: |
+            registry.cn-shanghai.aliyuncs.com/${{ secrets.ACR_NAMESPACE }}/${{ env.APP_NAME }}:yocsef

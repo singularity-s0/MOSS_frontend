@@ -22,6 +22,7 @@ WORKDIR /app/
 
 # Run pre-build commands
 RUN flutter pub get
+RUN flutter gen-l10n
 
 # Build the app
 RUN flutter build web --release --web-renderer html --dart-define=FLUTTER_WEB_CANVASKIT_URL=https://npm.elemecdn.com/canvaskit-wasm@0.37.1/bin/ --base-href "/"

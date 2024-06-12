@@ -1,11 +1,11 @@
 {
-    "name": "MOSS",
-    "short_name": "MOSS",
+    "name": "申申",
+    "short_name": "申申",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#ffffffff",
     "theme_color": "#ffffffff",
-    "description": "MOSS Chat AI",
+    "description": "CCF YOCSEF 上海大模型",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
